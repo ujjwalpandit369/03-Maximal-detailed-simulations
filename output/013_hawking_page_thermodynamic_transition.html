@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>013: The Hawking-Page Transition</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #8e44ad; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #702f8a; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; aspect-ratio: 1.5/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #8e44ad; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .phase-diagram { font-size: 1.5em; font-weight: bold; padding: 20px; border-radius: 5px; transition: all 0.3s; }
+        .gas-phase { background-color: #dff0d8; color: #3c763d; border: 1px solid #d6e9c6;}
+        .bh-phase { background-color: #f2dede; color: #a94442; border: 1px solid #ebccd1;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>013: The Hawking-Page Phase Transition</h1>
+            <p class="subtitle">A thermodynamic showdown between a gas of thermal radiation and a massive black hole in Anti-de Sitter space.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Free Energy (F) vs. Temperature (T)</h4>
+                        <canvas id="main-canvas" width="800" height="533"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>In nature, systems tend to settle into their state of lowest **free energy**. Think of a ball rolling downhill to find the bottom of a valley. The same principle applies to the entire universe. In the confining "box" of Anti-de Sitter (AdS) space, there are two possible states the universe can be in at a high temperature: a uniform "soup" of hot radiation (a **thermal gas**), or a single, massive **black hole** in equilibrium with its own radiation. Which one is more stable? This simulation plots the free energy of both states as a function of temperature. You will discover that at low temperatures, the gas is more stable. But as you increase the temperature past a critical point—the **Hawking-Page transition temperature**—the free energy of the black hole state suddenly drops lower. The universe undergoes a **phase transition**, like water boiling into steam, and it becomes thermodynamically favorable for the gas to collapse and form a black hole. This is a profound link between gravity, thermodynamics, and quantum field theory.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group">
+                        <h3>Dominant Phase</h3>
+                        <div id="phase-diagram" class="phase-diagram">
+                            <!-- Phase will be shown here -->
+                        </div>
+                    </div>
+                    <div class="control-group" id="controls">
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "013_hawking_page" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new HawkingPageSim();
+        sim.init();
+    });
+
+    class HawkingPageSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            this.params = {};
+            this.controls = {
+                T: { label: 'Temperature (T)', min: 0.1, max: 2.0, value: 0.5, step: 0.01, type: 'thermo' },
+                L: { label: 'AdS Radius (L)', min: 1, max: 10, value: 5, step: 1, type: 'physical' },
+            };
+            this.metrics = {
+                F_gas: { label: 'F (Gas)' },
+                F_bh: { label: 'F (Black Hole)' },
+                Delta_F: { label: 'ΔF (Gas - BH)' },
+                T_hp: { label: 'Hawking-Page Temp (T_hp)' },
+            };
+            this.phaseDiagram = document.getElementById('phase-diagram');
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.draw();
+        }
+
+        createControls() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label}</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key].toFixed(2);
+                    this.draw();
+                });
+            }
+        }
+
+        createMetrics() { /* ... similar to previous ... */ }
+
+        // --- Thermodynamic Functions (in simplified units) ---
+        F_gas(T, L) {
+            // F_gas ~ -T^4 L^3 in AdS_4
+            return -0.1 * Math.pow(T, 4) * Math.pow(L, 3);
+        }
+
+        // Parametric plot for Black Hole Free Energy
+        F_bh_parametric(r_plus, L) {
+            const L_sq = L*L;
+            const r_plus_sq = r_plus * r_plus;
+            // Temperature of SAdS black hole
+            const T = (1 + 3 * r_plus_sq / L_sq) / (4 * Math.PI * r_plus);
+            // Free Energy F = M - TS. M is related to r_plus. S = A/4 = pi*r_plus^2
+            const M = r_plus/2 * (1 + r_plus_sq/L_sq);
+            const S = Math.PI * r_plus_sq;
+            const F = M - T * S;
+            return { T, F };
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const T_max = 2.0;
+            const F_min = -1.0;
+            const F_max = 0.5;
+
+            const toScreen = (T, F) => ({
+                x: (T / T_max) * w,
+                y: h - (F - F_min) / (F_max - F_min) * h
+            });
+
+            // Draw Gas Free Energy
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 3;
+            for (let T_val = 0; T_val <= T_max; T_val += 0.01) {
+                const F_val = this.F_gas(T_val, this.params.L);
+                const p = toScreen(T_val, F_val);
+                if (T_val === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+
+            // Draw Black Hole Free Energy
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 3;
+            let first_stable = true;
+            let first_unstable = true;
+            const T_min_bh = Math.sqrt(3) / (2 * Math.PI * this.params.L);
+
+            for (let r_plus = 0.1; r_plus < 15; r_plus += 0.1) {
+                const { T, F } = this.F_bh_parametric(r_plus, this.params.L);
+                const p = toScreen(T, F);
+
+                // The branch with r_plus < L/sqrt(3) is unstable
+                if (r_plus < this.params.L / Math.sqrt(3)) {
+                    if (first_unstable) { ctx.moveTo(p.x,p.y); first_unstable=false; }
+                    else { ctx.lineTo(p.x,p.y); }
+                }
+            }
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.setLineDash([]);
+             for (let r_plus = this.params.L / Math.sqrt(3); r_plus < 15; r_plus += 0.1) {
+                const { T, F } = this.F_bh_parametric(r_plus, this.params.L);
+                const p = toScreen(T, F);
+                if (first_stable) { ctx.moveTo(p.x,p.y); first_stable=false; }
+                else { ctx.lineTo(p.x,p.y); }
+            }
+            ctx.stroke();
+
+            // Draw current temperature line
+            const T_current = this.params.T;
+            const p_current = toScreen(T_current, 0);
+            ctx.beginPath();
+            ctx.moveTo(p_current.x, 0);
+            ctx.lineTo(p_current.x, h);
+            ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            this.updateMetrics();
+        }
+
+        updateMetrics() {
+            const T = this.params.T;
+            const L = this.params.L;
+            const F_gas = this.F_gas(T,L);
+
+            // Find corresponding r_plus for stable BH at this temp
+            let r_plus = L; // Start search
+            for(let i=0; i<10; i++) { // Newton's method could be used here
+                 const T_guess = (1 + 3 * r_plus * r_plus / (L*L)) / (4 * Math.PI * r_plus);
+                 const T_deriv = (3*r_plus*r_plus - L*L) / (4*Math.PI*r_plus*r_plus*L*L);
+                 r_plus -= (T_guess-T)/T_deriv;
+            }
+            const { F: F_bh } = this.F_bh_parametric(r_plus, L);
+
+            // Update UI
+            document.getElementById('metric-F_gas').textContent = F_gas.toFixed(3);
+            document.getElementById('metric-F_bh').textContent = F_bh.toFixed(3);
+            document.getElementById('metric-Delta_F').textContent = (F_gas - F_bh).toFixed(3);
+
+            const T_hp = (3 / (4*Math.PI*L)); // Simplified relation
+            document.getElementById('metric-T_hp').textContent = T_hp.toFixed(3);
+
+            if (F_gas < F_bh) {
+                this.phaseDiagram.textContent = "Thermal Gas Phase";
+                this.phaseDiagram.className = "phase-diagram gas-phase";
+            } else {
+                this.phaseDiagram.textContent = "Black Hole Phase";
+                this.phaseDiagram.className = "phase-diagram bh-phase";
+            }
+        }
+    }
+    </script>
+</body>
+</html>

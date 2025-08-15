@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>016: Penrose Diagram of an AdS Black Hole</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #8e44ad; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #702f8a; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; aspect-ratio: 1/1; cursor: crosshair; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #8e44ad; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>016: The Penrose Diagram for a Schwarzschild-AdS Black Hole</h1>
+            <p class="subtitle">An interactive map of the entire spacetime, revealing its causal structure and the ultimate fate of all who enter.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Interactive Penrose Diagram (Click to launch)</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>How do you draw a map of an infinite universe that contains a black hole, a region from which nothing can escape? Physicist Roger Penrose invented a clever technique to do just that. A **Penrose diagram** is a "conformal" map that squishes an infinite spacetime into a finite, manageable picture, while correctly preserving the paths of light rays (which always travel at 45-degree angles). This simulation provides an interactive Penrose diagram for a black hole inside the confining "box" of Anti-de Sitter space. By launching particles and light rays, you can explore the fundamental causal structure of this spacetime. You'll discover for yourself the meaning of an event horizon—the point of no return—and see why anything that crosses it is inexorably drawn to the central singularity, a region where space and time as we know them end.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Launcher</h3>
+                        <div class="control-item">
+                            <label>Launch Type:</label>
+                            <select id="launch-type">
+                                <option value="photon">Photon (Light Ray)</option>
+                                <option value="particle">Massive Particle</option>
+                            </select>
+                        </div>
+                        <button id="clear-btn">Clear Trajectories</button>
+                    </div>
+                    <div class="control-group">
+                        <h3>Diagram Key</h3>
+                        <ul>
+                            <li><b>Red Line:</b> Singularity (r=0)</li>
+                            <li><b>Orange Line:</b> Event Horizon</li>
+                            <li><b>Blue Lines:</b> AdS Boundary (r=∞)</li>
+                            <li><b>Vertical Dashed Lines:</b> Center of AdS (r=0, outside BH)</li>
+                        </ul>
+                    </div>
+                    <div class="control-group">
+                        <h3>Trajectory Status</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "016_penrose_diagram" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new PenroseSim();
+        sim.init();
+    });
+
+    class PenroseSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            this.trajectories = [];
+            this.isRunning = true;
+        }
+
+        init() {
+            this.canvas.onclick = (e) => this.launch(e);
+            document.getElementById('clear-btn').onclick = () => { this.trajectories = []; };
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        launch(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const type = document.getElementById('launch-type').value;
+            const speed = type === 'photon' ? 1.0 : 0.7;
+
+            // Fire two particles/photons in opposite directions
+            this.trajectories.push({ x, y, vx: speed, vy: -speed, type, active: true, trace: [] });
+            this.trajectories.push({ x, y, vx: -speed, vy: -speed, type, active: true, trace: [] });
+        }
+
+        update(dt) {
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+            const h_diag = Math.sqrt(w*w + h*h);
+
+            for (const T of this.trajectories) {
+                if (!T.active) continue;
+
+                T.x += T.vx * dt * 5; // speed up simulation
+                T.y += T.vy * dt * 5;
+                T.trace.push({x: T.x, y: T.y});
+
+                // Check for boundary conditions
+                const singularityY = h/2; // Simplified
+                if (T.y < singularityY) {
+                    T.active = false;
+                    this.updateStatus(`Trajectory hit the singularity.`);
+                }
+
+                // Bouncing off the AdS boundary
+                if (T.x < 0) { T.vx = Math.abs(T.vx); T.x = 0; }
+                if (T.x > w) { T.vx = -Math.abs(T.vx); T.x = w; }
+                if (T.y > h) { T.vy = -Math.abs(T.vy); T.y = h; }
+            }
+        }
+
+        updateStatus(message) {
+            const grid = document.getElementById('metrics-grid');
+            grid.innerHTML = `<div class="metric-box"><span class="metric-value">${message}</span></div>`;
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0,0,w,h);
+
+            // Draw Penrose Diagram structure
+            const centerX = w/2;
+            const centerY = h/2;
+
+            // Boundaries (rotated square)
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0); // top
+            ctx.lineTo(w, centerY); // right
+            ctx.lineTo(centerX, h); // bottom
+            ctx.lineTo(0, centerY); // left
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(142, 68, 173, 0.05)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.stroke();
+
+            // Singularity
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(w, centerY);
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Event Horizon
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(centerX, 0);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(w, centerY);
+            ctx.strokeStyle = 'orange';
+            ctx.stroke();
+
+            // AdS Center (r=0 outside BH)
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(centerX, h);
+            ctx.moveTo(w, centerY);
+            ctx.lineTo(centerX, h);
+            ctx.strokeStyle = 'blue';
+            ctx.setLineDash([5,5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw trajectories
+            for (const T of this.trajectories) {
+                ctx.beginPath();
+                ctx.strokeStyle = T.type === 'photon' ? 'gold' : 'black';
+                ctx.lineWidth = T.type === 'photon' ? 2 : 3;
+                for(let i=0; i<T.trace.length; i++) {
+                    const pt = T.trace[i];
+                    if(i===0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+                }
+                ctx.stroke();
+            }
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update(1/60);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

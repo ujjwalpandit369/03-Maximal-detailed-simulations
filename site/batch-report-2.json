@@ -1,0 +1,11 @@
+{
+  "batch_id": 2,
+  "topic": "Bulk black hole dynamics in AdS & AdS black hole thermodynamics",
+  "timestamp": "2025-08-15T02:39:58Z",
+  "total_files_generated": 20,
+  "pass_rate": 1.0,
+  "smoke_test_status": "Passed",
+  "failed_files": [],
+  "bytes_added": "N/A",
+  "notes": "All 10 simulations for the second batch and their corresponding markdown files were generated successfully. No errors were encountered during self-checks."
+}

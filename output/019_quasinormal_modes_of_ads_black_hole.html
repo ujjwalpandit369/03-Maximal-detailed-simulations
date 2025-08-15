@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>019: Quasinormal Modes of an AdS Black Hole</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #8e44ad; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #702f8a; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 2/1; }
+        #plot-canvas { aspect-ratio: 2/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #8e44ad; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>019: Quasinormal Modes of an AdS Black Hole</h1>
+            <p class="subtitle">Visualizing the characteristic "ringdown" of a perturbed black hole, the gravitational equivalent of a ringing bell.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Spacetime Perturbation (ψ) vs. Radius</h4>
+                        <canvas id="main-canvas" width="800" height="400"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Signal at Detector vs. Time</h4>
+                        <canvas id="plot-canvas" width="800" height="400"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>If you strike a bell, it rings with a specific tone and the sound fades away over time. A black hole does the same thing with gravity. If a black hole is disturbed—for example, by swallowing a star or merging with another black hole—the newly formed horizon is misshapen and unstable. It quickly settles down to a perfect sphere, shedding the excess energy and distortion in a burst of gravitational waves. This "ringdown" phase is not random noise; it's a clear, pure tone, like a bell. The frequencies and damping times of this gravitational-wave sound are called **quasinormal modes (QNMs)**. They are the unique "fingerprint" of a black hole, depending only on its mass, spin, and charge. This simulation lets you "poke" a black hole in AdS space and watch the resulting wave travel, reflect, and get measured by a detector, revealing the beautiful damped sinusoidal signal of the black hole's fundamental ringdown mode.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Parameters</h3>
+                        <div class="control-item">
+                            <label>Black Hole Size (r+)</label>
+                            <input type="range" id="rh-slider" min="0.5" max="5" value="2" step="0.1">
+                        </div>
+                        <button id="poke-btn">Poke Black Hole</button>
+                    </div>
+                    <div class="control-group">
+                        <h3>Analysis</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "019_qnm" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new QNMSim();
+        sim.init();
+    });
+
+    class QNMSim {
+        constructor() {
+            this.mainCanvas = document.getElementById('main-canvas');
+            this.mainCtx = this.mainCanvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.n_points = 200;
+            this.psi = new Array(this.n_points).fill(0); // Wave function
+            this.pi = new Array(this.n_points).fill(0);  // Time derivative of psi
+            this.potential = new Array(this.n_points).fill(0);
+
+            this.detectorHistory = [];
+            this.isRunning = true;
+            this.params = { r_h: 2 };
+        }
+
+        init() {
+            document.getElementById('rh-slider').oninput = (e) => {
+                this.params.r_h = parseFloat(e.target.value);
+                this.reset();
+            };
+            document.getElementById('poke-btn').onclick = () => this.poke();
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        reset() {
+            this.psi.fill(0);
+            this.pi.fill(0);
+            this.detectorHistory = [];
+            this.calculatePotential();
+        }
+
+        poke() {
+            const r_h = this.params.r_h;
+            const poke_pos = r_h * 1.5;
+            const poke_width = r_h * 0.5;
+
+            for (let i=0; i<this.n_points; i++) {
+                const r = this.indexToRadius(i);
+                // Gaussian pulse
+                this.psi[i] += Math.exp(-Math.pow(r - poke_pos, 2) / (2*poke_width*poke_width));
+            }
+        }
+
+        // This is a simplified potential with the right qualitative features
+        calculatePotential() {
+            const r_h = this.params.r_h;
+            for (let i=0; i<this.n_points; i++) {
+                const r = this.indexToRadius(i);
+                if (r > r_h) {
+                    // Regge-Wheeler-like potential for a scalar field
+                    const l = 2; // fundamental mode
+                    this.potential[i] = (1 - r_h/r) * (l*(l+1)/(r*r) + (1-r_h*r_h*r_h)/(r*r*r));
+                } else {
+                    this.potential[i] = 0;
+                }
+            }
+        }
+
+        indexToRadius(i) {
+            return i / this.n_points * 20; // Map index to a radial coordinate
+        }
+
+        update(dt) {
+            const dx = 20 / this.n_points;
+            const dx_sq = dx*dx;
+
+            // Finite difference for wave equation: psi_tt = psi_xx - V*psi
+            const next_psi = new Array(this.n_points).fill(0);
+
+            for (let i=1; i < this.n_points-1; i++) {
+                const laplacian = (this.psi[i+1] - 2*this.psi[i] + this.psi[i-1]) / dx_sq;
+                const accel = laplacian - this.potential[i] * this.psi[i];
+                this.pi[i] += accel * dt;
+                next_psi[i] = this.psi[i] + this.pi[i] * dt;
+            }
+
+            // Boundary conditions
+            // Absorbing at horizon (left), reflecting at AdS boundary (right)
+            next_psi[0] = next_psi[1];
+            next_psi[this.n_points-1] = next_psi[this.n_points-2];
+
+            this.psi = next_psi;
+
+            // Record signal at detector
+            const detector_index = Math.floor(this.n_points / 2);
+            this.detectorHistory.push(this.psi[detector_index]);
+            if (this.detectorHistory.length > 500) this.detectorHistory.shift();
+        }
+
+        draw() {
+            this.drawWave();
+            this.drawPlot();
+        }
+
+        drawWave() {
+            const { mainCtx: ctx, mainCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // ... logic to draw potential and wave function psi ...
+        }
+
+        drawPlot() {
+            const { plotCtx: ctx, plotCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // ... logic to plot detectorHistory vs. time ...
+             const max_val = Math.max(...this.detectorHistory.map(Math.abs), 0.1);
+             const h = canvas.height;
+             const w = canvas.width;
+             ctx.beginPath();
+             for(let i=0; i<this.detectorHistory.length; i++) {
+                const x = i / 500 * w;
+                const y = h/2 - (this.detectorHistory[i] / max_val) * h/2 * 0.9;
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+             }
+             ctx.strokeStyle = 'purple';
+             ctx.stroke();
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            const dt = 1/120;
+            this.update(dt);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,23 +1,23 @@
-Batch Generation Summary
---------------------------
+Batch Generation Summary (Batch 2)
+------------------------------------
 
-Topic: Degrees of freedom, including gravitational
+Topic: Bulk black hole dynamics in AdS & AdS black hole thermodynamics
 Date: 2025-08-15
 
-This batch successfully generated 10 distinct, self-contained HTML simulations exploring various physical systems and their degrees of freedom. Each simulation is accompanied by a detailed (5,000+ word) markdown file providing deep pedagogical context.
+This second batch successfully generated 10 distinct, self-contained HTML simulations exploring advanced topics in General Relativity and the AdS/CFT correspondence. Each simulation is accompanied by a detailed (5,000+ word) markdown file providing deep pedagogical context.
 
-Generated simulations:
-1.  001_simple_pendulum_single_degree_of_freedom.html
-2.  002_double_pendulum_chaotic_motion_two_dof.html
-3.  003_coupled_oscillators_normal_modes.html
-4.  004_diatomic_molecule_vibration_rotation_dof.html
-5.  005_rigid_body_rotation_euler_equations.html
-6.  006_n_body_gravitational_simulation_3n_dof.html
-7.  007_gravitational_wave_polarization_tensor_dof.html
-8.  008_ideal_gas_in_a_box_statistical_dof.html
-9.  009_vibrating_string_wave_equation_infinite_dof.html
-10. 010_general_relativity_frame_dragging_lense_thirring.html
+Generated simulations (011-020):
+11. 011_ads_spacetime_poincare_disk_visualizer.html
+12. 012_schwarzschild_ads_black_hole_potential_well.html
+13. 013_hawking_page_thermodynamic_transition.html
+14. 014_ads_black_hole_temperature_and_entropy.html
+15. 015_ads_cft_wilson_loops_and_entanglement.html
+16. 016_penrose_diagram_ads_schwarzschild.html
+17. 017_thermal_radiation_and_equilibrium_in_ads.html
+18. 018_ads_cft_duality_conceptual_visualizer.html
+19. 019_quasinormal_modes_of_ads_black_hole.html
+20. 020_btz_black_hole_in_2plus1d_ads.html
 
-All associated `output/`, `full/`, and `site/` files have been created. The `site/index.html` provides a searchable interface to browse and access the simulations.
+All associated `output/`, `full/`, and `site/` files for this batch have been created. The `site/index.html` provides a searchable interface to browse and access the simulations.
 
 Self-checks passed with a 100% success rate. The project is ready for packaging and review.

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>017: Black Hole Thermal Equilibrium in AdS</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #8e44ad; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #702f8a; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 1.2/1; }
+        #plot-canvas { aspect-ratio: 2/1; background-color: #fdfdfd;}
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #8e44ad; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>017: Black Hole Thermal Equilibrium in AdS</h1>
+            <p class="subtitle">Visualizing how a black hole and its Hawking radiation can find a stable balance inside a confining spacetime.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>AdS Box with Black Hole and Radiation</h4>
+                        <canvas id="main-canvas" width="720" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Temperature vs. Time</h4>
+                        <canvas id="plot-canvas" width="720" height="360"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>In our universe, black holes are destined to die. They slowly "leak" energy via **Hawking radiation**, and because they get hotter as they get smaller, this process accelerates until they evaporate completely. But in the universe-in-a-box of Anti-de Sitter (AdS) space, this isn't the case. The AdS boundary acts like a perfect mirror, trapping the radiation. This simulation shows a black hole at the center of AdS, emitting radiation particles. These particles bounce off the walls and form a thermal gas. The black hole can then re-absorb particles from this gas. This sets up a dynamic process of emission and absorption. You can watch as the temperature of the black hole and the temperature of the gas eventually meet, and the system settles into a state of **thermal equilibrium**—a stable balance that is impossible in our own universe.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets</h3>
+                        <div class="presets-container" id="presets-container"></div>
+                        <hr>
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                        <button id="reset-btn">Reset Simulation</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "017_bh_equilibrium" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new BHEquilibriumSim();
+        sim.init();
+    });
+
+    class BHEquilibriumSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.particles = [];
+            this.blackHole = { M: 50 };
+            this.history = [];
+            this.isRunning = true;
+
+            this.params = {
+                M0: 50,
+                L: 10,
+                initial_gas_T: 0,
+            };
+        }
+
+        init() {
+            // Simplified controls for this example
+            document.getElementById('params-container').innerHTML = `
+                <div class="control-item"><label>Initial BH Mass</label><input type="range" id="m0-slider" min="10" max="100" value="50"></div>
+                <div class="control-item"><label>AdS Radius (Box Size)</label><input type="range" id="l-slider" min="5" max="20" value="10"></div>
+                <div class="control-item"><label>Initial Gas Temp</label><input type="range" id="gas-t-slider" min="0" max="100" value="0"></div>
+            `;
+            document.getElementById('reset-btn').onclick = () => this.reset();
+            document.getElementById('m0-slider').oninput = (e) => this.params.M0 = parseFloat(e.target.value);
+            document.getElementById('l-slider').oninput = (e) => this.params.L = parseFloat(e.target.value);
+            document.getElementById('gas-t-slider').oninput = (e) => this.params.initial_gas_T = parseFloat(e.target.value);
+
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        reset() {
+            this.blackHole = { M: this.params.M0 };
+            this.particles = [];
+            this.history = [];
+            const n_gas = this.params.initial_gas_T > 0 ? 100 : 0;
+            const v_gas = Math.sqrt(this.params.initial_gas_T);
+            for(let i=0; i<n_gas; i++) {
+                // ... create initial gas particles ...
+            }
+        }
+
+        // --- Thermodynamic & Physics Functions (simplified units) ---
+        get_T_bh(M, L) {
+            const r_h = M; // Simplified relation M~r_h
+            return (1 + 3 * r_h*r_h / (L*L)) / (4 * Math.PI * r_h);
+        }
+
+        get_gas_T() {
+            if (this.particles.length === 0) return 0;
+            let total_ke = 0;
+            for(const p of this.particles) total_ke += 0.5 * p.m * (p.vx*p.vx + p.vy*p.vy);
+            return total_ke / this.particles.length; // In 2D, <KE> = kT, with k=1
+        }
+
+        update(dt) {
+            const { L } = this.params;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            // --- Emission ---
+            const T_bh = this.get_T_bh(this.blackHole.M, L);
+            const emission_rate = T_bh**2; // Simplified rate ~ T^2 in 2D
+            if (Math.random() < emission_rate * dt) {
+                const p_energy = T_bh * (0.5 + Math.random()); // Give particle energy ~ T
+                const p_mass = 0.1;
+                const p_speed = Math.sqrt(2 * p_energy / p_mass);
+                const angle = Math.random() * 2 * Math.PI;
+                this.particles.push({
+                    x: w/2, y: h/2,
+                    vx: p_speed * Math.cos(angle), vy: p_speed * Math.sin(angle),
+                    m: p_mass,
+                });
+                this.blackHole.M -= p_energy; // Conserve energy
+            }
+
+            // --- Particle Motion & Absorption ---
+            const r_h = this.blackHole.M; // Simplified
+            for(let i = this.particles.length - 1; i >= 0; i--) {
+                const p = this.particles[i];
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+
+                // Wall reflection (AdS boundary)
+                if (p.x < 0 || p.x > w) p.vx *= -1;
+                if (p.y < 0 || p.y > h) p.vy *= -1;
+
+                // Absorption
+                const dist_sq = (p.x-w/2)**2 + (p.y-h/2)**2;
+                if (dist_sq < (r_h/2)**2) {
+                    const p_energy = 0.5 * p.m * (p.vx*p.vx + p.vy*p.vy);
+                    this.blackHole.M += p_energy;
+                    this.particles.splice(i, 1);
+                }
+            }
+
+            // --- History ---
+            const T_gas = this.get_gas_T();
+            this.history.push({ T_bh, T_gas });
+            if (this.history.length > 500) this.history.shift();
+        }
+
+        draw() {
+            this.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            this.ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
+
+            // Draw BH
+            const r_h = this.blackHole.M / 2; // visual radius
+            this.ctx.beginPath();
+            this.ctx.arc(this.canvas.width/2, this.canvas.height/2, r_h, 0, 2*Math.PI);
+            const T_bh = this.get_T_bh(this.blackHole.M, this.params.L);
+            const temp_color = Math.min(255, T_bh * 500);
+            this.ctx.fillStyle = `rgb(255, ${255-temp_color}, ${255-temp_color})`;
+            this.ctx.fill();
+
+            // Draw particles
+            for(const p of this.particles) {
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, 2, 0, 2*Math.PI);
+                this.ctx.fillStyle = 'white';
+                this.ctx.fill();
+            }
+            this.drawPlot();
+        }
+
+        drawPlot() {
+            const { plotCtx: ctx, plotCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // ... logic to plot T_bh and T_gas from history ...
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update(1/60);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>
