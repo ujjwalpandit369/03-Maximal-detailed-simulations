@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>022: Gravitational Collapse of an Overdensity</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 1/1; }
+        #plot-canvas { aspect-ratio: 1.5/1; background-color: #fdfdfd; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #c9302c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>022: Gravitational Collapse of an Overdensity</h1>
+            <p class="subtitle">Witness the birth of the first cosmic structures as gravity battles against the expansion of the universe.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>N-body Simulation in an Expanding Box</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Energy and Virial Ratio vs. Time</h4>
+                        <canvas id="plot-canvas" width="600" height="400"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>The early universe was remarkably smooth and uniform, but not perfectly so. Quantum fluctuations in the very first moments of time created tiny regions that were slightly denser than average. This simulation shows what happens to one such **overdensity**. Initially, everything expands due to the Hubble flow. But the overdense region has extra gravity. This extra pull acts as a brake, slowing the expansion of the region. If the overdensity is strong enough, it can halt the expansion completely, "turn around," and begin to **collapse** under its own weight. This process of gravitational instability is the primary engine of all structure formation, transforming the smooth early universe into the rich cosmic web of galaxies and clusters we see today. You can also watch the system's energy evolve and see it satisfy the **Virial Theorem**, a key indicator that a stable, bound object has formed.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                        <button id="reset-btn">Reset Simulation</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "022_gravitational_collapse" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new CollapseSim();
+        sim.init();
+    });
+
+    class CollapseSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.particles = [];
+            this.scaleFactor = 0.1;
+            this.isRunning = true;
+            this.history = [];
+
+            this.params = {
+                n_particles: 200,
+                omega_m: 1.0, // Matter density
+                H0: 70,
+                delta_i: 0.2, // Initial overdensity
+            };
+        }
+
+        init() {
+            // Simplified controls
+            const container = document.getElementById('params-container');
+            container.innerHTML = `<div class="control-item"><label>Matter Density (Ω_m)</label><input type="range" id="omega-slider" min="0.1" max="2.0" value="1.0" step="0.1"></div>`;
+            container.innerHTML += `<div class="control-item"><label>Initial Overdensity (δ)</label><input type="range" id="delta-slider" min="0.05" max="0.5" value="0.2" step="0.01"></div>`;
+            document.getElementById('reset-btn').onclick = () => this.reset();
+            document.getElementById('omega-slider').oninput = (e) => this.params.omega_m = parseFloat(e.target.value);
+            document.getElementById('delta-slider').oninput = (e) => this.params.delta_i = parseFloat(e.target.value);
+
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        reset() {
+            this.particles = [];
+            this.scaleFactor = 0.1;
+            this.history = [];
+            const n = this.params.n_particles;
+
+            // Background particles
+            for(let i=0; i<n; i++) {
+                this.particles.push({
+                    x: Math.random(), y: Math.random(), // comoving coords [0,1]
+                    vx: 0, vy: 0, // comoving peculiar velocity
+                    m: 1,
+                });
+            }
+            // Overdensity
+            const n_overdense = Math.floor(n * this.params.delta_i);
+            for(let i=0; i<n_overdense; i++) {
+                const r = 0.1 * Math.sqrt(Math.random());
+                const theta = Math.random() * 2 * Math.PI;
+                this.particles.push({
+                    x: 0.5 + r * Math.cos(theta),
+                    y: 0.5 + r * Math.sin(theta),
+                    vx: 0, vy: 0, m: 1,
+                });
+            }
+        }
+
+        update(dt) {
+            // Friedmann equation for a(t)
+            const H = this.params.H0 * Math.sqrt(this.params.omega_m / this.scaleFactor**3);
+            this.scaleFactor += this.scaleFactor * H * dt / 1000; // Adjust units
+
+            const G_sim = 1e-4;
+            const a = this.scaleFactor;
+
+            // Leapfrog integrator
+            for(const p of this.particles) {
+                const F = this.getForce(p);
+                p.vx += (F.x / p.m / a**3 - 2 * H * p.vx) * dt;
+                p.vy += (F.y / p.m / a**3 - 2 * H * p.vy) * dt;
+            }
+            for(const p of this.particles) {
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                // Periodic boundary conditions
+                p.x = (p.x % 1 + 1) % 1;
+                p.y = (p.y % 1 + 1) % 1;
+            }
+        }
+
+        getForce(particle) {
+            let Fx = 0, Fy = 0;
+            for(const other of this.particles) {
+                if (other === particle) continue;
+                // Minimum image convention for periodic boundaries
+                let dx = other.x - particle.x;
+                let dy = other.y - particle.y;
+                if (dx > 0.5) dx -= 1; if (dx < -0.5) dx += 1;
+                if (dy > 0.5) dy -= 1; if (dy < -0.5) dy += 1;
+
+                const r_sq = dx*dx + dy*dy;
+                if (r_sq > 1e-4) {
+                    const force = 1 / r_sq;
+                    Fx += force * dx / Math.sqrt(r_sq);
+                    Fy += force * dy / Math.sqrt(r_sq);
+                }
+            }
+            return {x: Fx, y: Fy};
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            const w = canvas.width;
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0,0,w,w);
+
+            for(const p of this.particles) {
+                ctx.beginPath();
+                ctx.arc(p.x*w, p.y*w, 1.5, 0, 2*Math.PI);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+            }
+
+            this.updateAndDrawMetrics();
+        }
+
+        updateAndDrawMetrics() {
+            // ... calculate K, U, and Virial ratio ...
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update(1/60);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

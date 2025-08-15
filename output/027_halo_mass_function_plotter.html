@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>027: The Halo Mass Function</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; aspect-ratio: 1.2/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #c9302c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>027: The Halo Mass Function</h1>
+            <p class="subtitle">An interactive plotter for one of the key theoretical predictions of modern cosmology.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Halo Mass Function: dn/dM vs. Mass</h4>
+                        <canvas id="main-canvas" width="800" height="667"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>How many galaxies like the Milky Way should there be in a given volume of space? How common are giant galaxy clusters? How rare are tiny dwarf galaxies? The **halo mass function** is the theoretical tool cosmologists use to answer these questions. It provides a precise prediction for the number density of dark matter halos of a given mass. This prediction depends sensitively on the fundamental parameters of our universe, like the total amount of matter and the initial "lumpiness" of the cosmos. This interactive plotter lets you explore the halo mass function. By changing the cosmological parameters with the sliders, you can see how the predicted abundance of structures—from small galaxies to massive clusters—changes. This is a powerful way to understand how the "cosmic census" of halos provides one of the strongest tests of our entire cosmological model.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Cosmological Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+                    <div class="control-group">
+                        <h3>Model</h3>
+                        <select id="model-select"><option value="ps">Press-Schechter</option><option value="st">Sheth-Tormen</option></select>
+                    </div>
+                    <div class="control-group">
+                        <h3>Derived Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "027_halo_mass_function" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new MassFunctionSim();
+        sim.init();
+    });
+
+    class MassFunctionSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            this.params = {};
+            this.controls = {
+                sigma8: { label: 'Fluctuation Amp (σ₈)', min: 0.6, max: 1.0, value: 0.8, step: 0.01 },
+                omega_m: { label: 'Matter Density (Ω_m)', min: 0.1, max: 1.0, value: 0.3, step: 0.01 },
+                ns: { label: 'Spectral Index (nₛ)', min: 0.9, max: 1.1, value: 0.96, step: 0.01 },
+                z: { label: 'Redshift (z)', min: 0, max: 10, value: 0, step: 0.1 },
+            };
+        }
+
+        init() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label}</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key].toFixed(2);
+                    this.draw();
+                });
+            }
+            document.getElementById('model-select').onchange = () => this.draw();
+            this.draw();
+        }
+
+        // --- Mass Function Formalism (simplified) ---
+
+        // Variance of density field on scale R (mass M)
+        // This is a complex integral over the power spectrum. We use a fitting function.
+        sigma(M, sigma8, omega_m, ns) {
+            // Very simplified fitting function for demonstration
+            const M_h = M / 1e12; // Mass in units of 10^12 solar masses
+            return sigma8 * Math.pow(M_h, -(ns + 3) / 6) * Math.pow(omega_m / 0.3, 0.25);
+        }
+
+        // Press-Schechter mass function
+        pressSchechter(sigma) {
+            const delta_c = 1.686;
+            const nu = delta_c / sigma;
+            return Math.sqrt(2 / Math.PI) * nu * Math.exp(-nu*nu / 2);
+        }
+
+        // Sheth-Tormen mass function (more accurate)
+        shethTormen(sigma) {
+            const delta_c = 1.686;
+            const nu = delta_c / sigma;
+            const A = 0.3222;
+            const q = 0.707;
+            const p = 0.3;
+            return A * Math.sqrt(2*q/Math.PI) * (1 + Math.pow(1/(q*nu*nu), p)) * nu * Math.exp(-q*nu*nu/2);
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // ... plotting logic for log-log plot ...
+
+            const model = document.getElementById('model-select').value;
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 3;
+            let firstPoint = true;
+
+            // Mass range from 10^9 to 10^15 solar masses
+            for (let logM = 9; logM <= 15; logM += 0.1) {
+                const M = Math.pow(10, logM);
+                const s = this.sigma(M, this.params.sigma8, this.params.omega_m, this.params.ns);
+
+                let f_sigma;
+                if (model === 'ps') {
+                    f_sigma = this.pressSchechter(s);
+                } else {
+                    f_sigma = this.shethTormen(s);
+                }
+
+                // d(ln sigma) / d(ln M) is roughly constant ~ -1/6
+                const dndm = (1/M) * f_sigma * (1/6);
+
+                // Map to log-log screen coordinates
+                const x = (logM - 9) / (15 - 9) * canvas.width;
+                const y = canvas.height - (Math.log10(dndm*1e15) + 5) / 8 * canvas.height;
+
+                if (firstPoint) {
+                    ctx.moveTo(x, y);
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+    }
+    </script>
+</body>
+</html>

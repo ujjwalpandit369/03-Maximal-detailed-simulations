@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>029: Baryonic Acoustic Oscillations</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 1/1; }
+        #plot-canvas { aspect-ratio: 2/1; background-color: #fdfdfd; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>029: Baryonic Acoustic Oscillations (BAO)</h1>
+            <p class="subtitle">Visualizing the primordial sound waves that created the universe's "standard ruler".</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Sound Wave Propagation in the Early Universe</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Density Profile vs. Radius</h4>
+                        <canvas id="plot-canvas" width="600" height="300"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>In the hot, dense early universe, photons (light) and baryons (normal matter like hydrogen) were locked together in a hot, ionized plasma. This plasma was so dense that it behaved like a fluid that could carry sound waves. An initial overdensity of matter, created by inflation, would act like a stone dropped in this cosmic pond, generating a spherical **sound wave** that expanded outwards. This simulation shows what happens. The dark matter, which doesn't feel the plasma's pressure, stays in the center. The sound wave in the photon-baryon fluid travels outwards for 380,000 years. At that point, the universe cools enough for atoms to form (**recombination**), the photons are released, and the sound wave stalls. It leaves behind a shell of slightly overdense baryonic matter at a very specific distance from the original dark matter clump. This characteristic distance, the **sound horizon**, is imprinted on the cosmic web, creating a slight preference for galaxies to be separated by about 500 million light-years today. This "BAO feature" is a powerful "standard ruler" that cosmologists use to measure the expansion of the universe.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Simulation Time</h3>
+                        <div id="params-container"></div>
+                        <div id="recombination-text" style="color:red; font-weight:bold; visibility:hidden;">RECOMBINATION</div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "029_bao" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new BAOSim();
+        sim.init();
+    });
+
+    class BAOSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.time = 0;
+            this.recombination_time = 0.8;
+            this.sound_speed = 0.5; // In simulation units
+            this.baryon_density = [];
+            this.n_points = 200;
+
+            this.params = {
+                time: 0,
+            };
+        }
+
+        init() {
+            const container = document.getElementById('params-container');
+            container.innerHTML = `<div class="control-item"><label>Time (0 to Recombination)</label><input type="range" id="time-slider" min="0" max="1" value="0" step="0.01"></div>`;
+            document.getElementById('time-slider').oninput = (e) => {
+                this.params.time = parseFloat(e.target.value);
+                this.update();
+                this.draw();
+            };
+            this.reset();
+            this.draw();
+        }
+
+        reset() {
+            this.time = 0;
+            document.getElementById('time-slider').value = 0;
+            this.update();
+            this.draw();
+        }
+
+        update() {
+            this.time = this.params.time;
+
+            const sound_horizon = this.time * this.sound_speed * this.n_points;
+
+            // Model density as a simple propagating Gaussian pulse
+            this.baryon_density = new Array(this.n_points).fill(0);
+            const wave_width = 10;
+            for(let i=0; i<this.n_points; i++) {
+                if (this.time < this.recombination_time) {
+                    this.baryon_density[i] = Math.exp(-Math.pow(i - sound_horizon, 2) / (2*wave_width*wave_width));
+                } else {
+                    // After recombination, the wave stalls
+                    const final_horizon = this.recombination_time * this.sound_speed * this.n_points;
+                    this.baryon_density[i] = Math.exp(-Math.pow(i - final_horizon, 2) / (2*wave_width*wave_width));
+                }
+            }
+            document.getElementById('recombination-text').style.visibility = this.time >= this.recombination_time ? 'visible' : 'hidden';
+        }
+
+        draw() {
+            this.drawMain();
+            this.drawPlot();
+        }
+
+        drawMain() {
+            const { ctx, canvas } = this;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0,0,w,h);
+
+            // Draw central dark matter halo
+            ctx.beginPath();
+            ctx.arc(w/2, h/2, 15, 0, 2*Math.PI);
+            ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+            ctx.fill();
+
+            // Draw propagating baryon wave
+            const sound_horizon = this.time * this.sound_speed * (w/2);
+            if (this.time < this.recombination_time) {
+                ctx.beginPath();
+                ctx.arc(w/2, h/2, sound_horizon, 0, 2*Math.PI);
+                ctx.strokeStyle = 'rgba(255, 165, 0, 0.8)';
+                ctx.lineWidth = 10;
+                ctx.stroke();
+            } else {
+                const final_horizon = this.recombination_time * this.sound_speed * (w/2);
+                ctx.beginPath();
+                ctx.arc(w/2, h/2, final_horizon, 0, 2*Math.PI);
+                ctx.strokeStyle = 'rgba(255, 100, 100, 1)';
+                ctx.lineWidth = 10;
+                ctx.stroke();
+            }
+        }
+
+        drawPlot() {
+            const { plotCtx: ctx, plotCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Dark matter peak
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 3;
+            const peak_width = 10;
+            for(let i=0; i<w; i++) {
+                const r = i / w * this.n_points;
+                const val = 0.5 * Math.exp(-r*r / (2*peak_width*peak_width));
+                const y = h - val * h;
+                if(i===0) ctx.moveTo(i,y); else ctx.lineTo(i,y);
+            }
+            ctx.stroke();
+
+            // Baryon peak
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            for(let i=0; i<w; i++) {
+                const r_index = Math.floor(i / w * this.n_points);
+                const val = this.baryon_density[r_index];
+                const y = h - val * h;
+                if(i===0) ctx.moveTo(i,y); else ctx.lineTo(i,y);
+            }
+            ctx.stroke();
+        }
+    }
+    </script>
+</body>
+</html>

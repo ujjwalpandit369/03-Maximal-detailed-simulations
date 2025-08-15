@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>025: Dark Matter Halo Mergers</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 1/1; }
+        #plot-canvas { aspect-ratio: 1.5/1; background-color: #fdfdfd; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #c9302c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>025: Dark Matter Halo Mergers</h1>
+            <p class="subtitle">A close-up view of the violent gravitational dances that build galaxies.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Merger Simulation</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Halo Separation vs. Time</h4>
+                        <canvas id="plot-canvas" width="600" height="400"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>Galaxies grow by eating each other. More accurately, the vast dark matter halos they live in grow by merging with other halos. This process is the most dramatic and transformative event in a galaxy's life. This simulation lets you be the architect of such a cosmic collision. You can set up two dark matter halos, control their mass ratio and how directly they collide, and then watch the show. You will see **dynamical friction** in action, a gravitational drag force that causes the two halos' orbits to decay. You will see **tidal stripping**, where the larger halo tears matter from the smaller one, creating beautiful streams and tails. Finally, you will witness **violent relaxation**, the chaotic process where the two halos merge into a single, larger, and more spherical object. This is the fundamental mechanism of hierarchical structure formation.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Initial Conditions</h3>
+                        <div id="params-container"></div>
+                        <button id="reset-btn">Run Simulation</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "025_halo_mergers" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new HaloMergerSim();
+        sim.init();
+    });
+
+    class HaloMergerSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.particles = [];
+            this.time = 0;
+            this.isRunning = true;
+            this.history = [];
+
+            this.params = {
+                mass_ratio: 0.3,
+                impact_param: 0.5,
+                relative_v: 0.5,
+            };
+        }
+
+        init() {
+            // ... control setup ...
+            document.getElementById('reset-btn').onclick = () => this.reset();
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        reset() {
+            this.particles = [];
+            this.time = 0;
+            this.history = [];
+
+            const M1 = 1000;
+            const M2 = M1 * this.params.mass_ratio;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            // Add halos
+            this.addHalo(w/2, h/2, 50, M1, 0, 0, 'white');
+
+            const initial_dist = w * 0.4;
+            const impact = this.params.impact_param * 100;
+            this.addHalo(w/2 - initial_dist, h/2 + impact, 30, M2, this.params.relative_v * 20, 0, 'cyan');
+        }
+
+        addHalo(cx, cy, radius, mass, vx, vy, color) {
+            const n = Math.floor(mass/10);
+            for(let i=0; i<n; i++) {
+                const r = Math.random() * radius;
+                const theta = Math.random() * 2 * Math.PI;
+                // Add internal velocity dispersion
+                const v_disp = Math.sqrt(mass / radius) * 0.1;
+                const v_theta = Math.random() * 2 * Math.PI;
+
+                this.particles.push({
+                    x: cx + r * Math.cos(theta),
+                    y: cy + r * Math.sin(theta),
+                    vx: vx + v_disp * Math.cos(v_theta),
+                    vy: vy + v_disp * Math.sin(v_theta),
+                    m: 10, color: color,
+                });
+            }
+        }
+
+        update(dt) {
+            // N-body gravity
+            const G = 1;
+            for(const p1 of this.particles) {
+                let Fx=0, Fy=0;
+                for(const p2 of this.particles) {
+                    if (p1 === p2) continue;
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const r_sq = dx*dx + dy*dy + 5*5; // softening
+                    const force = G * p1.m * p2.m / r_sq;
+                    Fx += force * dx / Math.sqrt(r_sq);
+                    Fy += force * dy / Math.sqrt(r_sq);
+                }
+                p1.vx += Fx / p1.m * dt;
+                p1.vy += Fy / p1.m * dt;
+            }
+            for(const p of this.particles) {
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+            }
+
+            this.time += dt;
+            // ... update history for plot ...
+        }
+
+        draw() {
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
+            for(const p of this.particles) {
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, 2, 0, 2*Math.PI);
+                this.ctx.fillStyle = p.color;
+                this.ctx.fill();
+            }
+            this.drawPlot();
+        }
+
+        drawPlot() {
+            // ... plot separation vs. time ...
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update(1/60);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

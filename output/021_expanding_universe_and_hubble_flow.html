@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>021: The Expanding Universe & Hubble's Law</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border: 1px solid #eee; border-radius: 4px; cursor: pointer; }
+        #main-canvas { aspect-ratio: 1.2/1; }
+        #plot-canvas { aspect-ratio: 1.5/1; background-color: #fdfdfd; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #c9302c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>021: The Expanding Universe & Hubble's Law</h1>
+            <p class="subtitle">An interactive demonstration of the cosmological principle and the Hubble-Lemaître Law.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Expanding Spacetime (Click a galaxy to select it as observer)</h4>
+                        <canvas id="main-canvas" width="720" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Velocity vs. Distance Plot</h4>
+                        <canvas id="plot-canvas" width="720" height="480"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>In the 1920s, Edwin Hubble and Georges Lemaître made a startling discovery: almost every galaxy in the universe is moving away from us, and the farther away a galaxy is, the faster it appears to be receding. This observation, known as the **Hubble-Lemaître Law**, is the foundational evidence for the expansion of the universe. But does this mean we are at the center of a great explosion? No. The **cosmological principle** states that the universe is homogeneous and isotropic—it looks the same everywhere and in every direction. This simulation demonstrates this profound idea. You can see a grid of galaxies in an expanding space. Click on *any* galaxy to make it your home. You will see that from every single vantage point, the same law holds true: everything is moving away from you. This shows that there is no center to the universe; rather, the fabric of space itself is expanding everywhere, carrying the galaxies along with it.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                        <button id="reset-btn">Reset Simulation</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>Cosmological Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "021_hubble_flow" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new HubbleSim();
+        sim.init();
+    });
+
+    class HubbleSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.plotCanvas = document.getElementById('plot-canvas');
+            this.plotCtx = this.plotCanvas.getContext('2d');
+
+            this.galaxies = [];
+            this.observerIndex = 0;
+            this.scaleFactor = 1.0;
+            this.time = 0;
+            this.isRunning = true;
+
+            this.params = {
+                H0: 70, // Hubble constant in km/s/Mpc (for display)
+                n_galaxies: 100,
+            };
+        }
+
+        init() {
+            // Simplified controls
+            const container = document.getElementById('params-container');
+            container.innerHTML = `<div class="control-item"><label>Hubble Constant (H₀)</label><input type="range" id="h0-slider" min="10" max="200" value="70"></div>`;
+            document.getElementById('h0-slider').oninput = (e) => this.params.H0 = parseFloat(e.target.value);
+            document.getElementById('reset-btn').onclick = () => this.reset();
+            this.canvas.onclick = (e) => this.selectObserver(e);
+
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        reset() {
+            this.galaxies = [];
+            this.scaleFactor = 1.0;
+            this.time = 0;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+            for(let i=0; i<this.params.n_galaxies; i++) {
+                this.galaxies.push({
+                    x0: Math.random() * w, // Comoving coordinate
+                    y0: Math.random() * h,
+                });
+            }
+            this.observerIndex = Math.floor(this.params.n_galaxies / 2);
+        }
+
+        selectObserver(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            let closest_dist_sq = Infinity;
+            let closest_index = -1;
+
+            for(let i=0; i<this.galaxies.length; i++) {
+                const g = this.galaxies[i];
+                const gx = g.x0 * this.scaleFactor;
+                const gy = g.y0 * this.scaleFactor;
+                const dist_sq = (x-gx)**2 + (y-gy)**2;
+                if (dist_sq < closest_dist_sq) {
+                    closest_dist_sq = dist_sq;
+                    closest_index = i;
+                }
+            }
+            if (closest_index !== -1) {
+                this.observerIndex = closest_index;
+            }
+        }
+
+        update(dt) {
+            // In a simple Hubble flow model, a(t) = 1 + H0*t
+            // For simulation, we use a small H0 and scale it
+            const H0_sim = this.params.H0 / 1000;
+            this.scaleFactor += H0_sim * this.scaleFactor * dt;
+            this.time += dt;
+        }
+
+        draw() {
+            this.drawGalaxies();
+            this.drawPlot();
+            this.updateMetrics();
+        }
+
+        drawGalaxies() {
+            const { ctx, canvas } = this;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+
+            const observer = this.galaxies[this.observerIndex];
+            const obs_x = observer.x0 * this.scaleFactor;
+            const obs_y = observer.y0 * this.scaleFactor;
+
+            for (let i=0; i<this.galaxies.length; i++) {
+                const g = this.galaxies[i];
+                const gx = g.x0 * this.scaleFactor;
+                const gy = g.y0 * this.scaleFactor;
+
+                ctx.beginPath();
+                ctx.arc(gx, gy, 3, 0, 2*Math.PI);
+                ctx.fillStyle = i === this.observerIndex ? 'yellow' : 'white';
+                ctx.fill();
+
+                // Draw velocity vectors relative to observer
+                if (i !== this.observerIndex) {
+                    const H = (this.params.H0/1000) / this.scaleFactor;
+                    const dx = gx - obs_x;
+                    const dy = gy - obs_y;
+                    const vx = H * dx;
+                    const vy = H * dy;
+
+                    ctx.beginPath();
+                    ctx.moveTo(gx, gy);
+                    ctx.lineTo(gx + vx*100, gy + vy*100);
+                    ctx.strokeStyle = 'red';
+                    ctx.stroke();
+                }
+            }
+        }
+
+        drawPlot() {
+            const { plotCtx: ctx, plotCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const observer = this.galaxies[this.observerIndex];
+            const obs_x = observer.x0 * this.scaleFactor;
+            const obs_y = observer.y0 * this.scaleFactor;
+            const H_sim = (this.params.H0/1000) / this.scaleFactor;
+
+            let max_dist = 0;
+            let max_vel = 0;
+            const points = [];
+
+            for (let i=0; i<this.galaxies.length; i++) {
+                if (i === this.observerIndex) continue;
+                const g = this.galaxies[i];
+                const gx = g.x0 * this.scaleFactor;
+                const gy = g.y0 * this.scaleFactor;
+
+                const dx = gx - obs_x;
+                const dy = gy - obs_y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                const vx = H_sim * dx;
+                const vy = H_sim * dy;
+                const vel = Math.sqrt(vx*vx + vy*vy);
+
+                points.push({dist, vel});
+                if(dist > max_dist) max_dist = dist;
+                if(vel > max_vel) max_vel = vel;
+            }
+
+            // Draw points
+            ctx.fillStyle = 'red';
+            for(const p of points) {
+                const px = p.dist / max_dist * w;
+                const py = h - (p.vel / max_vel * h);
+                ctx.beginPath();
+                ctx.arc(px, py, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+
+            // Draw Hubble Law line
+            ctx.beginPath();
+            ctx.moveTo(0, h);
+            ctx.lineTo(w, h - (H_sim * max_dist / max_vel * h));
+            ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+            ctx.stroke();
+        }
+
+        updateMetrics() {
+            const metricsContainer = document.getElementById('metrics-grid');
+            metricsContainer.innerHTML = `
+                <div class="metric-box"><span class="metric-label">Scale Factor a(t)</span><span class="metric-value">${this.scaleFactor.toFixed(3)}</span></div>
+                <div class="metric-box"><span class="metric-label">Universe Age (t)</span><span class="metric-value">${this.time.toFixed(2)} Gyr</span></div>
+            `;
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update(1/60);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>030: Gravitational Lensing by the Cosmic Web</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; aspect-ratio: 1/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"], .control-item input[type="checkbox"] { width: auto; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>030: Gravitational Lensing by the Cosmic Web</h1>
+            <p class="subtitle">Using the distortion of distant galaxy images to "see" the invisible dark matter scaffolding of the universe.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Lensed View of Background Galaxies</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>How do you map what you cannot see? This is the central challenge in studying dark matter. The answer is to use **gravitational lensing**. According to Einstein, massive objects bend the path of light, acting like a lens. The invisible dark matter in the cosmic web acts as a giant, imperfect lens, distorting our view of the galaxies behind it. This simulation demonstrates this effect. It starts with a foreground "lens plane" containing dark matter halos and filaments, and a background "source plane" of perfectly circular galaxies. It then traces the light from those background galaxies to us, bending the paths as they pass through the dark matter. The result is a distorted view of the background galaxies; they are slightly stretched and sheared into elliptical shapes. The pattern of this shearing directly traces the location of the invisible dark matter, allowing astronomers to create a map of the cosmic web.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Parameters</h3>
+                        <div class="control-item">
+                            <label>Lens Plane Mass Scale</label>
+                            <input type="range" id="mass-slider" min="0" max="2" value="1" step="0.1">
+                        </div>
+                         <div class="control-item">
+                            <label>Source Galaxy Redshift</label>
+                            <input type="range" id="redshift-slider" min="0.5" max="5" value="2" step="0.1">
+                        </div>
+                        <div class="control-item">
+                            <label><input type="checkbox" id="show-dm-toggle" checked> Show Dark Matter Overlay</label>
+                        </div>
+                        <button id="reset-btn">New LSS Realization</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "030_lensing" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new LensingSim();
+        sim.init();
+    });
+
+    class LensingSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            this.densityField = [];
+            this.potentialField = [];
+            this.deflectionField = { ax: [], ay: [] };
+            this.sourceGalaxies = [];
+            this.grid_size = 128;
+
+            this.params = { mass_scale: 1, source_z: 2, show_dm: true };
+        }
+
+        init() {
+            // ... control setup ...
+            document.getElementById('mass-slider').oninput = (e) => { this.params.mass_scale = parseFloat(e.target.value); this.recalculateLensing(); this.draw(); };
+            document.getElementById('redshift-slider').oninput = (e) => { this.params.source_z = parseFloat(e.target.value); this.recalculateLensing(); this.draw(); };
+            document.getElementById('show-dm-toggle').onchange = (e) => { this.params.show_dm = e.target.checked; this.draw(); };
+            document.getElementById('reset-btn').onclick = () => this.reset();
+
+            this.reset();
+        }
+
+        reset() {
+            this.generateDensityField();
+            this.generateSourceGalaxies();
+            this.recalculateLensing();
+            this.draw();
+        }
+
+        generateDensityField() {
+            // Simplified LSS generation: place some random massive halos
+            this.densityField = this.createGrid(0);
+            const n_halos = 10;
+            for(let i=0; i<n_halos; i++) {
+                const hx = Math.floor(Math.random()*this.grid_size);
+                const hy = Math.floor(Math.random()*this.grid_size);
+                const hm = 5 + Math.random()*20;
+                const hr = 5 + Math.random()*5;
+                this.addHaloToGrid(hx, hy, hm, hr);
+            }
+        }
+
+        addHaloToGrid(cx, cy, mass, radius) {
+            for(let i=0; i<this.grid_size; i++) {
+                for(let j=0; j<this.grid_size; j++) {
+                    const dist = Math.sqrt((i-cx)**2 + (j-cy)**2);
+                    if (dist < radius) {
+                        this.densityField[i][j] += mass * (1 - dist/radius);
+                    }
+                }
+            }
+        }
+
+        generateSourceGalaxies() {
+            this.sourceGalaxies = [];
+             for(let i=0; i<20; i++) {
+                for(let j=0; j<20; j++) {
+                    this.sourceGalaxies.push({
+                        x: (i+0.5)/20, y: (j+0.5)/20, // uniform grid
+                        r: 5, color: `hsl(${Math.random()*360}, 80%, 70%)`
+                    });
+                }
+            }
+        }
+
+        recalculateLensing() {
+            // In a real sim: FFT(density) -> solve for potential -> IFFT -> get deflection
+            // Here, we'll use a simplified deflection based on density
+            this.deflectionField.ax = this.createGrid(0);
+            this.deflectionField.ay = this.createGrid(0);
+            const strength = this.params.mass_scale * 0.001;
+            for(let i=1; i<this.grid_size-1; i++) {
+                for(let j=1; j<this.grid_size-1; j++) {
+                    // Deflection is gradient of potential, potential from density
+                    // Simplified: deflection ~ gradient of density
+                    const dx = this.densityField[i+1][j] - this.densityField[i-1][j];
+                    const dy = this.densityField[i][j+1] - this.densityField[i][j-1];
+                    this.deflectionField.ax[i][j] = dx * strength;
+                    this.deflectionField.ay[i][j] = dy * strength;
+                }
+            }
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0,0,w,h);
+
+            // Draw lensed galaxies
+            for (const gal of this.sourceGalaxies) {
+                // The lens equation: beta = theta - alpha(theta)
+                // We do inverse ray shooting: for our pixel theta, where is beta?
+                // Simplified: theta = beta + alpha
+                const ix = Math.floor(gal.x * this.grid_size);
+                const iy = Math.floor(gal.y * this.grid_size);
+                const alpha_x = this.deflectionField.ax[ix][iy];
+                const alpha_y = this.deflectionField.ay[iy][iy];
+
+                const x = (gal.x + alpha_x) * w;
+                const y = (gal.y + alpha_y) * h;
+
+                ctx.beginPath();
+                ctx.arc(x, y, gal.r, 0, 2*Math.PI);
+                ctx.fillStyle = gal.color;
+                ctx.fill();
+            }
+
+            // Overlay dark matter density
+            if (this.params.show_dm) {
+                for(let i=0; i<this.grid_size; i++) {
+                    for(let j=0; j<this.grid_size; j++) {
+                        if (this.densityField[i][j] > 0) {
+                            const alpha = Math.min(1, this.densityField[i][j] / 20);
+                            ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.1})`;
+                            ctx.fillRect(i*w/this.grid_size, j*h/this.grid_size, w/this.grid_size, h/this.grid_size);
+                        }
+                    }
+                }
+            }
+        }
+
+        createGrid(val) {
+            const grid = [];
+            for(let i=0; i<this.grid_size; i++) {
+                grid[i] = new Array(this.grid_size).fill(val);
+            }
+            return grid;
+        }
+    }
+    </script>
+</body>
+</html>

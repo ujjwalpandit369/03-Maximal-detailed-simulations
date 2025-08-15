@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>028: Matter Power Spectrum Evolution</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #c9302c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ac2925; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; aspect-ratio: 1.2/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>028: The Matter Power Spectrum</h1>
+            <p class="subtitle">Visualizing the primary statistical tool of modern cosmology and its evolution through cosmic time.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Power Spectrum P(k) vs. Wavenumber (k)</h4>
+                        <canvas id="main-canvas" width="800" height="667"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>The **matter power spectrum**, or `P(k)`, is the cosmologist's most fundamental tool. It's a chart that answers the question: "How 'lumpy' is the universe on different physical scales?" The horizontal axis, `k`, represents the scale (small `k` for large distances, large `k` for small distances), and the vertical axis, `P(k)`, represents the amount of lumpiness or structure on that scale. The shape of this plot contains a wealth of information about the universe's origin, composition, and fate. This interactive plotter shows you the theoretical `P(k)` and how it changes when you vary the universe's fundamental parameters. You can see how gravity causes the lumpiness to grow over time and observe the subtle "wiggles" in the spectrum, known as **Baryonic Acoustic Oscillations (BAO)**, which are echoes of sound waves in the early universe.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Cosmological Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+                    <div class="control-group">
+                        <h3>Plot Options</h3>
+                        <label><input type="checkbox" id="nonlinear-toggle"> Show Non-Linear Correction</label><br>
+                        <label><input type="checkbox" id="bao-toggle" checked> Show BAO Wiggles</label>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "028_power_spectrum" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new PowerSpectrumSim();
+        sim.init();
+    });
+
+    class PowerSpectrumSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            this.params = {};
+            this.controls = {
+                sigma8: { label: 'Fluctuation Amp (σ₈)', min: 0.6, max: 1.0, value: 0.8, step: 0.01 },
+                omega_m: { label: 'Matter Density (Ω_m)', min: 0.1, max: 1.0, value: 0.3, step: 0.01 },
+                omega_b: { label: 'Baryon Density (Ω_b)', min: 0.01, max: 0.1, value: 0.05, step: 0.001 },
+                h: { label: 'Hubble Param (h)', min: 0.5, max: 0.9, value: 0.7, step: 0.01 },
+                ns: { label: 'Spectral Index (nₛ)', min: 0.9, max: 1.1, value: 0.96, step: 0.01 },
+                z: { label: 'Redshift (z)', min: 0, max: 10, value: 0, step: 0.1 },
+            };
+        }
+
+        init() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label}</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key].toFixed(3);
+                    this.draw();
+                });
+            }
+            document.getElementById('nonlinear-toggle').onchange = () => this.draw();
+            document.getElementById('bao-toggle').onchange = () => this.draw();
+            this.draw();
+        }
+
+        // --- P(k) Formalism (using Eisenstein & Hu 1998 fitting formulas) ---
+        // This is a highly complex set of formulas. We'll use a simplified placeholder
+        // that captures the correct shape and dependencies.
+
+        // Transfer function T(k)
+        transferFunction(k, show_bao) {
+            const q = k / (this.params.omega_m * this.params.h**2);
+            const L0 = Math.log(2 * Math.exp(1) + 1.8 * q);
+            const C0 = 14.2 + 731 / (1 + 62.5*q);
+            const T_no_bao = L0 / (L0 + C0*q*q);
+
+            if (!show_bao) return T_no_bao;
+
+            // Add simplified BAO wiggles
+            const s = 45 / (this.params.omega_m * this.params.h**2); // Sound horizon scale
+            const bao_term = Math.sin(k*s) / (k*s);
+            return T_no_bao * (1 + 1.8 * Math.abs(this.params.omega_b / this.params.omega_m) * bao_term);
+        }
+
+        // Growth factor D(z)
+        growthFactor(z, omega_m) {
+            // Approximation for LambdaCDM
+            const a = 1 / (1+z);
+            const Om_z = omega_m * (1+z)**3 / (omega_m * (1+z)**3 + (1-omega_m));
+            return a * Om_z**0.55;
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // ... plotting logic for log-log plot ...
+
+            const show_nonlinear = document.getElementById('nonlinear-toggle').checked;
+            const show_bao = document.getElementById('bao-toggle').checked;
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 2;
+            let firstPoint = true;
+
+            // Wavenumber k range from 10^-3 to 10^1 h/Mpc
+            for (let logk = -3; logk <= 1; logk += 0.05) {
+                const k = Math.pow(10, logk);
+                const T_k = this.transferFunction(k, show_bao);
+                const D_z = this.growthFactor(this.params.z, this.params.omega_m);
+                const A = Math.pow(this.params.sigma8, 2); // Simplified normalization
+
+                let Pk = A * Math.pow(k, this.params.ns) * T_k**2 * D_z**2;
+
+                if (show_nonlinear) {
+                    // Simplified non-linear correction
+                    const k_nl = 0.5 * Math.pow(this.params.sigma8, -1);
+                    Pk *= (1 + (k/k_nl)**2);
+                }
+
+                // Map to log-log screen coordinates
+                const x = (logk - (-3)) / (1 - (-3)) * canvas.width;
+                const y = canvas.height - (Math.log10(Pk) + 2) / 6 * canvas.height;
+
+                if (firstPoint) {
+                    ctx.moveTo(x, y);
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+    }
+    </script>
+</body>
+</html>

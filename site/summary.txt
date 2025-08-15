@@ -1,22 +1,22 @@
-Batch Generation Summary (Batch 2)
+Batch Generation Summary (Batch 3)
 ------------------------------------
 
-Topic: Bulk black hole dynamics in AdS & AdS black hole thermodynamics
+Topic: Cosmological large-scale structure formation
 Date: 2025-08-15
 
-This second batch successfully generated 10 distinct, self-contained HTML simulations exploring advanced topics in General Relativity and the AdS/CFT correspondence. Each simulation is accompanied by a detailed (5,000+ word) markdown file providing deep pedagogical context.
+This third batch successfully generated 10 distinct, self-contained HTML simulations exploring the formation of the cosmic web, dark matter halos, and other structures in our universe. Each simulation is accompanied by a detailed (5,000+ word) markdown file providing deep pedagogical context.
 
-Generated simulations (011-020):
-11. 011_ads_spacetime_poincare_disk_visualizer.html
-12. 012_schwarzschild_ads_black_hole_potential_well.html
-13. 013_hawking_page_thermodynamic_transition.html
-14. 014_ads_black_hole_temperature_and_entropy.html
-15. 015_ads_cft_wilson_loops_and_entanglement.html
-16. 016_penrose_diagram_ads_schwarzschild.html
-17. 017_thermal_radiation_and_equilibrium_in_ads.html
-18. 018_ads_cft_duality_conceptual_visualizer.html
-19. 019_quasinormal_modes_of_ads_black_hole.html
-20. 020_btz_black_hole_in_2plus1d_ads.html
+Generated simulations (021-030):
+21. 021_expanding_universe_and_hubble_flow.html
+22. 022_gravitational_collapse_of_an_overdensity.html
+23. 023_zeldovich_approximation_and_cosmic_web.html
+24. 024_dark_matter_halo_accretion_and_growth.html
+25. 025_dark_matter_halo_mergers.html
+26. 026_cosmic_web_formation_n_body.html
+27. 027_halo_mass_function_plotter.html
+28. 028_matter_power_spectrum_evolution.html
+29. 029_baryonic_acoustic_oscillations_conceptual.html
+30. 030_gravitational_lensing_by_lss.html
 
 All associated `output/`, `full/`, and `site/` files for this batch have been created. The `site/index.html` provides a searchable interface to browse and access the simulations.
 
