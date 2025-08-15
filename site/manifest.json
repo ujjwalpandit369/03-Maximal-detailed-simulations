@@ -1,0 +1,56 @@
+[
+  {
+    "id": "001-domain-walls",
+    "title": "Topological Defects: Domain Wall Simulation",
+    "tags": ["domain wall", "Ising model", "Z2 symmetry", "phase transition", "cosmology"],
+    "date": "2025-08-15",
+    "estimated_intensity": "medium",
+    "recommended_device": "desktop",
+    "path": "output/001_domain_walls_ising_model_simulation.html"
+  },
+  {
+    "id": "002-cosmic-strings",
+    "title": "Topological Defects: Cosmic String Simulation",
+    "tags": ["cosmic string", "U(1) symmetry", "Kibble mechanism", "phase transition", "Ginzburg-Landau"],
+    "date": "2025-08-15",
+    "estimated_intensity": "heavy",
+    "recommended_device": "desktop",
+    "path": "output/002_cosmic_strings_kibble_mechanism_visualizer.html"
+  },
+  {
+    "id": "003-monopoles",
+    "title": "Topological Defects: Monopole Simulation",
+    "tags": ["monopole", "SO(3) symmetry", "'t Hooft-Polyakov", "hedgehog defect", "GUT"],
+    "date": "2025-08-15",
+    "estimated_intensity": "very-heavy",
+    "recommended_device": "desktop-gpu",
+    "path": "output/003_magnetic_monopoles_hedgehog_defect_so3_breaking.html"
+  },
+  {
+    "id": "004-textures-skyrmions",
+    "title": "Topological Defects: Texture (Skyrmion) Simulation",
+    "tags": ["texture", "skyrmion", "SU(2) symmetry", "homotopy", "unwinding"],
+    "date": "2025-08-15",
+    "estimated_intensity": "heavy",
+    "recommended_device": "desktop-gpu",
+    "path": "output/004_skyrmion_texture_unwinding_simulation.html"
+  },
+  {
+    "id": "005-hybrid-defects",
+    "title": "Topological Defects: Hybrid Defect Simulation",
+    "tags": ["hybrid defect", "domain wall", "cosmic string", "symmetry breaking", "dynamics"],
+    "date": "2025-08-15",
+    "estimated_intensity": "medium",
+    "recommended_device": "desktop",
+    "path": "output/005_hybrid_defects_domain_walls_bounded_by_strings.html"
+  },
+  {
+    "id": "006-string-network",
+    "title": "Topological Defects: String Network Evolution",
+    "tags": ["cosmic string", "network evolution", "scaling", "intercommutation", "Nambu-Goto"],
+    "date": "2025-08-15",
+    "estimated_intensity": "heavy",
+    "recommended_device": "desktop",
+    "path": "output/006_cosmic_string_network_evolution_and_scaling.html"
+  }
+]

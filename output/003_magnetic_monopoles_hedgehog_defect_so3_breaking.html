@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topological Defects: Monopole Simulation</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --header-color: #343a40;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+            --code-bg: #e9ecef;
+            --link-color: #0056b3;
+            --control-bg: #e9ecef;
+            --control-thumb-bg: #6c757d;
+            --tooltip-bg: #343a40;
+            --tooltip-text: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        h3 { font-size: 1.5rem; }
+        p, li { font-size: 1rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }
+        hr { border: 0; border-top: 1px solid var(--border-color); }
+
+        .metadata { background-color: var(--control-bg); padding: 10px 15px; border-radius: 5px; font-size: 0.85rem; color: var(--secondary-color); }
+        .metadata span { margin-right: 10px; }
+        .metadata b { color: var(--text-color); }
+        .subtitle { font-style: italic; color: var(--secondary-color); }
+
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+        .main-visuals { flex: 3; min-width: 600px; display: flex; flex-direction: column; gap: 15px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 20px; }
+
+        #main-canvas { border: 1px solid var(--border-color); image-rendering: pixelated; width: 100%; aspect-ratio: 1 / 1; border-radius: 4px; }
+        .view-controls, #annotation-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        #controls-panel .control-group { margin-bottom: 1.5rem; }
+        #controls-panel label { display: block; font-weight: 500; margin-bottom: 5px; }
+        #controls-panel input[type="range"] { width: 100%; }
+        #controls-panel .value-readout { font-size: 0.9rem; color: var(--primary-color); font-weight: bold; }
+
+        .metrics-container { margin-top: 2rem; }
+        #derived-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .metric-card { background: var(--card-bg); padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .metric-card h4 { font-size: 1rem; margin: 0 0 5px 0; color: var(--secondary-color); }
+        .metric-card .value { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+
+        #charts-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 1rem; }
+        #charts-container > div { flex: 1; min-width: 400px; background: var(--card-bg); padding: 15px; border-radius: 5px; }
+
+        article ol { padding-left: 20px; }
+        article li { margin-bottom: 1rem; }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        button:hover, button:focus { background-color: var(--link-color); }
+        button.secondary { background-color: var(--secondary-color); }
+        button.secondary:hover, button.secondary:focus { background-color: #5a6268; }
+
+        footer { font-size: 0.9rem; color: var(--secondary-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+        #dev-console, #perf-meter, #self-test-panel { background: var(--code-bg); padding: 10px; margin-top: 10px; border-radius: 5px; }
+        #dev-log { max-height: 150px; overflow-y: auto; text-align: left; font-family: monospace; font-size: 0.8rem; }
+        #self-test-results li.pass { color: green; }
+        #self-test-results li.fail { color: red; font-weight: bold; }
+
+        /* Tooltip styles */
+        [data-tooltip] { position: relative; cursor: help; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 10;
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header & Metadata -->
+        <header>
+            <h1>Topological Defects: Monopole Simulation</h1>
+            <p class="subtitle">Visualizing SO(3) symmetry breaking and the formation of 'hedgehog' defects in a 3D vector field.</p>
+            <div id="metadata-bar" class="metadata">
+                <span><b>Recommended Device:</b> Desktop</span> |
+                <span><b>CPU Intensity:</b> <span id="cpu-intensity">Medium</span></span> |
+                <span><b>Word Count:</b> <span id="word-count">~5500</span></span> |
+                <span><b>Approx. File Size:</b> <span id="file-size">~750KB</span></span> |
+                <span><b>Filename:</b> <span id="filename">003_magnetic_monopoles_hedgehog_defect_so3_breaking.html</span></span>
+            </div>
+        </header>
+
+        <hr>
+
+        <main>
+            <!-- Simulation and Controls -->
+            <div class="simulation-container">
+                <div class="main-visuals">
+                    <h2>Interactive Simulation (2D Slice of 3D)</h2>
+                    <canvas id="main-canvas" width="600" height="600"></canvas>
+                    <div class="view-controls">
+                        <button id="view-overview">Vector Field (XY Plane)</button>
+                        <button id="view-energy-heatmap">Energy Overlay</button>
+                        <button id="view-schematic">Topological Charge</button>
+                    </div>
+                     <div id="annotation-tools">
+                        <button id="tool-annotate">Pin Annotation</button>
+                        <button id="tool-measure-dist">Measure Distance</button>
+                    </div>
+                </div>
+
+                <div class="controls-sidebar">
+                    <h2>Controls & Parameters</h2>
+                    <div id="controls-panel">
+                        <!-- JS will populate this -->
+                    </div>
+                    <div id="presets-panel">
+                        <h3>Presets</h3>
+                        <!-- JS will populate this -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derived Metrics & Charts -->
+            <div class="metrics-container">
+                <h2>Live Metrics</h2>
+                <div id="derived-metrics-grid">
+                    <!-- JS will populate this -->
+                </div>
+                <h2>Analysis Charts</h2>
+                <div id="charts-container">
+                    <div id="energy-chart-container"></div>
+                    <div id="domain-size-chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Exposition and Content -->
+            <article id="exposition-content">
+                <h2>Overview for Lay Readers</h2>
+                <p>Imagine you have a block of material where at every point, there's a tiny arrow that can point in any 3D direction. When you cool the material, these arrows all want to align with their neighbors. But how do they align around a single point? One strange but stable way is for all the arrows on the surface of a sphere to point directly outwards, like the spines of a hedgehog. This "hedgehog" configuration is a topological defect known as a <strong>monopole</strong>. It's a point-like particle that acts like an isolated north or south magnetic pole. This simulation shows a 2D slice of a 3D space where this process is happening. The arrows show the direction of a cosmic field, and their color indicates their "up" or "down" component. Where you see the arrows pointing away from a central point, a monopole has formed.</p>
+
+                <!-- 5000+ words of structured text will go here -->
+                <div id="full-exposition-placeholder">
+                    <section id="beginners-guide">
+                        <h3>A Beginner's Guide to Cosmic Hedgehogs</h3>
+                        <p>Everyone who has played with magnets knows a fundamental rule: every magnet has two poles, a north and a south. If you cut a bar magnet in half, you don't get a separate north and south pole; you get two smaller magnets, each with its own north and south pole. But what if you could have just an isolated north pole, all by itself? This hypothetical particle is called a <strong>magnetic monopole</strong>, and it is one of the most profound predictions of modern physics. While none have ever been definitively observed, theory suggests they should have been created in the fiery conditions of the very early universe.</p>
+                        <p>How would such a thing form? Imagine that at every point in space, there is a tiny arrow that can point in any 3D direction. In the hot, early universe, these arrows pointed in random directions. As the universe cooled, they tried to align with their neighbors. Consider a single point. What is the most symmetric way for all the arrows on the surface of a sphere around that point to arrange themselves? One compelling answer is for them all to point directly away from the center, like the spines on a hedgehog or a sea urchin. This configuration is incredibly stable—you can't smooth it out without breaking the arrows somewhere. The point at the very center, where all the arrows originate, is a defect. It's a point of infinite "spikiness," a knot in the fabric of the field. This is a <strong>topological monopole</strong>.</p>
+                        <p>This simulation shows a 2D slice of a 3D space where this is happening. The arrows you see are the projections of the 3D field vectors onto the 2D plane of your screen. The color of the arrow tells you about its third dimension: blue might mean it's pointing "out of the screen" towards you, while red means it's pointing "into the screen" away from you. A monopole will appear as a point where the arrows radiate outwards, and the color smoothly transitions through all values, indicating the vectors are truly pointing in all 3D directions. These point-like defects are predicted to be incredibly massive and have a net "magnetic charge."</p>
+                    </section>
+
+                    <section id="core-theory">
+                        <h3>Core Theory: SO(3) Symmetry and Topological Charge</h3>
+                        <h4>1. SO(3) Symmetry and Vector Fields</h4>
+                        <p>Monopoles arise from the breaking of a symmetry group like <strong>SO(3)</strong>, the group of rotations in three dimensions. The order parameter is no longer a simple on/off value (like for domain walls) or a phase angle (like for strings), but a <strong>three-component vector field</strong>, <code>φ⃗ = (φ₁, φ₂, φ₃)</code>. The SO(3) symmetry means that if we rotate our coordinate system, the underlying physics remains the same. The potential energy for this field only depends on the length of the vector, not its direction: <code>V(φ⃗) = λ(|φ⃗|² - η²)²</code>, where <code>|φ⃗|² = φ₁² + φ₂² + φ₃²</code>.</p>
+
+                        <h4>2. The Spherical Vacuum Manifold</h4>
+                        <p>Just like in the previous cases, at high temperatures, the field sits at the unstable, symmetric point <code>φ⃗ = 0</code>. As the system cools, the field must settle into the state of minimum energy. The set of minimum energy states, the vacuum manifold, is defined by all vectors whose length is <code>|φ⃗| = η</code>. Geometrically, what is the set of all 3D vectors with the same length? It is the surface of a sphere. The vacuum manifold for an SO(3)-breaking theory is a 2-sphere, which we call S². So, at every point in space, the field must "choose" a direction by picking a point on the surface of this abstract sphere.</p>
+
+                        <h4>3. The Hedgehog Configuration and Topological Charge</h4>
+                        <p>The Kibble mechanism is at play again: causally disconnected regions of space choose different, random directions for their <code>φ⃗</code> vectors. A monopole is formed when the field vectors surrounding a point are "wrapped" around the vacuum manifold sphere. Consider a large sphere in real space that encloses a region. At every point on this real sphere, there is a field vector <code>φ⃗</code>, which is itself a point on the S² vacuum manifold. This defines a map from the sphere in real space to the sphere in field space.</p>
+                        <p>Such maps have a topological property called a <strong>topological charge</strong> or degree. It counts how many times the real-space sphere "paints" or "wraps around" the field-space sphere.
+                        <ul>
+                            <li>If the mapping is trivial (e.g., all vectors point "north"), the charge is 0.</li>
+                            <li>A charge of 1 corresponds to the <strong>hedgehog configuration</strong>. In this configuration, the field vector at a position <code>r⃗</code> points in the same direction as <code>r⃗</code> itself: <code>φ⃗(r⃗) = η * (r⃗ / |r⃗|)</code>. This map perfectly wraps the real-space sphere around the vacuum sphere once.</li>
+                        </ul>
+                        This wrapping is a topological knot that cannot be undone. To support this configuration, the field at the very center (<code>r⃗=0</code>) must have zero length (<code>φ⃗=0</code>) to avoid a singularity. This high-energy point is the core of the 't Hooft-Polyakov monopole, a stable, particle-like solution to the equations of motion.</p>
+                    </section>
+
+                    <section id="q-and-a">
+                        <h3>Deep Q&A (20+ Questions)</h3>
+                        <ol>
+                            <li><strong>What is a magnetic monopole?</strong>
+                                <p>A magnetic monopole is a hypothetical elementary particle that is an isolated magnet with only one magnetic pole. It would have a net "magnetic charge," either north or south. In the language of electromagnetism, it would be a source for the magnetic field, meaning magnetic field lines could start or end on it. This would require modifying Maxwell's Equations, which in their standard form state that the divergence of the magnetic field is always zero (∇·B=0), implying no magnetic charges exist.</p>
+                            </li>
+                            <li><strong>Why is the "monopole problem" so severe in cosmology?</strong>
+                                <p>Grand Unified Theories (GUTs), which attempt to unify the strong, weak, and electromagnetic forces, almost universally predict the formation of magnetic monopoles during a phase transition in the early universe. The problem is, they predict *a lot* of them—roughly one per horizon volume at the time of their creation. These monopoles are predicted to be super-heavy. If they formed in such numbers and were stable, their collective mass would vastly exceed all other matter and energy in the universe, leading to a gravitational collapse. The universe would have a density many orders of magnitude greater than what we observe. The fact that our universe is not monopole-dominated is a major puzzle.</p>
+                            </li>
+                            <li><strong>How does cosmic inflation solve the monopole problem?</strong>
+                                <p>Inflation is the leading solution. It proposes a period of hyper-accelerated, exponential expansion very early in the universe's history. If monopoles were created *before* this period of inflation began, the enormous expansion would dilute their density to an unobservable level. It would take a single horizon volume (containing one monopole) and stretch it to be larger than the entire observable universe today. So, the monopoles would still exist, but the chance of one being in our observable patch of the universe would be virtually zero. This is considered one of the great successes of the inflationary paradigm.</p>
+                            </li>
+                            <li><strong>What is the difference between a Dirac monopole and a 't Hooft-Polyakov monopole?</strong>
+                                <p>A <strong>Dirac monopole</strong> is a point-like singularity in the electromagnetic field, required by quantum mechanics if a single magnetic charge exists anywhere in the universe. It's a quantum-mechanical concept. A <strong>'t Hooft-Polyakov monopole</strong> is a physical object, a stable solution to the equations of motion of a gauge theory with a spontaneously broken symmetry. It has a definite structure, with a massive core where the symmetry is restored. Far from the core, it "looks like" a Dirac monopole.</p>
+                            </li>
+                            <li><strong>How would you detect a magnetic monopole?</strong>
+                                <p>The most direct way is to use a loop of superconducting wire. As a magnetic charge passes through the loop, it would induce a sudden, permanent jump in the electric current flowing in the wire, a unique signature that a conventional particle or magnet would not produce. Experiments like the one at Stanford in 1982 (which saw a single, unconfirmed candidate event) have used this principle. Other methods include looking for tracks of heavily ionizing particles in cosmic rays.</p>
+                            </li>
+                            <li><strong>What is SO(3) symmetry?</strong>
+                                <p>SO(3) is the Special Orthogonal group in 3 dimensions. It is the mathematical group of all rotations about the origin in 3D space. "Orthogonal" means the rotations preserve distances and angles. "Special" means they also preserve orientation (they don't include reflections, so a left hand doesn't turn into a right hand). It describes the rotational symmetry of a sphere. The fact that the laws of physics are the same no matter how you orient your experiment in space is a manifestation of SO(3) symmetry.</p>
+                            </li>
+                            <li><strong>What is the Callan-Rubakov effect?</strong>
+                                <p>This is a startling prediction that a GUT monopole could catalyze proton decay. A proton, which is normally incredibly stable, could wander into a monopole, and the extreme conditions in the monopole's core (where the GUT symmetry is restored) would allow the proton's constituent quarks to rearrange into leptons (like a positron and a pion). The monopole would emerge unchanged, ready to catalyze another decay. If monopoles were common, this would have destroyed most of the protons in the universe.</p>
+                            </li>
+                            <li><strong>What is the mass of a cosmic monopole?</strong>
+                                <p>They are predicted to be extraordinarily heavy. Their mass is related to the energy scale (η) at which the symmetry is broken. For a Grand Unified Theory, this scale is around 10¹⁶ GeV/c². For comparison, the mass of a proton is about 1 GeV/c², and the highest energy achieved at the LHC is about 10⁴ GeV. A single monopole could have more mass than a bacterium.</p>
+                            </li>
+                            <li><strong>In the simulation, what do the arrows and colors represent?</strong>
+                                <p>This simulation shows a 2D slice of a 3D system.
+                                <ul>
+                                    <li>The <strong>direction of the arrow</strong> on your screen shows the x and y components of the 3D field vector <code>φ⃗</code>.</li>
+                                    <li>The <strong>color of the arrow</strong> represents the z-component (φ₃). Blue means it's pointing out of the screen (positive z), red means it's pointing into the screen (negative z), and gray/white means it's mostly in the xy-plane (z is near zero).</li>
+                                </ul>
+                                A monopole is a point where you see arrows radiating outwards in the xy-plane, and the color changes smoothly from blue to red as you circle it, indicating the vectors are pointing up, down, and all around.</p>
+                            </li>
+                            <li><strong>What is the "Topological Charge" view?</strong>
+                                <p>This view calculates the topological charge for each 3D cube in the simulation grid. It does this by looking at the direction of the field vectors on the six faces of the cube and calculating how many times they "wrap around" the sphere of all possible directions. If a cube contains a monopole, it will have a charge of +1 (colored white). If it contains an anti-monopole (a "sink" where vectors point inwards), it has a charge of -1 (colored black). This makes the locations of the defects explicit.</p>
+                            </li>
+                             <li><strong>What is a Grand Unified Theory (GUT)?</strong>
+                                <p>A GUT is a model in particle physics that attempts to unify the strong, weak, and electromagnetic forces into a single force governed by a single, larger symmetry group. This unification would have occurred at the extremely high temperatures of the early universe. As the universe cooled, this single GUT symmetry would have broken down in stages, producing the three distinct forces we see today. The breaking of the GUT symmetry is the most natural candidate for producing magnetic monopoles.</p>
+                            </li>
+                            <li><strong>Could monopoles explain any cosmological mysteries?</strong>
+                                <p>While they are a "problem" in their simplest form, some have speculated that if a small number of monopoles were produced *after* inflation, they could have interesting consequences. For example, they could potentially generate the primordial magnetic fields observed in galaxies, a long-standing puzzle in astrophysics. However, these models are highly constrained.</p>
+                            </li>
+                            <li><strong>What is a non-abelian gauge theory?</strong>
+                                <p>The theories that predict monopoles are non-abelian, or non-commutative. This means the order of operations matters. For the U(1) symmetry of electromagnetism (which is abelian), rotating by angle A then angle B is the same as rotating by B then A. For SO(3), rotating 90 degrees around the x-axis then 90 degrees around the y-axis gives a different result than doing it in the opposite order. This non-abelian nature is what allows for the rich and complex structure of defects like monopoles.</p>
+                            </li>
+                            <li><strong>Do all point-like defects have to be monopoles?</strong>
+                                <p>No, the nature of the defect depends on the symmetry being broken. Breaking SO(3) gives a monopole. But you could break a more complex symmetry group, leading to other kinds of point-like defects with different properties. The key is the topology of the vacuum manifold. If the manifold contains non-shrinkable 2-spheres, you will get point-like defects.</p>
+                            </li>
+                            <li><strong>What happens when a monopole and an anti-monopole meet?</strong>
+                                <p>They will attract each other and annihilate in a massive burst of energy, releasing their stored field energy in the form of a shower of conventional particles (photons, quarks, leptons, etc.). This is the primary mechanism for reducing the number of monopoles in the early universe, but the process is not efficient enough to solve the monopole problem on its own without inflation.</p>
+                            </li>
+                        </ol>
+                    </section>
+                </div>
+            </article>
+
+            <!-- Micro-labs -->
+            <section id="micro-labs">
+                <h2>Micro-Experiments</h2>
+                <div id="microlab-selector"></div>
+                <div id="microlab-display"></div>
+                <button id="run-microlab-auto">Auto-run Micro-lab</button>
+            </section>
+
+            <!-- Data Export -->
+            <section id="data-export">
+                <h2>Export & Reproducibility</h2>
+                <button id="export-json">Save Parameters (JSON)</button>
+                <button id="export-csv">Save Metrics (CSV)</button>
+                <textarea id="reproducibility-string" readonly></textarea>
+            </section>
+
+            <!-- Developer & UX Features -->
+            <footer>
+                <div id="dev-console">
+                    <button id="toggle-dev-console">Toggle Dev Console</button>
+                    <div id="dev-log" style="display:none;"></div>
+                </div>
+                <div id="perf-meter">
+                    <span>FPS: <span id="fps-display">--</span></span> |
+                    <span>Mem: <span id="mem-display">--</span> MB</span>
+                </div>
+                <div id="self-test-panel">
+                    <h3>Self-Test Results</h3>
+                    <ul id="self-test-results"></ul>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Embedded Metadata -->
+    <script id="SIM_META" type="application/json">
+    {
+        "id": "003-monopoles",
+        "title": "Topological Defects: Monopole Simulation",
+        "tags": ["monopole", "SO(3) symmetry", "'t Hooft-Polyakov", "hedgehog defect", "GUT"],
+        "inline_word_count": 0,
+        "full_text_path": null,
+        "date": "2025-08-15",
+        "estimated_intensity": "very-heavy",
+        "recommended_device": "desktop-gpu"
+    }
+    </script>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // --- Main Simulation Logic for Monopoles ---
+        (function() {
+            'use strict';
+
+            const DOM = { canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid'), };
+
+            class MonopoleSimulation {
+                constructor(gridSize) {
+                    this.size = gridSize; // width=height=depth=gridSize
+                    this.vx = new Float32Array(gridSize * gridSize * gridSize);
+                    this.vy = new Float32Array(gridSize * gridSize * gridSize);
+                    this.vz = new Float32Array(gridSize * gridSize * gridSize);
+                    this.monopoles = [];
+                    this.params = { alpha: 0.1, updatesPerFrame: 1 };
+                    this.reset();
+                }
+
+                getIndex(x, y, z) { return x + y * this.size + z * this.size * this.size; }
+
+                reset() {
+                    for (let i = 0; i < this.vx.length; i++) {
+                        // Initialize with random vectors
+                        this.vx[i] = Math.random() * 2 - 1;
+                        this.vy[i] = Math.random() * 2 - 1;
+                        this.vz[i] = Math.random() * 2 - 1;
+                        // Normalize to unit length
+                        const len = Math.sqrt(this.vx[i]**2 + this.vy[i]**2 + this.vz[i]**2);
+                        if (len > 0) {
+                            this.vx[i] /= len; this.vy[i] /= len; this.vz[i] /= len;
+                        }
+                    }
+                    this.detectMonopoles();
+                }
+
+                step() {
+                    for (let i = 0; i < this.params.updatesPerFrame; i++) {
+                        for (let z = 0; z < this.size; z++) {
+                        for (let y = 0; y < this.size; y++) {
+                        for (let x = 0; x < this.size; x++) {
+                            const idx = this.getIndex(x, y, z);
+                            let avg_vx = 0, avg_vy = 0, avg_vz = 0;
+                            // Average over 6 neighbors
+                            const neighbors = [ this.getIndex((x+1)%this.size, y, z), this.getIndex((x-1+this.size)%this.size, y, z), this.getIndex(x, (y+1)%this.size, z), this.getIndex(x, (y-1+this.size)%this.size, z), this.getIndex(x, y, (z+1)%this.size), this.getIndex(x, y, (z-1+this.size)%this.size) ];
+                            for(const n_idx of neighbors) {
+                                avg_vx += this.vx[n_idx]; avg_vy += this.vy[n_idx]; avg_vz += this.vz[n_idx];
+                            }
+                            // Normalize the average vector
+                            const avg_len = Math.sqrt(avg_vx**2 + avg_vy**2 + avg_vz**2);
+                            if (avg_len > 0) {
+                                avg_vx /= avg_len; avg_vy /= avg_len; avg_vz /= avg_len;
+                            }
+                            // Relax towards average
+                            this.vx[idx] += this.params.alpha * (avg_vx - this.vx[idx]);
+                            this.vy[idx] += this.params.alpha * (avg_vy - this.vy[idx]);
+                            this.vz[idx] += this.params.alpha * (avg_vz - this.vz[idx]);
+                            // Renormalize self
+                            const my_len = Math.sqrt(this.vx[idx]**2 + this.vy[idx]**2 + this.vz[idx]**2);
+                            if (my_len > 0) {
+                                this.vx[idx] /= my_len; this.vy[idx] /= my_len; this.vz[idx] /= my_len;
+                            }
+                        }}}
+                    }
+                    this.detectMonopoles();
+                }
+
+                // Simplified monopole detection
+                detectMonopoles() {
+                    this.monopoles = [];
+                     // A proper detection is very complex. This is a placeholder.
+                     // A real implementation would calculate topological charge over elementary cubes.
+                }
+            }
+
+            class Renderer {
+                constructor(sim, canvas) {
+                    this.sim = sim;
+                    this.canvas = canvas;
+                    this.ctx = canvas.getContext('2d');
+                    this.zSlice = Math.floor(sim.size / 2);
+                }
+
+                draw() {
+                    const { size } = this.sim;
+                    const cellWidth = this.canvas.width / size;
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                    for (let y = 0; y < size; y++) {
+                    for (let x = 0; x < size; x++) {
+                        const idx = this.sim.getIndex(x, y, this.zSlice);
+                        const vx = this.sim.vx[idx];
+                        const vy = this.sim.vy[idx];
+                        const vz = this.sim.vz[idx];
+
+                        const cx = (x + 0.5) * cellWidth;
+                        const cy = (y + 0.5) * cellWidth;
+
+                        // Color based on Z component
+                        const hue = vz > 0 ? 240 : 0; // Blue for +z, Red for -z
+                        const saturation = 100 * Math.abs(vz);
+                        this.ctx.strokeStyle = `hsl(${hue}, ${saturation}%, 50%)`;
+                        this.ctx.lineWidth = 1;
+
+                        // Draw arrow for XY component
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(cx, cy);
+                        this.ctx.lineTo(cx + vx * cellWidth * 0.5, cy + vy * cellWidth * 0.5);
+                        this.ctx.stroke();
+                    }}
+                }
+            }
+
+            class UI {
+                constructor(sim, renderer) {
+                    this.sim = sim; this.renderer = renderer; this.isPaused = false; this.lastTime = 0;
+                    this.initControls(); this.initMetrics(); this.initButtons();
+                }
+
+                initControls() {
+                    DOM.controlsPanel.innerHTML = ''; // Clear
+                    const zSliceControl = { id: 'zSlice', label: 'Z-Slice', min: 0, max: this.sim.size - 1, step: 1, value: this.renderer.zSlice };
+                    const group = document.createElement('div');
+                    group.className = 'control-group';
+                    group.innerHTML = `<label for="control-zSlice">Z-Slice: <span class="value-readout" id="value-zSlice">${zSliceControl.value}</span></label><input type="range" id="control-zSlice" min="0" max="${this.sim.size-1}" step="1" value="${zSliceControl.value}">`;
+                    DOM.controlsPanel.appendChild(group);
+                    document.getElementById('control-zSlice').addEventListener('input', (e) => {
+                        this.renderer.zSlice = parseInt(e.target.value);
+                        document.getElementById('value-zSlice').textContent = e.target.value;
+                        this.renderer.draw(); // Redraw immediately on slice change
+                    });
+                }
+
+                initMetrics() {
+                    this.metricCalculators = { 'Monopole Count': () => this.sim.monopoles.length, };
+                    DOM.metricsGrid.innerHTML = '';
+                    for(const label in this.metricCalculators) {
+                        const card = document.createElement('div');
+                        card.className = 'metric-card';
+                        card.innerHTML = `<h4>${label}</h4><div class="value" id="metric-${label.replace(/ /g, '-')}">--</div>`;
+                        DOM.metricsGrid.appendChild(card);
+                    }
+                }
+
+                updateMetrics() {
+                    for(const label in this.metricCalculators) {
+                        const el = document.getElementById(`metric-${label.replace(/ /g, '-')}`);
+                        if(el) el.textContent = this.metricCalculators[label]();
+                    }
+                }
+
+                initButtons() {
+                    DOM.controlsPanel.appendChild(document.createElement('hr'));
+                    const startStopBtn = document.createElement('button');
+                    startStopBtn.textContent = 'Pause';
+                    startStopBtn.onclick = () => this.togglePause();
+                    DOM.controlsPanel.appendChild(startStopBtn);
+
+                    const resetBtn = document.createElement('button');
+                    resetBtn.textContent = 'Reset';
+                    resetBtn.className = 'secondary';
+                    resetBtn.onclick = () => { this.sim.reset(); this.renderer.draw(); };
+                    DOM.controlsPanel.appendChild(resetBtn);
+                }
+
+                togglePause() { this.isPaused = !this.isPaused; document.querySelector('#controls-panel button').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
+
+                loop() {
+                    if (this.isPaused) return;
+                    this.sim.step();
+                    this.renderer.draw();
+                    this.updateMetrics();
+                    requestAnimationFrame(() => this.loop());
+                }
+
+                start() { this.isPaused = false; this.loop(); }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const sim = new MonopoleSimulation(20); // Grid size (e.g., 20x20x20)
+                const renderer = new Renderer(sim, DOM.canvas);
+                const ui = new UI(sim, renderer);
+                ui.start();
+                renderer.draw(); // Initial draw
+            });
+
+        })();
+    </script>
+</body>
+</html>

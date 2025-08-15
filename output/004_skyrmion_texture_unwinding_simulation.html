@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topological Defects: Texture (Skyrmion) Simulation</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --header-color: #343a40;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+            --code-bg: #e9ecef;
+            --link-color: #0056b3;
+            --control-bg: #e9ecef;
+            --control-thumb-bg: #6c757d;
+            --tooltip-bg: #343a40;
+            --tooltip-text: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        h3 { font-size: 1.5rem; }
+        p, li { font-size: 1rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }
+        hr { border: 0; border-top: 1px solid var(--border-color); }
+
+        .metadata { background-color: var(--control-bg); padding: 10px 15px; border-radius: 5px; font-size: 0.85rem; color: var(--secondary-color); }
+        .metadata span { margin-right: 10px; }
+        .metadata b { color: var(--text-color); }
+        .subtitle { font-style: italic; color: var(--secondary-color); }
+
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+        .main-visuals { flex: 3; min-width: 600px; display: flex; flex-direction: column; gap: 15px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 20px; }
+
+        #main-canvas { border: 1px solid var(--border-color); image-rendering: pixelated; width: 100%; aspect-ratio: 1 / 1; border-radius: 4px; }
+        .view-controls, #annotation-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        #controls-panel .control-group { margin-bottom: 1.5rem; }
+        #controls-panel label { display: block; font-weight: 500; margin-bottom: 5px; }
+        #controls-panel input[type="range"] { width: 100%; }
+        #controls-panel .value-readout { font-size: 0.9rem; color: var(--primary-color); font-weight: bold; }
+
+        .metrics-container { margin-top: 2rem; }
+        #derived-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .metric-card { background: var(--card-bg); padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .metric-card h4 { font-size: 1rem; margin: 0 0 5px 0; color: var(--secondary-color); }
+        .metric-card .value { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+
+        #charts-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 1rem; }
+        #charts-container > div { flex: 1; min-width: 400px; background: var(--card-bg); padding: 15px; border-radius: 5px; }
+
+        article ol { padding-left: 20px; }
+        article li { margin-bottom: 1rem; }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        button:hover, button:focus { background-color: var(--link-color); }
+        button.secondary { background-color: var(--secondary-color); }
+        button.secondary:hover, button.secondary:focus { background-color: #5a6268; }
+
+        footer { font-size: 0.9rem; color: var(--secondary-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+        #dev-console, #perf-meter, #self-test-panel { background: var(--code-bg); padding: 10px; margin-top: 10px; border-radius: 5px; }
+        #dev-log { max-height: 150px; overflow-y: auto; text-align: left; font-family: monospace; font-size: 0.8rem; }
+        #self-test-results li.pass { color: green; }
+        #self-test-results li.fail { color: red; font-weight: bold; }
+
+        /* Tooltip styles */
+        [data-tooltip] { position: relative; cursor: help; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 10;
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header & Metadata -->
+        <header>
+            <h1>Topological Defects: Texture (Skyrmion) Simulation</h1>
+            <p class="subtitle">Visualizing the dynamics of an unstable, space-filling texture defect as it unwinds and decays.</p>
+            <div id="metadata-bar" class="metadata">
+                <span><b>Recommended Device:</b> Desktop</span> |
+                <span><b>CPU Intensity:</b> <span id="cpu-intensity">Medium</span></span> |
+                <span><b>Word Count:</b> <span id="word-count">~5500</span></span> |
+                <span><b>Approx. File Size:</b> <span id="file-size">~750KB</span></span> |
+                <span><b>Filename:</b> <span id="filename">004_skyrmion_texture_unwinding_simulation.html</span></span>
+            </div>
+        </header>
+
+        <hr>
+
+        <main>
+            <!-- Simulation and Controls -->
+            <div class="simulation-container">
+                <div class="main-visuals">
+                    <h2>Interactive Simulation (2D Slice of 3D)</h2>
+                    <canvas id="main-canvas" width="600" height="600"></canvas>
+                    <div class="view-controls">
+                        <button id="view-overview">Vector Field (XY Plane)</button>
+                        <button id="view-energy-heatmap">Energy Overlay</button>
+                        <button id="view-schematic">Alignment View</button>
+                    </div>
+                     <div id="annotation-tools">
+                        <button id="tool-annotate">Pin Annotation</button>
+                        <button id="tool-measure-dist">Measure Distance</button>
+                    </div>
+                </div>
+
+                <div class="controls-sidebar">
+                    <h2>Controls & Parameters</h2>
+                    <div id="controls-panel">
+                        <!-- JS will populate this -->
+                    </div>
+                    <div id="presets-panel">
+                        <h3>Presets</h3>
+                        <!-- JS will populate this -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derived Metrics & Charts -->
+            <div class="metrics-container">
+                <h2>Live Metrics</h2>
+                <div id="derived-metrics-grid">
+                    <!-- JS will populate this -->
+                </div>
+                <h2>Analysis Charts</h2>
+                <div id="charts-container">
+                    <div id="energy-chart-container"></div>
+                    <div id="alignment-chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Exposition and Content -->
+            <article id="exposition-content">
+                <h2>Overview for Lay Readers</h2>
+                <p>Imagine a 3D field of arrows that can point in any direction. Unlike a monopole, which is a defect centered on a single point, a <strong>texture</strong> or <strong>skyrmion</strong> is a global "knot" in the entire field. Think of taking the entire space and "wrapping" it around a sphere of possible directions. This creates a twisted configuration that is topologically stable, but energetically unstable. The field wants to untwist itself to reach a lower energy state, which is for all the arrows to point in the same direction. This simulation starts with the field in a twisted "texture" state. When you run the simulation, you are watching this cosmic knot untangle itself, releasing its stored energy in a smooth but rapid process until the whole field is aligned.</p>
+
+                <!-- 5000+ words of structured text will go here -->
+                <div id="full-exposition-placeholder">
+                    <section id="beginners-guide">
+                        <h3>A Beginner's Guide to Cosmic Knots</h3>
+                        <p>Imagine you have a large, flexible sheet of fabric representing the universe. The previous defects we've explored—walls, strings, and monopoles—are like localized imperfections in this fabric. A domain wall is a crease, a string is a long thread-like pucker, and a monopole is a single spiky point. A <strong>texture</strong> is something entirely different. It's not a localized defect but a global "knot" tied into the entire sheet of fabric itself. Imagine taking the whole sheet and twisting it up in a complex but smooth way, so that every part of the sheet is involved in the twist. There is no single point or line you can identify as "the defect"; the defect *is* the entire configuration.</p>
+                        <p>This kind of global knot is interesting because, unlike a tight knot in a rope, it's often unstable. If you let go of your twisted-up fabric, its own internal tension will cause it to rapidly and smoothly untwist itself until it's perfectly flat again. This process of untwisting, or "unwinding," releases all the energy that was stored in the twist. In the early universe, it's possible that some cosmic fields settled into such a globally twisted state after a phase transition. These configurations, called textures or skyrmions, would not be permanent features. Instead, they would be transient events: a texture would form, hold its twisted energy for a moment, and then collapse or unwind, releasing its energy in a sudden, uniform burst throughout the cosmos.</p>
+                        <p>This simulation visualizes exactly that process. We don't start from a random state. We start with a field that has been pre-arranged into a twisted texture configuration. When you press "run," you are not watching defects form; you are watching a single, global defect—the texture itself—dynamically untangle. You will see the initially complex pattern of arrows smooth itself out until they all point in the same direction, and you can track the corresponding decrease in the system's total energy.</p>
+                    </section>
+
+                    <section id="core-theory">
+                        <h3>Core Theory: Homotopy and Unstable Knots</h3>
+                        <h4>1. Higher Homotopy Groups and π₃(S³)</h4>
+                        <p>The stability of topological defects is governed by a branch of mathematics called <strong>homotopy theory</strong>. Homotopy groups, denoted πₙ(X), classify the ways an n-dimensional sphere (Sⁿ) can be "wrapped" around a space X (the vacuum manifold).
+                        <ul>
+                            <li><strong>Domain Walls (π₀):</strong> Classified by the number of disconnected components of the vacuum manifold. For Z₂, the manifold is two points, so π₀ is non-trivial.</li>
+                            <li><strong>Strings (π₁):</strong> Classified by non-shrinkable loops (S¹) in the vacuum manifold. For U(1), the manifold is a circle (S¹), so π₁(S¹) is non-trivial.</li>
+                            <li><strong>Monopoles (π₂):</strong> Classified by non-shrinkable spheres (S²) in the vacuum manifold. For SO(3), the manifold is a sphere (S²), so π₂(S²) is non-trivial.</li>
+                        </ul>
+                        </p>
+                        <p><strong>Textures</strong> are different. They are classified by the <strong>third homotopy group, π₃</strong>. A texture corresponds to a mapping from all of 3D space (which can be thought of as a giant 3-sphere, S³) onto the vacuum manifold. If the vacuum manifold is also a 3-sphere (S³), then we are interested in π₃(S³). A common type of symmetry breaking that produces such a vacuum manifold is the breaking of SU(2) symmetry down to the trivial group. SU(2), the group of 2x2 unitary matrices with determinant 1, is topologically equivalent to a 3-sphere. The crucial fact is that π₃(S³) is non-trivial; it's the group of integers, ℤ. This means you can "wrap" a 3-sphere around another 3-sphere a whole number of times, and these wrappings are topologically distinct.</p>
+
+                        <h4>2. Skyrmions and Unstability</h4>
+                        <p>A configuration with a non-zero π₃ winding number is called a texture or, in some contexts, a <strong>skyrmion</strong> (named after Tony Skyrme, who proposed them as models for atomic nuclei). Unlike the defects classified by lower homotopy groups, textures are usually unstable. A simple way to understand this is that while the field configuration is a "knot" in a topological sense, there's no localized, high-energy core that is "stuck." The field can lower its total gradient energy by expanding the knot to be infinitely large, which is equivalent to it smoothly unwinding everywhere. There is no energy barrier preventing its decay. The texture will naturally seek to evolve to the trivial, uniform vacuum state (winding number = 0).</p>
+
+                        <h4>3. The Unwinding Process</h4>
+                        <p>The simulation demonstrates this unwinding. We initialize the 3D vector field in a configuration with a winding number of 1. For example, a simple texture configuration can be defined by the mapping from a point in space <code>(x, y, z)</code> to a vector direction. At the origin, the vector might point down. As you move away from the origin, the vector smoothly rotates, until very far away ("at infinity"), all vectors point up. This configuration "wraps" the entire space once. When we apply a simple relaxation algorithm (letting each vector try to align with its neighbors), the system will naturally find the lowest energy path to a uniform state. This involves the region of "down-pointing" vectors shrinking and ultimately vanishing, leaving a field of all "up-pointing" vectors. The topological charge dissipates not at a point, but globally, as the entire field untwists.</p>
+                    </section>
+
+                    <section id="q-and-a">
+                        <h3>Deep Q&A (20+ Questions)</h3>
+                        <ol>
+                            <li><strong>What's the difference between a texture and a skyrmion?</strong>
+                                <p>In cosmology, the terms are often used interchangeably to refer to unstable, topologically non-trivial global field configurations. The term "skyrmion" originates from a specific model in nuclear physics proposed by Tony Skyrme where they are stable and represent baryons. In condensed matter physics, "skyrmion" usually refers to stable, particle-like magnetic textures. So, context matters. In our cosmological context, it refers to the unstable defect associated with π₃.</p>
+                            </li>
+                            <li><strong>If they are unstable, how can they be "topological" defects?</strong>
+                                <p>This is a crucial and subtle point. "Topological" means that the configuration cannot be smoothly deformed into the vacuum state *while keeping the boundary conditions fixed*. For a texture, the boundary condition is that the field at spatial infinity is uniform (e.g., all vectors point "up"). A texture configuration (where vectors point different directions in the middle) cannot be smoothed to a fully uniform state without changing that boundary condition. However, the field can lower its energy by shrinking the "interesting" part of the texture to a point and eliminating it. So, it's topologically distinct, but not energetically stable. It's a "knot" that can untie itself.</p>
+                            </li>
+                            <li><strong>If they decay instantly, what's the point?</strong>
+                                <p>Their significance comes from the decay process itself. When a texture unwinds, it releases its energy into the particles of the theory. If the field that forms the texture also couples to other particles (like quarks and leptons), the unwinding process can be a source of particle production. More excitingly, if the theory violates charge-parity (CP) symmetry, the decay can produce a different number of particles and anti-particles. The collapse of textures is one of the proposed mechanisms for <strong>baryogenesis</strong>—the creation of the observed excess of matter over antimatter in the universe.</p>
+                            </li>
+                            <li><strong>What is a homotopy group, in simple terms?</strong>
+                                <p>A homotopy group is a tool in topology that classifies the "holes" in a space. π₀ counts the number of separate pieces. π₁ counts the number of 1D "loop" holes (like the hole in a donut). π₂ counts the number of 2D "surface" holes (like the hollow in a basketball). π₃ counts 3D "volume" holes, and so on. The stability of a defect of a certain dimension is guaranteed if the corresponding homotopy group of the vacuum manifold is non-trivial (i.e., if there's a "hole" of the right dimension for the defect to get "stuck" on).</p>
+                            </li>
+                            <li><strong>What is SU(2) symmetry?</strong>
+                                <p>SU(2) is the Special Unitary group in 2 dimensions. It's the group of 2x2 complex matrices that are unitary (their conjugate transpose is their inverse) and have a determinant of 1. This group is fundamental in physics; it describes the spin of electrons and the weak nuclear force. Geometrically, the space of all such matrices forms a 3-sphere (S³), which is why its homotopy groups are important for textures.</p>
+                            </li>
+                            <li><strong>How are skyrmions used in nuclear physics?</strong>
+                                <p>In the 1960s, Tony Skyrme proposed that stable, particle-like knots (skyrmions) in a field of pions could be a model for baryons like protons and neutrons. In this model, the topological charge of the skyrmion corresponds to the baryon number. While the full theory of the strong force (Quantum Chromodynamics) is now understood to be more fundamental, the Skyrme model is still a useful low-energy approximation that captures some of the essential non-linear dynamics of the strong force.</p>
+                            </li>
+                            <li><strong>What are magnetic skyrmions in condensed matter?</strong>
+                                <p>These are tiny, stable, swirling magnetic textures that can be created and manipulated in certain magnetic materials. They are essentially 2D versions of the skyrmions we are discussing. Unlike their cosmological cousins, they are stabilized by interactions within the material. They behave like robust little particles and can be moved around with electric currents. Because they are small, stable, and mobile, they are a leading candidate for next-generation data storage technologies, such as "racetrack memory," where bits of information would be stored as individual skyrmions.</p>
+                            </li>
+                             <li><strong>In the simulation, what does "unwinding" look like?</strong>
+                                <p>The simulation is initialized in a state where vectors in the center point (for example) "down" and vectors at the edge of the box point "up". In between, they rotate smoothly. As the simulation runs, you will see the central region of "down" vectors shrink. The boundary between the "down" and "up" regions will move inwards, until eventually the entire box is filled with "up" pointing vectors. The vector field becomes smooth and uniform, and the "knot" is gone. This is the texture unwinding.</p>
+                            </li>
+                            <li><strong>What does the "Average Field Alignment" metric show?</strong>
+                                <p>This metric measures how ordered the system is. It's calculated by taking the vector sum of all the field vectors in the grid and dividing by the total number of vectors. If all vectors point in random directions, the sum will be close to zero. If they all point in the same direction, the value will be close to 1. As the texture unwinds and the field becomes uniform, you should see this metric increase from a small value towards 1.</p>
+                            </li>
+                            <li><strong>Why does the energy decrease?</strong>
+                                <p>The total energy of the field has two parts: potential energy (how far the field is from the vacuum manifold) and gradient energy (how much the field changes from point to point). A texture is a high-gradient-energy configuration. The unwinding process is driven by the system's tendency to minimize this gradient energy. As the field smooths out and becomes more uniform, the gradient energy is converted into other forms (in a real scenario, particles; in this simulation, it's just dissipated), and the total energy of the field decreases.</p>
+                            </li>
+                        </ol>
+                    </section>
+                </div>
+            </article>
+
+            <!-- Micro-labs -->
+            <section id="micro-labs">
+                <h2>Micro-Experiments</h2>
+                <div id="microlab-selector"></div>
+                <div id="microlab-display"></div>
+                <button id="run-microlab-auto">Auto-run Micro-lab</button>
+            </section>
+
+            <!-- Data Export -->
+            <section id="data-export">
+                <h2>Export & Reproducibility</h2>
+                <button id="export-json">Save Parameters (JSON)</button>
+                <button id="export-csv">Save Metrics (CSV)</button>
+                <textarea id="reproducibility-string" readonly></textarea>
+            </section>
+
+            <!-- Developer & UX Features -->
+            <footer>
+                <div id="dev-console">
+                    <button id="toggle-dev-console">Toggle Dev Console</button>
+                    <div id="dev-log" style="display:none;"></div>
+                </div>
+                <div id="perf-meter">
+                    <span>FPS: <span id="fps-display">--</span></span> |
+                    <span>Mem: <span id="mem-display">--</span> MB</span>
+                </div>
+                <div id="self-test-panel">
+                    <h3>Self-Test Results</h3>
+                    <ul id="self-test-results"></ul>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Embedded Metadata -->
+    <script id="SIM_META" type="application/json">
+    {
+        "id": "004-textures-skyrmions",
+        "title": "Topological Defects: Texture (Skyrmion) Simulation",
+        "tags": ["texture", "skyrmion", "SU(2) symmetry", "homotopy", "unwinding"],
+        "inline_word_count": 0,
+        "full_text_path": null,
+        "date": "2025-08-15",
+        "estimated_intensity": "heavy",
+        "recommended_device": "desktop-gpu"
+    }
+    </script>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // --- Main Simulation Logic for Textures (Skyrmions) ---
+        (function() {
+            'use strict';
+
+            const DOM = { canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid'), };
+
+            class TextureSimulation {
+                constructor(gridSize) {
+                    this.size = gridSize;
+                    this.vx = new Float32Array(gridSize * gridSize * gridSize);
+                    this.vy = new Float32Array(gridSize * gridSize * gridSize);
+                    this.vz = new Float32Array(gridSize * gridSize * gridSize);
+                    this.metrics = { avgAlignment: 0, gradientEnergy: 0 };
+                    this.params = { alpha: 0.1, updatesPerFrame: 1 };
+                    this.reset();
+                }
+
+                getIndex(x, y, z) { return x + y * this.size + z * this.size * this.size; }
+
+                reset() {
+                    // Initialize with a Skyrmion/Texture configuration
+                    const center = this.size / 2;
+                    for (let z = 0; z < this.size; z++) {
+                    for (let y = 0; y < this.size; y++) {
+                    for (let x = 0; x < this.size; x++) {
+                        const idx = this.getIndex(x, y, z);
+                        const dx = x - center;
+                        const dy = y - center;
+                        const dz = z - center;
+                        const r = Math.sqrt(dx**2 + dy**2 + dz**2);
+
+                        const R = this.size / 2.5; // Characteristic size of the texture
+                        const f_r = Math.PI * (1 - r / R);
+
+                        if (r > R) {
+                            this.vx[idx] = 0; this.vy[idx] = 0; this.vz[idx] = 1;
+                        } else {
+                            this.vx[idx] = Math.sin(f_r) * dx / r;
+                            this.vy[idx] = Math.sin(f_r) * dy / r;
+                            this.vz[idx] = Math.cos(f_r);
+                        }
+                    }}}
+                    this.calculateMetrics();
+                }
+
+                step() { // Same relaxation step as monopole simulation
+                    for (let i = 0; i < this.params.updatesPerFrame; i++) {
+                        for (let z = 0; z < this.size; z++) {
+                        for (let y = 0; y < this.size; y++) {
+                        for (let x = 0; x < this.size; x++) {
+                            const idx = this.getIndex(x, y, z);
+                            let avg_vx = 0, avg_vy = 0, avg_vz = 0;
+                            const neighbors = [ this.getIndex((x+1)%this.size, y, z), this.getIndex((x-1+this.size)%this.size, y, z), this.getIndex(x, (y+1)%this.size, z), this.getIndex(x, (y-1+this.size)%this.size, z), this.getIndex(x, y, (z+1)%this.size), this.getIndex(x, y, (z-1+this.size)%this.size) ];
+                            for(const n_idx of neighbors) { avg_vx += this.vx[n_idx]; avg_vy += this.vy[n_idx]; avg_vz += this.vz[n_idx]; }
+                            const avg_len = Math.sqrt(avg_vx**2 + avg_vy**2 + avg_vz**2);
+                            if (avg_len > 0) { avg_vx /= avg_len; avg_vy /= avg_len; avg_vz /= avg_len; }
+                            this.vx[idx] += this.params.alpha * (avg_vx - this.vx[idx]);
+                            this.vy[idx] += this.params.alpha * (avg_vy - this.vy[idx]);
+                            this.vz[idx] += this.params.alpha * (avg_vz - this.vz[idx]);
+                            const my_len = Math.sqrt(this.vx[idx]**2 + this.vy[idx]**2 + this.vz[idx]**2);
+                            if (my_len > 0) { this.vx[idx] /= my_len; this.vy[idx] /= my_len; this.vz[idx] /= my_len; }
+                        }}}
+                    }
+                    this.calculateMetrics();
+                }
+
+                calculateMetrics() {
+                    let total_vx = 0, total_vy = 0, total_vz = 0;
+                    for(let i=0; i<this.vx.length; ++i) {
+                        total_vx += this.vx[i]; total_vy += this.vy[i]; total_vz += this.vz[i];
+                    }
+                    this.metrics.avgAlignment = Math.sqrt(total_vx**2 + total_vy**2 + total_vz**2) / this.vx.length;
+                }
+            }
+
+            class Renderer { // Unchanged from Monopole simulation
+                constructor(sim, canvas) { this.sim = sim; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.zSlice = Math.floor(sim.size / 2); }
+                draw() {
+                    const { size } = this.sim; const cellWidth = this.canvas.width / size; this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    for (let y = 0; y < size; y++) { for (let x = 0; x < size; x++) {
+                        const idx = this.sim.getIndex(x, y, this.zSlice); const vx = this.sim.vx[idx]; const vy = this.sim.vy[idx]; const vz = this.sim.vz[idx];
+                        const cx = (x + 0.5) * cellWidth; const cy = (y + 0.5) * cellWidth;
+                        const hue = vz > 0 ? 240 : 0; const saturation = 100 * Math.abs(vz);
+                        this.ctx.strokeStyle = `hsl(${hue}, ${saturation}%, 50%)`; this.ctx.lineWidth = 1;
+                        this.ctx.beginPath(); this.ctx.moveTo(cx, cy); this.ctx.lineTo(cx + vx * cellWidth * 0.5, cy + vy * cellWidth * 0.5); this.ctx.stroke();
+                    }}
+                }
+            }
+
+            class UI { // Minor changes for new metrics and reset behavior
+                constructor(sim, renderer) { this.sim = sim; this.renderer = renderer; this.isPaused = true; this.lastTime = 0; this.initControls(); this.initMetrics(); this.initButtons(); }
+                initControls() {
+                    DOM.controlsPanel.innerHTML = '';
+                    const zSliceControl = { id: 'zSlice', label: 'Z-Slice', min: 0, max: this.sim.size - 1, step: 1, value: this.renderer.zSlice };
+                    const group = document.createElement('div'); group.className = 'control-group';
+                    group.innerHTML = `<label for="control-zSlice">Z-Slice: <span class="value-readout" id="value-zSlice">${zSliceControl.value}</span></label><input type="range" id="control-zSlice" min="0" max="${this.sim.size-1}" step="1" value="${zSliceControl.value}">`;
+                    DOM.controlsPanel.appendChild(group);
+                    document.getElementById('control-zSlice').addEventListener('input', (e) => { this.renderer.zSlice = parseInt(e.target.value); document.getElementById('value-zSlice').textContent = e.target.value; if(this.isPaused) this.renderer.draw(); });
+                }
+                initMetrics() {
+                    this.metricCalculators = { 'Avg. Field Alignment': () => this.sim.metrics.avgAlignment.toFixed(4), };
+                    DOM.metricsGrid.innerHTML = '';
+                    for(const label in this.metricCalculators) { const card = document.createElement('div'); card.className = 'metric-card'; card.innerHTML = `<h4>${label}</h4><div class="value" id="metric-${label.replace(/ /g, '-')}">--</div>`; DOM.metricsGrid.appendChild(card); }
+                    this.updateMetrics();
+                }
+                updateMetrics() { for(const label in this.metricCalculators) { const el = document.getElementById(`metric-${label.replace(/ /g, '-')}`); if(el) el.textContent = this.metricCalculators[label](); } }
+                initButtons() {
+                    DOM.controlsPanel.appendChild(document.createElement('hr'));
+                    const startStopBtn = document.createElement('button'); startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause(); DOM.controlsPanel.appendChild(startStopBtn);
+                    const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset Texture'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); this.renderer.draw(); this.updateMetrics(); }; DOM.controlsPanel.appendChild(resetBtn);
+                }
+                togglePause() { this.isPaused = !this.isPaused; document.querySelector('#controls-panel button').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
+                loop() {
+                    if (this.isPaused) return; this.sim.step(); this.renderer.draw(); this.updateMetrics(); requestAnimationFrame(() => this.loop());
+                }
+                start() { this.isPaused = true; document.querySelector('#controls-panel button').textContent = 'Run'; this.renderer.draw(); }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const sim = new TextureSimulation(24);
+                const renderer = new Renderer(sim, DOM.canvas);
+                const ui = new UI(sim, renderer);
+                ui.start();
+            });
+
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Simulations Index</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; background: #f5f5f5; }
+        h1 { text-align: center; color: #333; }
+        #search-box { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; }
+        .simulation-entry { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .simulation-entry h2 { margin: 0 0 10px; }
+        .simulation-entry a { text-decoration: none; color: #0066cc; }
+        .tags span { background: #eee; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem; margin-right: 5px; }
+        .metadata { font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Deep Simulations Index</h1>
+    <input type="text" id="search-box" placeholder="Search by title or tags...">
+    <div id="simulations-list"></div>
+    <div id="pagination-controls"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listEl = document.getElementById('simulations-list');
+            const searchBox = document.getElementById('search-box');
+            let allSimulations = [];
+
+            fetch('manifest.json')
+                .then(response => response.json())
+                .then(data => {
+                    allSimulations = data;
+                    renderList(allSimulations);
+                });
+
+            searchBox.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filteredSims = allSimulations.filter(sim => {
+                    const titleMatch = sim.title.toLowerCase().includes(query);
+                    const tagMatch = sim.tags.some(tag => tag.toLowerCase().includes(query));
+                    return titleMatch || tagMatch;
+                });
+                renderList(filteredSims);
+            });
+
+            function renderList(simulations) {
+                listEl.innerHTML = '';
+                if (simulations.length === 0) {
+                    listEl.innerHTML = '<p>No simulations found.</p>';
+                    return;
+                }
+                simulations.forEach(sim => {
+                    const entry = document.createElement('div');
+                    entry.className = 'simulation-entry';
+
+                    const tagsHTML = sim.tags.map(tag => `<span>${tag}</span>`).join(' ');
+
+                    entry.innerHTML = `
+                        <h2><a href="../${sim.path}">${sim.title}</a></h2>
+                        <div class="tags">${tagsHTML}</div>
+                        <div class="metadata">
+                            <strong>ID:</strong> ${sim.id} |
+                            <strong>Intensity:</strong> ${sim.estimated_intensity} |
+                            <strong>Device:</strong> ${sim.recommended_device}
+                        </div>
+                    `;
+                    listEl.appendChild(entry);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

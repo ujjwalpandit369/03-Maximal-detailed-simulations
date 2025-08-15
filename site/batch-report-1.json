@@ -1,0 +1,42 @@
+{
+  "batch_number": 1,
+  "pages_generated": 6,
+  "pass_rates": {
+    "core_structure_pass_rate": "100%",
+    "full_feature_pass_rate": "0%",
+    "comment": "Core simulations are functional. Advanced features (micro-labs, full metrics, data export, etc.) are not yet implemented as per initial strategy."
+  },
+  "bytes_added": 229935,
+  "failed_files": [
+    {
+      "file": "output/001_domain_walls_ising_model_simulation.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features (micro-labs, full metrics, etc.) and full 5000+ word count."
+    },
+    {
+      "file": "output/002_cosmic_strings_kibble_mechanism_visualizer.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features and full word count."
+    },
+    {
+      "file": "output/003_magnetic_monopoles_hedgehog_defect_so3_breaking.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features and full word count. Monopole detection is a placeholder."
+    },
+    {
+      "file": "output/004_skyrmion_texture_unwinding_simulation.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features and full word count."
+    },
+    {
+      "file": "output/005_hybrid_defects_domain_walls_bounded_by_strings.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features and full word count."
+    },
+    {
+      "file": "output/006_cosmic_string_network_evolution_and_scaling.html",
+      "status": "Partially Failed",
+      "reason": "Missing advanced features and full word count. Intersection logic is simplified."
+    }
+  ]
+}
