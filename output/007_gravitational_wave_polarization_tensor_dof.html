@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>007: Gravitational Wave Polarization</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #5cb85c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #449d44; }
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #111; border-radius: 4px; aspect-ratio: 1/1; }
+        #strain-chart { aspect-ratio: 2/1; background-color: #f9f9f9;}
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #4cae4c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .presets-container { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>007: Gravitational Wave Polarization</h1>
+            <p class="subtitle">Visualizing how ripples in the fabric of spacetime stretch and squeeze matter.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Effect on a Ring of Test Particles</h4>
+                        <canvas id="main-canvas" width="600" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Gravitational Wave Strain (h) vs. Time</h4>
+                        <canvas id="strain-chart" width="600" height="300"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>Imagine spacetime as a vast, taut rubber sheet. A massive event, like two black holes colliding, creates ripples that travel outward across this sheet, much like a stone dropped in a pond. These ripples are **gravitational waves**. They are not waves that travel *through* space, but rather waves *of* space itself. As a wave passes by, it literally stretches and squeezes the space it travels through. This simulation shows what happens to a ring of free-floating particles as a gravitational wave travels directly "out of the screen" towards you. You can see how the two fundamental polarizations, **plus (+)** and **cross (×)**, deform the ring in different ways, providing a direct visual of Einstein's most profound prediction.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets</h3>
+                        <div class="presets-container" id="presets-container"></div>
+                        <hr>
+                        <h3>Wave Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>Live Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "007_gw_polarization" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new GWPolarizationSim();
+        sim.init();
+    });
+
+    class GWPolarizationSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.chartCanvas = document.getElementById('strain-chart');
+            this.chartCtx = this.chartCanvas.getContext('2d');
+
+            this.particles = [];
+            this.time = 0;
+            this.isRunning = true;
+            this.strainHistory = [];
+
+            this.params = {};
+            this.controls = {
+                h0: { label: 'Amplitude (h₀)', min: 0.01, max: 0.3, value: 0.1, step: 0.01, type: 'wave' },
+                freq: { label: 'Frequency (f)', min: 0.1, max: 2, value: 0.5, step: 0.1, type: 'wave' },
+                polarization: { label: 'Polarization Angle', unit: '°', min: 0, max: 90, value: 0, step: 1, type: 'wave' },
+                phaseShift: { label: 'Phase Shift (h+ vs hx)', unit: '°', min: 0, max: 180, value: 0, step: 1, type: 'wave' },
+                n_particles: { label: 'Number of Particles', min: 8, max: 100, value: 36, type: 'setup' },
+            };
+            this.metrics = {
+                h_plus: { label: 'Plus Strain (h+)' },
+                h_cross: { label: 'Cross Strain (hx)' },
+                time: { label: 'Time', unit: 's' },
+            };
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.setupPresets();
+            this.createParticles();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        createControls() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label} ${c.controls[key].unit || ''}</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key];
+                    if (this.controls[key].type === 'setup') this.createParticles();
+                });
+            }
+        }
+
+        setupPresets() {
+            const container = document.getElementById('presets-container');
+            const presets = {
+                'Plus (+)': { polarization: 0, phaseShift: 0 },
+                'Cross (×)': { polarization: 90, phaseShift: 0 },
+                'Linear (45°)': { polarization: 45, phaseShift: 0 },
+                'Circular (Right)': { polarization: 45, phaseShift: 90 },
+                'Circular (Left)': { polarization: 45, phaseShift: -90 },
+            };
+            for(const name in presets) {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.onclick = () => {
+                    const p = presets[name];
+                    for (const key in p) {
+                        this.params[key] = p[key];
+                        document.getElementById(`ctrl-${key}`).value = p[key];
+                        document.getElementById(`val-${key}`).textContent = p[key];
+                    }
+                };
+                container.appendChild(btn);
+            }
+        }
+
+        createMetrics() {
+             const grid = document.getElementById('metrics-grid');
+             for (const key in this.metrics) {
+                grid.innerHTML += `<div class="metric-box">
+                    <span class="metric-label">${this.metrics[key].label}</span>
+                    <span class="metric-value" id="metric-${key}">-</span></div>`;
+            }
+        }
+
+        createParticles() {
+            this.particles = [];
+            const n = this.params.n_particles;
+            const radius = Math.min(this.canvas.width, this.canvas.height) * 0.35;
+            for (let i=0; i<n; i++) {
+                const angle = (2 * Math.PI / n) * i;
+                this.particles.push({
+                    x0: radius * Math.cos(angle),
+                    y0: radius * Math.sin(angle),
+                    x: radius * Math.cos(angle),
+                    y: radius * Math.sin(angle),
+                });
+            }
+        }
+
+        update() {
+            this.time += 1/60;
+            const { h0, freq, polarization, phaseShift } = this.params;
+            const omega = 2 * Math.PI * freq;
+            const pol_rad = polarization * Math.PI / 180;
+            const phase_rad = phaseShift * Math.PI / 180;
+
+            const h_plus = h0 * Math.cos(2 * pol_rad) * Math.cos(omega * this.time);
+            const h_cross = h0 * Math.sin(2 * pol_rad) * Math.cos(omega * this.time + phase_rad);
+
+            this.strainHistory.push({t: this.time, hp: h_plus, hc: h_cross});
+            if(this.strainHistory.length > 300) this.strainHistory.shift();
+
+            for (const p of this.particles) {
+                const dx = 0.5 * (p.x0 * h_plus + p.y0 * h_cross);
+                const dy = 0.5 * (p.x0 * h_cross - p.y0 * h_plus);
+                p.x = p.x0 + dx;
+                p.y = p.y0 + dy;
+            }
+
+            this.updateMetricsDisplay(h_plus, h_cross);
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Draw reference circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, Math.min(canvas.width, canvas.height) * 0.35, 0, 2*Math.PI);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw particles
+            for (const p of this.particles) {
+                ctx.beginPath();
+                ctx.arc(centerX + p.x, centerY + p.y, 5, 0, 2*Math.PI);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+            }
+
+            this.drawStrainChart();
+        }
+
+        drawStrainChart() {
+            const { chartCtx: ctx, chartCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+            const y_center = h / 2;
+            const y_scale = h / 2 / (this.params.h0 * 1.2);
+
+            // h_plus
+            ctx.beginPath();
+            ctx.strokeStyle = 'cyan';
+            for (let i=0; i<this.strainHistory.length; i++) {
+                const x = i / 300 * w;
+                const y = y_center - this.strainHistory[i].hp * y_scale;
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+
+            // h_cross
+            ctx.beginPath();
+            ctx.strokeStyle = 'magenta';
+            for (let i=0; i<this.strainHistory.length; i++) {
+                const x = i / 300 * w;
+                const y = y_center - this.strainHistory[i].hc * y_scale;
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+        }
+
+        updateMetricsDisplay(h_plus, h_cross) {
+            document.getElementById('metric-h_plus').textContent = h_plus.toFixed(4);
+            document.getElementById('metric-h_cross').textContent = h_cross.toFixed(4);
+            document.getElementById('metric-time').textContent = this.time.toFixed(2);
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            this.update();
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

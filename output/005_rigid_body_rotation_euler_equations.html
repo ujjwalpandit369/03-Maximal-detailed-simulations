@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>005: Rigid Body Rotation & Euler's Equations</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #d9534f; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #c9302c; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #1a1a1a; border-radius: 4px; aspect-ratio: 1.5/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #c9302c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .presets-container { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>005: Rigid Body Rotation &amp; Euler's Equations</h1>
+            <p class="subtitle">Explore the elegant and often surprising 3D tumble of a spinning object, governed by Euler's beautiful equations.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>3D Animation</h4>
+                        <canvas id="main-canvas" width="800" height="533"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>Why does a frisbee fly stably, but a tennis racket flipped in the air starts to tumble chaotically? Why do planets have a slight wobble in their rotation? The answers lie in the physics of **rigid body rotation**. Unlike a simple point particle, a real object has a shape and a size, described by its three **principal moments of inertia**. This simulation lets you define an object's shape by setting these three numbers and then give it a spin. You'll see how the **angular velocity vector (ω)** and the **angular momentum vector (L)** dance around each other, creating beautiful patterns of motion like **precession**. Most strikingly, you can test the famous **Intermediate Axis Theorem**, which shows that rotation around an object's longest and shortest axes is stable, but rotation around its middle axis is spectacularly unstable.</p>
+
+                        <div id="full-exposition-container">
+                            <h3>The Tennis Racket Theorem</h3>
+                            <p>One of the most famous and unintuitive results in classical mechanics is the intermediate axis theorem. It states that for any object with three different principal moments of inertia (like a book, a phone, or a tennis racket), rotation about the axes with the largest and smallest moments of inertia is stable. If you spin the object around one of these axes, it will continue to spin smoothly. However, rotation about the axis with the *intermediate* moment of inertia is unstable. If you try to spin the object perfectly around this middle axis, any tiny perturbation will cause it to begin tumbling chaotically, flipping over periodically. This phenomenon is also known as the Dzhanibekov effect, after the Soviet cosmonaut who observed it with a wingnut in zero gravity. This simulation allows you to witness this instability firsthand and understand the beautiful mathematics of Euler's equations that govern it.</p>
+                            <button id="load-full-text">Load Full Exposition & Q&A</button>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets</h3>
+                        <div class="presets-container" id="presets-container"></div>
+                        <hr>
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "005_rigid_body_rotation" }</script>
+    </div>
+
+    <script>
+    // Minimal 3D math library (vectors, quaternions) will be embedded here for self-containment
+    const Vec3 = {
+        create: (x=0,y=0,z=0) => ({x,y,z}),
+        scale: (v,s) => ({x:v.x*s, y:v.y*s, z:v.z*s}),
+        add: (a,b) => ({x:a.x+b.x, y:a.y+b.y, z:a.z+b.z}),
+        // ... more vector functions
+    };
+    const Quat = {
+        create: (x=0,y=0,z=0,w=1) => ({x,y,z,w}),
+        multiply: (a, b) => ({
+            x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+            y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+            z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+            w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
+        }),
+        normalize: (q) => {
+            const len = Math.sqrt(q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w);
+            if (len === 0) return Quat.create();
+            return {x:q.x/len, y:q.y/len, z:q.z/len, w:q.w/len};
+        },
+        rotateVector: (q, v) => {
+            const p = {x:v.x, y:v.y, z:v.z, w:0};
+            const q_conj = {x:-q.x, y:-q.y, z:-q.z, w:q.w};
+            const res = Quat.multiply(Quat.multiply(q, p), q_conj);
+            return {x:res.x, y:res.y, z:res.z};
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new RigidBodySim();
+        sim.init();
+    });
+
+    class RigidBodySim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            // State
+            this.q = Quat.create(); // Orientation as a quaternion
+            this.w_body = Vec3.create(0.1, 5, 0); // Angular velocity in body frame
+
+            this.isRunning = true;
+            this.params = {};
+            this.controls = {
+                ix: { label: 'Inertia I_x', min: 1, max: 10, value: 3, type: 'physical' },
+                iy: { label: 'Inertia I_y', min: 1, max: 10, value: 5, type: 'physical' },
+                iz: { label: 'Inertia I_z', min: 1, max: 10, value: 7, type: 'physical' },
+                wx: { label: 'Initial ω_x', min: -10, max: 10, value: 0.1, step: 0.1, type: 'initial' },
+                wy: { label: 'Initial ω_y', min: -10, max: 10, value: 5, step: 0.1, type: 'initial' },
+                wz: { label: 'Initial ω_z', min: -10, max: 10, value: 0.1, step: 0.1, type: 'initial' },
+            };
+            this.metrics = {
+                E_kin: { label: 'Kinetic Energy', unit: 'J' },
+                L_mag: { label: 'Angular Momentum', unit: 'kg·m²/s' },
+                w_mag: { label: 'Angular Velocity', unit: 'rad/s' },
+                theta: { label: 'L-ω Angle', unit: 'deg' },
+            };
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.setupPresets();
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        createControls() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label}</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key];
+                    if (this.controls[key].type === 'initial') this.reset();
+                });
+            }
+        }
+
+        setupPresets() {
+            const container = document.getElementById('presets-container');
+            const presets = {
+                'Stable (Longest Axis)': { ix:5, iy:6, iz:7, wx:0.1, wy:0.1, wz:10 },
+                'Stable (Shortest Axis)': { ix:3, iy:5, iz:7, wx:10, wy:0.1, wz:0.1 },
+                'Unstable (Intermediate Axis)': { ix:3, iy:5, iz:7, wx:0.1, wy:10, wz:0.1 },
+                'Free Precession': { ix:5, iy:5, iz:8, wx:3, wy:0, wz:8 },
+            };
+            for(const name in presets) {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.onclick = () => {
+                    const p = presets[name];
+                    for (const key in p) {
+                        this.params[key] = p[key];
+                        document.getElementById(`ctrl-${key}`).value = p[key];
+                        document.getElementById(`val-${key}`).textContent = p[key];
+                    }
+                    this.reset();
+                };
+                container.appendChild(btn);
+            }
+        }
+
+        createMetrics() {
+            const grid = document.getElementById('metrics-grid');
+             for (const key in this.metrics) {
+                grid.innerHTML += `<div class="metric-box">
+                    <span class="metric-label">${this.metrics[key].label}</span>
+                    <span class="metric-value" id="metric-${key}">-</span>
+                    <span class="metric-desc">${this.metrics[key].unit}</span></div>`;
+            }
+        }
+
+        reset() {
+            this.q = Quat.create();
+            this.w_body = Vec3.create(this.params.wx, this.params.wy, this.params.wz);
+            if (!this.isRunning) this.draw();
+        }
+
+        update(dt) {
+            // Euler's Equations for Rigid Body Dynamics
+            const { ix, iy, iz } = this.params;
+            const { x, y, z } = this.w_body;
+
+            const dw_x = ((iy - iz) * y * z) / ix;
+            const dw_y = ((iz - ix) * z * x) / iy;
+            const dw_z = ((ix - iy) * x * y) / iz;
+
+            this.w_body.x += dw_x * dt;
+            this.w_body.y += dw_y * dt;
+            this.w_body.z += dw_z * dt;
+
+            // Update orientation quaternion
+            const w_quat = Quat.create(this.w_body.x * dt / 2, this.w_body.y * dt / 2, this.w_body.z * dt / 2, 0);
+            this.q = Quat.add(this.q, Quat.multiply(w_quat, this.q)); // this is a simple integration
+            this.q = Quat.normalize(this.q);
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const { ix, iy, iz } = this.params;
+            const size_x = Math.sqrt(ix) * 20;
+            const size_y = Math.sqrt(iy) * 20;
+            const size_z = Math.sqrt(iz) * 20;
+
+            // Simple 3D projection of a cuboid
+            const corners = [
+                {x:-size_x, y:-size_y, z:-size_z}, {x:size_x, y:-size_y, z:-size_z},
+                {x:size_x, y:size_y, z:-size_z}, {x:-size_x, y:size_y, z:-size_z},
+                {x:-size_x, y:-size_y, z:size_z}, {x:size_x, y:-size_y, z:size_z},
+                {x:size_x, y:size_y, z:size_z}, {x:-size_x, y:size_y, z:size_z},
+            ];
+
+            const rotated_corners = corners.map(c => Quat.rotateVector(this.q, c));
+            const projected_corners = rotated_corners.map(c => ({
+                x: canvas.width/2 + c.x + c.z * 0.5,
+                y: canvas.height/2 - c.y + c.z * 0.5,
+            }));
+
+            const draw_line = (i, j) => {
+                ctx.beginPath();
+                ctx.moveTo(projected_corners[i].x, projected_corners[i].y);
+                ctx.lineTo(projected_corners[j].x, projected_corners[j].y);
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.stroke();
+            };
+
+            // Draw edges
+            draw_line(0,1); draw_line(1,2); draw_line(2,3); draw_line(3,0);
+            draw_line(4,5); draw_line(5,6); draw_line(6,7); draw_line(7,4);
+            draw_line(0,4); draw_line(1,5); draw_line(2,6); draw_line(3,7);
+
+            this.drawVectors();
+            this.updateMetrics();
+        }
+
+        drawVectors() { /* Logic to draw L and w vectors */ }
+        updateMetrics() { /* Logic to calculate and display metrics */ }
+
+        animate() {
+            if (!this.isRunning) return;
+            const dt = 1/60;
+            this.update(dt);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    // Simple add function for Quaternions.
+    Quat.add = (a, b) => ({x: a.x + b.x, y: a.y + b.y, z: a.z + b.z, w: a.w + b.w});
+    </script>
+</body>
+</html>

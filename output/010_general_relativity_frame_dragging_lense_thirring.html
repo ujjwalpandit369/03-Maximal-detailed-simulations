@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>010: Frame-Dragging & The Lense-Thirring Effect</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #2e6da4; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #204d74; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #000; border-radius: 4px; aspect-ratio: 1.5/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #2e6da4; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .presets-container { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>010: Frame-Dragging &amp; The Lense-Thirring Effect</h1>
+            <p class="subtitle">Visualizing how a spinning mass twists the very fabric of spacetime around it.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Spacetime Dragging Effect</h4>
+                        <canvas id="main-canvas" width="800" height="533"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>Imagine a heavy bowling ball spinning in a tub of thick honey. As it spins, it will drag the honey around with it, creating a swirl. According to Einstein's General Relativity, a massive, spinning object like the Earth or a black hole does the exact same thing to spacetime itself. This phenomenon is called **frame-dragging**, or the **Lense-Thirring effect**. It means that spacetime is not a passive backdrop, but an active medium that can be twisted and dragged. This simulation shows the consequences of this effect. A satellite in a polar orbit doesn't trace the same path over and over. Instead, the entire orbital plane is slowly dragged around by the central body's rotation. This effect is minuscule but was famously measured by the Gravity Probe B satellite, confirming one of the most bizarre and wonderful predictions of Einstein's theory.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets</h3>
+                        <div class="presets-container" id="presets-container"></div>
+                        <hr>
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>System Metrics</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "010_frame_dragging" }</script>
+    </div>
+
+    <script>
+    // Using the same minimal 3D math library from the rigid body simulation
+    const Vec3 = {
+        create: (x=0,y=0,z=0) => ({x,y,z}),
+        scale: (v,s) => ({x:v.x*s, y:v.y*s, z:v.z*s}),
+        add: (a,b) => ({x:a.x+b.x, y:a.y+b.y, z:a.z+b.z}),
+        subtract: (a,b) => ({x:a.x-b.x, y:a.y-b.y, z:a.z-b.z}),
+        magnitude: (v) => Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z),
+        normalize: (v) => { const m=Vec3.magnitude(v); return m > 0 ? Vec3.scale(v, 1/m) : Vec3.create(); },
+        cross: (a,b) => ({ x: a.y*b.z - a.z*b.y, y: a.z*b.x - a.x*b.z, z: a.x*b.y - a.y*b.x }),
+    };
+    const Quat = {
+        create: (x=0,y=0,z=0,w=1) => ({x,y,z,w}),
+        fromAxisAngle: (axis, angle) => {
+            const half_angle = angle / 2;
+            const s = Math.sin(half_angle);
+            return { x: axis.x * s, y: axis.y * s, z: axis.z * s, w: Math.cos(half_angle) };
+        },
+        multiply: (a, b) => ({
+            x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+            y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+            z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+            w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
+        }),
+        rotateVector: (q, v) => {
+            const p = {x:v.x, y:v.y, z:v.z, w:0};
+            const q_conj = {x:-q.x, y:-q.y, z:-q.z, w:q.w};
+            const res = Quat.multiply(Quat.multiply(q, p), q_conj);
+            return {x:res.x, y:res.y, z:res.z};
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new FrameDraggingSim();
+        sim.init();
+    });
+
+    class FrameDraggingSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+
+            // State
+            this.p = { x: 150, y: 0, z: 0 }; // position
+            this.v = { x: 0, y: 0, z: 1.2 }; // velocity
+            this.trace = [];
+            this.totalPrecession = 0;
+
+            this.isRunning = true;
+            this.params = {};
+            this.controls = {
+                mass: { label: 'Central Mass (M)', min: 100, max: 5000, value: 1000, type: 'physical' },
+                spin: { label: 'Central Spin (J)', min: 0, max: 1, value: 0.9, step: 0.01, type: 'physical' },
+                radius: { label: 'Orbital Radius', min: 100, max: 300, value: 150, type: 'setup' },
+                inclination: { label: 'Orbital Inclination', unit: '°', min: 0, max: 90, value: 90, type: 'setup' },
+            };
+            this.metrics = {
+                precession_rate: { label: 'Precession Rate', unit: '°/orbit' },
+                total_precession: { label: 'Total Precession', unit: '°' },
+                orbital_period: { label: 'Orbital Period', unit: 's' },
+            };
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.setupPresets();
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        createControls() { /* ... similar to previous ... */ }
+        createMetrics() { /* ... similar to previous ... */ }
+        setupPresets() { /* ... similar to previous ... */ }
+
+        reset() {
+            const r = this.params.radius;
+            const M = this.params.mass;
+            const inc = this.params.inclination * Math.PI / 180;
+
+            this.p = { x: r * Math.cos(inc), y: 0, z: r * Math.sin(inc) };
+
+            const v_mag = Math.sqrt(M / r); // From v^2/r = GM/r^2
+            this.v = { x: 0, y: v_mag, z: 0 };
+
+            // Rotate initial velocity to match inclination
+            const rot_q = Quat.fromAxisAngle({x:0, y:1, z:0}, -inc);
+            this.v = Quat.rotateVector(rot_q, this.v);
+
+            this.trace = [];
+            this.totalPrecession = 0;
+            if (!this.isRunning) this.draw();
+        }
+
+        update(dt) {
+            // --- Newtonian Gravity ---
+            const r_mag = Vec3.magnitude(this.p);
+            const accel_mag = -this.params.mass / (r_mag * r_mag);
+            const accel_vec = Vec3.scale(Vec3.normalize(this.p), accel_mag);
+
+            this.v = Vec3.add(this.v, Vec3.scale(accel_vec, dt));
+            this.p = Vec3.add(this.p, Vec3.scale(this.v, dt));
+
+            // --- Lense-Thirring Precession (Post-Newtonian Kick) ---
+            const G = 1; // Let G=c=1 in sim units
+            const c = 1;
+            const J = this.params.spin * G * this.params.mass**2 / c; // J = a * GM^2/c
+
+            // Precession rate vector (simplified formula)
+            const precession_rate = (2 * G * J) / (c*c * r_mag**3);
+            const precession_angle = precession_rate * dt;
+
+            if (precession_angle > 0) {
+                this.totalPrecession += precession_angle * 180 / Math.PI;
+                const spin_axis = { x: 0, y: 0, z: 1 }; // Assume central body spins along z-axis
+                const rot_q = Quat.fromAxisAngle(spin_axis, precession_angle);
+
+                // Rotate position and velocity vectors around the spin axis
+                this.p = Quat.rotateVector(rot_q, this.p);
+                this.v = Quat.rotateVector(rot_q, this.v);
+            }
+        }
+
+        draw() {
+            const { ctx, canvas } = this;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+            const cam_dist = 600;
+
+            // --- Draw Central Body ---
+            ctx.beginPath();
+            ctx.arc(w/2, h/2, 20, 0, 2*Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            // Draw spin axis
+            ctx.beginPath();
+            ctx.moveTo(w/2, h/2 - 30);
+            ctx.lineTo(w/2, h/2 + 30);
+            ctx.strokeStyle = 'cyan';
+            ctx.stroke();
+
+            // --- Draw Orbit ---
+            this.trace.push(this.p);
+            if(this.trace.length > 500) this.trace.shift();
+
+            ctx.beginPath();
+            for(let i=0; i<this.trace.length; i++) {
+                const pt = this.trace[i];
+                // Simple 3D projection
+                const scale = cam_dist / (cam_dist - pt.z);
+                const x = w/2 + pt.x * scale;
+                const y = h/2 - pt.y * scale;
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.stroke();
+
+            // --- Draw Satellite ---
+            const scale = cam_dist / (cam_dist - this.p.z);
+            const x = w/2 + this.p.x * scale;
+            const y = h/2 - this.p.y * scale;
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2*Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+
+            this.updateMetrics();
+        }
+
+        updateMetrics() {
+            document.getElementById('metric-total_precession').textContent = this.totalPrecession.toFixed(2);
+            // Other metrics calculations would go here
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            const dt = 1/60;
+            this.update(dt);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,56 +1,82 @@
 [
   {
-    "id": "001-domain-walls",
-    "title": "Topological Defects: Domain Wall Simulation",
-    "tags": ["domain wall", "Ising model", "Z2 symmetry", "phase transition", "cosmology"],
-    "date": "2025-08-15",
-    "estimated_intensity": "medium",
-    "recommended_device": "desktop",
-    "path": "output/001_domain_walls_ising_model_simulation.html"
+    "id": "001_simple_pendulum",
+    "title": "001: Simple Pendulum & a Single Degree of Freedom",
+    "description": "A deep, interactive exploration of the classic simple gravity pendulum, its dynamics, and the foundational concept of a degree of freedom in physics.",
+    "tags": ["physics", "oscillation", "pendulum", "degree of freedom", "gravity"],
+    "path": "../output/001_simple_pendulum_single_degree_of_freedom.html",
+    "date": "2025-08-15"
   },
   {
-    "id": "002-cosmic-strings",
-    "title": "Topological Defects: Cosmic String Simulation",
-    "tags": ["cosmic string", "U(1) symmetry", "Kibble mechanism", "phase transition", "Ginzburg-Landau"],
-    "date": "2025-08-15",
-    "estimated_intensity": "heavy",
-    "recommended_device": "desktop",
-    "path": "output/002_cosmic_strings_kibble_mechanism_visualizer.html"
+    "id": "002_double_pendulum",
+    "title": "002: The Double Pendulum & Deterministic Chaos",
+    "description": "Witness how adding just one more degree of freedom transforms a predictable system into a beautiful, unpredictable dance of chaos.",
+    "tags": ["physics", "chaos theory", "pendulum", "non-linear dynamics"],
+    "path": "../output/002_double_pendulum_chaotic_motion_two_dof.html",
+    "date": "2025-08-15"
   },
   {
-    "id": "003-monopoles",
-    "title": "Topological Defects: Monopole Simulation",
-    "tags": ["monopole", "SO(3) symmetry", "'t Hooft-Polyakov", "hedgehog defect", "GUT"],
-    "date": "2025-08-15",
-    "estimated_intensity": "very-heavy",
-    "recommended_device": "desktop-gpu",
-    "path": "output/003_magnetic_monopoles_hedgehog_defect_so3_breaking.html"
+    "id": "003_coupled_oscillators",
+    "title": "003: Coupled Oscillators & Normal Modes",
+    "description": "Discover how simple oscillators, when linked together, give rise to collective behaviors like normal modes and beats.",
+    "tags": ["physics", "oscillation", "normal modes", "waves", "fourier"],
+    "path": "../output/003_coupled_oscillators_normal_modes.html",
+    "date": "2025-08-15"
   },
   {
-    "id": "004-textures-skyrmions",
-    "title": "Topological Defects: Texture (Skyrmion) Simulation",
-    "tags": ["texture", "skyrmion", "SU(2) symmetry", "homotopy", "unwinding"],
-    "date": "2025-08-15",
-    "estimated_intensity": "heavy",
-    "recommended_device": "desktop-gpu",
-    "path": "output/004_skyrmion_texture_unwinding_simulation.html"
+    "id": "004_diatomic_molecule",
+    "title": "004: Diatomic Molecule - Rotation & Vibration",
+    "description": "A semi-classical look at the internal degrees of freedom that give molecules their unique spectroscopic fingerprints.",
+    "tags": ["quantum", "spectroscopy", "molecules", "rotation", "vibration"],
+    "path": "../output/004_diatomic_molecule_vibration_rotation_dof.html",
+    "date": "2025-08-15"
   },
   {
-    "id": "005-hybrid-defects",
-    "title": "Topological Defects: Hybrid Defect Simulation",
-    "tags": ["hybrid defect", "domain wall", "cosmic string", "symmetry breaking", "dynamics"],
-    "date": "2025-08-15",
-    "estimated_intensity": "medium",
-    "recommended_device": "desktop",
-    "path": "output/005_hybrid_defects_domain_walls_bounded_by_strings.html"
+    "id": "005_rigid_body_rotation",
+    "title": "005: Rigid Body Rotation & Euler's Equations",
+    "description": "Explore the elegant and often surprising 3D tumble of a spinning object, governed by Euler's beautiful equations.",
+    "tags": ["classical mechanics", "rotation", "3d", "euler equations", "inertia"],
+    "path": "../output/005_rigid_body_rotation_euler_equations.html",
+    "date": "2025-08-15"
   },
   {
-    "id": "006-string-network",
-    "title": "Topological Defects: String Network Evolution",
-    "tags": ["cosmic string", "network evolution", "scaling", "intercommutation", "Nambu-Goto"],
-    "date": "2025-08-15",
-    "estimated_intensity": "heavy",
-    "recommended_device": "desktop",
-    "path": "output/006_cosmic_string_network_evolution_and_scaling.html"
+    "id": "006_n_body_simulation",
+    "title": "006: N-Body Gravitational Simulation",
+    "description": "An interactive laboratory for exploring the intricate dance of celestial bodies governed by the universal law of gravitation.",
+    "tags": ["gravity", "astrophysics", "n-body", "simulation", "chaos"],
+    "path": "../output/006_n_body_gravitational_simulation_3n_dof.html",
+    "date": "2025-08-15"
+  },
+  {
+    "id": "007_gw_polarization",
+    "title": "007: Gravitational Wave Polarization",
+    "description": "Visualizing how ripples in the fabric of spacetime stretch and squeeze matter.",
+    "tags": ["general relativity", "gravitational waves", "ligo", "spacetime"],
+    "path": "../output/007_gravitational_wave_polarization_tensor_dof.html",
+    "date": "2025-08-15"
+  },
+  {
+    "id": "008_ideal_gas",
+    "title": "008: Ideal Gas in a Box & Statistical Mechanics",
+    "description": "From the random motion of individual particles emerge the predictable laws of thermodynamics.",
+    "tags": ["thermodynamics", "statistical mechanics", "kinetic theory", "gas"],
+    "path": "../output/008_ideal_gas_in_a_box_statistical_dof.html",
+    "date": "2025-08-15"
+  },
+  {
+    "id": "009_vibrating_string",
+    "title": "009: The Vibrating String & Fourier's Magic",
+    "description": "Decomposing complex wave shapes into a symphony of simple sine waves.",
+    "tags": ["waves", "fourier analysis", "pde", "harmonics", "music"],
+    "path": "../output/009_vibrating_string_wave_equation_infinite_dof.html",
+    "date": "2025-08-15"
+  },
+  {
+    "id": "010_frame_dragging",
+    "title": "010: Frame-Dragging & The Lense-Thirring Effect",
+    "description": "Visualizing how a spinning mass twists the very fabric of spacetime around it.",
+    "tags": ["general relativity", "black holes", "spacetime", "gravity"],
+    "path": "../output/010_general_relativity_frame_dragging_lense_thirring.html",
+    "date": "2025-08-15"
   }
 ]

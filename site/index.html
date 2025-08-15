@@ -3,71 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Simulations Index</title>
+    <title>Deep Simulation Series</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; background: #f5f5f5; }
-        h1 { text-align: center; color: #333; }
-        #search-box { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; }
-        .simulation-entry { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .simulation-entry h2 { margin: 0 0 10px; }
-        .simulation-entry a { text-decoration: none; color: #0066cc; }
-        .tags span { background: #eee; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem; margin-right: 5px; }
-        .metadata { font-size: 0.9rem; color: #666; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2a2a2a;
+        }
+        #search-box {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .simulation-list {
+            list-style: none;
+            padding: 0;
+        }
+        .simulation-item {
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .simulation-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .simulation-item a {
+            text-decoration: none;
+            color: #0056b3;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .simulation-item p {
+            margin: 10px 0 10px;
+            color: #555;
+        }
+        .tags {
+            margin-top: 10px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>Deep Simulations Index</h1>
-    <input type="text" id="search-box" placeholder="Search by title or tags...">
-    <div id="simulations-list"></div>
-    <div id="pagination-controls"></div>
+    <div class="container">
+        <header>
+            <h1>Deep Simulation Series</h1>
+            <p>A collection of interactive, self-contained physics and mathematics simulations.</p>
+        </header>
+
+        <input type="text" id="search-box" placeholder="Search by title, description, or tag...">
+
+        <ul id="simulation-list" class="simulation-list">
+            <!-- Simulations will be loaded here by JavaScript -->
+        </ul>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const listEl = document.getElementById('simulations-list');
+            const listElement = document.getElementById('simulation-list');
             const searchBox = document.getElementById('search-box');
             let allSimulations = [];
 
-            fetch('manifest.json')
-                .then(response => response.json())
-                .then(data => {
-                    allSimulations = data;
-                    renderList(allSimulations);
-                });
-
-            searchBox.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                const filteredSims = allSimulations.filter(sim => {
-                    const titleMatch = sim.title.toLowerCase().includes(query);
-                    const tagMatch = sim.tags.some(tag => tag.toLowerCase().includes(query));
-                    return titleMatch || tagMatch;
-                });
-                renderList(filteredSims);
-            });
-
             function renderList(simulations) {
-                listEl.innerHTML = '';
+                listElement.innerHTML = ''; // Clear current list
                 if (simulations.length === 0) {
-                    listEl.innerHTML = '<p>No simulations found.</p>';
+                    listElement.innerHTML = '<li>No simulations found.</li>';
                     return;
                 }
+
                 simulations.forEach(sim => {
-                    const entry = document.createElement('div');
-                    entry.className = 'simulation-entry';
+                    const item = document.createElement('li');
+                    item.className = 'simulation-item';
 
-                    const tagsHTML = sim.tags.map(tag => `<span>${tag}</span>`).join(' ');
+                    const tagsHtml = sim.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
 
-                    entry.innerHTML = `
-                        <h2><a href="../${sim.path}">${sim.title}</a></h2>
-                        <div class="tags">${tagsHTML}</div>
-                        <div class="metadata">
-                            <strong>ID:</strong> ${sim.id} |
-                            <strong>Intensity:</strong> ${sim.estimated_intensity} |
-                            <strong>Device:</strong> ${sim.recommended_device}
-                        </div>
+                    item.innerHTML = `
+                        <a href="${sim.path}" target="_blank">${sim.title}</a>
+                        <p>${sim.description}</p>
+                        <div class="tags">${tagsHtml}</div>
                     `;
-                    listEl.appendChild(entry);
+                    listElement.appendChild(item);
                 });
             }
+
+            function filterSims() {
+                const query = searchBox.value.toLowerCase();
+                if (!query) {
+                    renderList(allSimulations);
+                    return;
+                }
+
+                const filteredSims = allSimulations.filter(sim => {
+                    const titleMatch = sim.title.toLowerCase().includes(query);
+                    const descMatch = sim.description.toLowerCase().includes(query);
+                    const tagMatch = sim.tags.some(tag => tag.toLowerCase().includes(query));
+                    return titleMatch || descMatch || tagMatch;
+                });
+
+                renderList(filteredSims);
+            }
+
+            async function loadManifest() {
+                try {
+                    const response = await fetch('manifest.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    allSimulations = await response.json();
+                    // Sort by title to ensure consistent order
+                    allSimulations.sort((a, b) => a.title.localeCompare(b.title));
+                    renderList(allSimulations);
+                } catch (e) {
+                    console.error("Failed to load manifest:", e);
+                    listElement.innerHTML = '<li>Error: Could not load simulation manifest.</li>';
+                }
+            }
+
+            searchBox.addEventListener('keyup', filterSims);
+            loadManifest();
         });
     </script>
 </body>

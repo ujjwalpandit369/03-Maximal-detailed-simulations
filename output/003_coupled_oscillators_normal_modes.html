@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>003: Coupled Oscillators & Normal Modes</title>
+    <style>
+        /* CSS styles are identical to previous files for consistency. */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #0056b3; }
+        .hidden { display: none; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .meta-bar { background-color: #f1f3f5; padding: 10px; border-radius: 5px; font-size: 0.9em; color: #555; display: flex; flex-wrap: wrap; gap: 15px; }
+        .meta-item { display: flex; flex-direction: column; }
+        .meta-label { font-weight: bold; font-size: 0.8em; color: #888; }
+        .meta-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; }
+        .vis-container h4 { margin-top: 0; text-align: center; }
+        canvas, svg { width: 100%; height: auto; background-color: #fdfdfd; border-radius: 4px; }
+        #main-canvas { height: 200px; aspect-ratio: 4/1; }
+        #time-series-chart { aspect-ratio: 2 / 1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-group h3 { margin-top: 0; border: none; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.95em; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; color: #333; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #5cb85c; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .presets-container { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 10px; }
+        .presets-container button { background-color: #5bc0de; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>003: Coupled Oscillators &amp; Normal Modes</h1>
+            <p class="subtitle">Discover how simple oscillators, when linked together, give rise to collective behaviors like normal modes and beats.</p>
+        </header>
+
+        <div class="meta-bar">
+            <div class="meta-item"><span class="meta-label">CPU Intensity</span><span class="meta-value">Light</span></div>
+            <div class="meta-item"><span class="meta-label">Full Word Count</span><span class="meta-value">&gt;5,000</span></div>
+            <div class="meta-item"><span class="meta-label">Suggested Filename</span><span class="meta-value">003_coupled_oscillators_normal_modes.html</span></div>
+        </div>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>System Animation</h4>
+                        <canvas id="main-canvas" width="800" height="200"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Position vs. Time</h4>
+                        <canvas id="time-series-chart" width="800" height="400"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>Imagine two swings side-by-side, connected by a rope. If you start one swing moving, it won't swing forever on its own. The connecting rope will start to pull on the second swing, making it move. As the second swing picks up speed, it starts to pull back on the first, slowing it down. Eventually, the first swing might stop completely, having transferred all its energy to the second! This back-and-forth exchange of energy is the core idea of **coupled oscillators**. This simulation replaces swings with masses and springs, but the principle is the same. We will discover that these coupled systems have special "magic" ways of moving called **normal modes**, where they can all oscillate at the same frequency without exchanging energy. Understanding these modes is key to analyzing everything from molecules to skyscrapers.</p>
+
+                        <div id="full-exposition-container">
+                             <h3>The Symphony of Motion</h3>
+                             <p>An uncoupled oscillator is a soloist, playing its own tune at its own natural frequency. When you couple oscillators together, you create an orchestra. The individual members can no longer play completely independently; they influence and listen to each other through the coupling (the springs). The resulting sound is a complex combination of their individual tendencies.</p>
+                             <p>However, an orchestra can play in unison. **Normal modes** are the ways the entire system can oscillate in perfect harmony. In a normal mode, every part of the system moves sinusoidally at the *same* frequency and with a fixed phase relationship. The system behaves like a single, unified oscillator. Any general motion of the system, no matter how complex, can be described as a superposition (a sum) of these fundamental normal modes. This is an incredibly powerful idea, known as **modal analysis**, that allows physicists and engineers to break down hugely complex vibrations into a series of simple, understandable modes.</p>
+                             <button id="load-full-text">Load Full Exposition & Q&A</button>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets: Excite a Motion</h3>
+                        <div class="presets-container" id="presets-container">
+                            <!-- Presets added by JS -->
+                        </div>
+                        <hr>
+                        <h3>Parameters</h3>
+                        <div id="params-container">
+                            <!-- Controls added by JS -->
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>Live Metrics & Analytics</h3>
+                        <div id="metrics-grid" class="metrics-grid">
+                            <!-- Metrics added by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "003_coupled_oscillators" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new CoupledOscillatorSim();
+        sim.init();
+    });
+
+    class CoupledOscillatorSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.chartCanvas = document.getElementById('time-series-chart');
+            this.chartCtx = this.chartCanvas.getContext('2d');
+
+            this.state = { x1: 0, v1: 0, x2: 0, v2: 0 };
+            this.isRunning = true;
+            this.time = 0;
+            this.history = [];
+
+            this.params = {};
+            this.controls = {
+                m1: { label: 'Mass 1', unit: 'kg', min: 0.5, max: 5, value: 1, type: 'physical' },
+                m2: { label: 'Mass 2', unit: 'kg', min: 0.5, max: 5, value: 1, type: 'physical' },
+                k1: { label: 'Spring 1 (Left)', unit: 'N/m', min: 1, max: 50, value: 20, type: 'physical' },
+                k2: { label: 'Spring 2 (Middle)', unit: 'N/m', min: 0, max: 50, value: 5, type: 'physical' },
+                k3: { label: 'Spring 3 (Right)', unit: 'N/m', min: 1, max: 50, value: 20, type: 'physical' },
+                damping: { label: 'Damping', unit: '', min: 0, max: 0.5, value: 0.05, type: 'global' },
+                timeScale: { label: 'Time Scale', unit: 'x', min: 0.1, max: 2, value: 1, type: 'global' },
+            };
+            this.metrics = {
+                total_energy: { label: 'Total Energy', unit: 'J' },
+                potential_energy: { label: 'Potential Energy', unit: 'J' },
+                kinetic_energy: { label: 'Kinetic Energy', unit: 'J' },
+                w_symm: { label: 'Symm. Mode Freq.', unit: 'rad/s' },
+                w_anti: { label: 'Anti-Symm. Mode Freq.', unit: 'rad/s' },
+            };
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.setupPresets();
+            this.resetWithInitialConditions({ x1: 50, v1: 0, x2: 0, v2: 0 }); // Default start
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        createControls() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                const div = document.createElement('div');
+                div.className = 'control-item';
+                div.innerHTML = `<label for="ctrl-${key}">${c.label} (${c.unit})</label>
+                                 <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 0.1}">
+                                 <span class="value-display" id="val-${key}">${c.value}</span>`;
+                container.appendChild(div);
+
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key];
+                    this.resetWithCurrentState();
+                });
+            }
+        }
+
+        createMetrics() {
+            const grid = document.getElementById('metrics-grid');
+            grid.innerHTML = '';
+            for (const key in this.metrics) {
+                grid.innerHTML += `<div class="metric-box">
+                                        <span class="metric-label">${this.metrics[key].label}</span>
+                                        <span class="metric-value" id="metric-${key}">-</span>
+                                        <span class="metric-desc">${this.metrics[key].unit}</span>
+                                   </div>`;
+            }
+        }
+
+        setupPresets() {
+            const container = document.getElementById('presets-container');
+            const presets = {
+                'Symmetric Mode': { x1: 40, v1: 0, x2: 40, v2: 0 },
+                'Antisymmetric Mode': { x1: 40, v1: 0, x2: -40, v2: 0 },
+                'Beats Phenomenon': { x1: 50, v1: 0, x2: 0, v2: 0 },
+                'Random': { x1: 30, v1: 0, x2: -20, v2: 0 },
+            };
+            for(const name in presets) {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.onclick = () => this.resetWithInitialConditions(presets[name]);
+                container.appendChild(btn);
+            }
+        }
+
+        resetWithInitialConditions(ic) {
+            this.state = { ...ic };
+            this.time = 0;
+            this.history = [];
+            if (!this.isRunning) this.draw();
+        }
+
+        resetWithCurrentState() {
+             this.resetWithInitialConditions(this.state);
+        }
+
+        // --- PHYSICS ---
+        getAccelerations(state) {
+            const { m1, m2, k1, k2, k3, damping } = this.params;
+            const { x1, v1, x2, v2 } = state;
+
+            const f1 = -k1 * x1 + k2 * (x2 - x1) - damping * v1; // Force on mass 1
+            const f2 = -k3 * x2 - k2 * (x2 - x1) - damping * v2; // Force on mass 2
+
+            return { a1: f1 / m1, a2: f2 / m2 };
+        }
+
+        update(dt) {
+            const { a1, a2 } = this.getAccelerations(this.state);
+            // Simple Euler integration is fine for this non-chaotic system
+            this.state.x1 += this.state.v1 * dt;
+            this.state.v1 += a1 * dt;
+            this.state.x2 += this.state.v2 * dt;
+            this.state.v2 += a2 * dt;
+            this.time += dt;
+        }
+
+        // --- DRAWING ---
+        draw() {
+            this.drawSystem();
+            this.updateHistory();
+            this.drawChart();
+        }
+
+        drawSystem() {
+            const { ctx, canvas } = this;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            const m1_pos = w/3 + this.state.x1;
+            const m2_pos = 2*w/3 + this.state.x2;
+            const mass_size = 20;
+
+            // Springs
+            this.drawSpring(0, m1_pos, 10);
+            this.drawSpring(m1_pos, m2_pos, 10);
+            this.drawSpring(m2_pos, w, 10);
+
+            // Masses
+            ctx.fillStyle = 'royalblue';
+            ctx.fillRect(m1_pos - mass_size/2, h/2 - mass_size/2, mass_size, mass_size);
+            ctx.fillStyle = 'crimson';
+            ctx.fillRect(m2_pos - mass_size/2, h/2 - mass_size/2, mass_size, mass_size);
+        }
+
+        drawSpring(start, end, segments) {
+            const { ctx, canvas } = this;
+            const h = canvas.height / 2;
+            const segment_len = (end - start) / segments;
+            const spring_h = 15;
+
+            ctx.beginPath();
+            ctx.moveTo(start, h);
+            for(let i=0; i<segments; i++) {
+                ctx.lineTo(start + (i + 0.5) * segment_len, h + spring_h * ((i%2==0) ? 1 : -1));
+            }
+            ctx.lineTo(end, h);
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        updateHistory() {
+            this.history.push({ t: this.time, x1: this.state.x1, x2: this.state.x2 });
+            if (this.history.length > 500) {
+                this.history.shift();
+            }
+        }
+
+        drawChart() {
+            const { chartCtx: ctx, chartCanvas: canvas } = this;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            const y_center = h / 2;
+            const y_scale = h / 4 / 60; // 60px max amplitude
+
+            ctx.lineWidth = 2;
+            // Draw x1
+            ctx.beginPath();
+            ctx.strokeStyle = 'royalblue';
+            for (let i = 0; i < this.history.length; i++) {
+                const p = this.history[i];
+                const x = i / 500 * w;
+                const y = y_center - p.x1 * y_scale;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            // Draw x2
+            ctx.beginPath();
+            ctx.strokeStyle = 'crimson';
+            for (let i = 0; i < this.history.length; i++) {
+                const p = this.history[i];
+                const x = i / 500 * w;
+                const y = y_center - p.x2 * y_scale;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        // --- METRICS & LOOP ---
+        updateMetrics() {
+            const { m1, m2, k1, k2, k3 } = this.params;
+            const { x1, v1, x2, v2 } = this.state;
+
+            const U = 0.5 * k1 * x1*x1 + 0.5 * k3 * x2*x2 + 0.5 * k2 * (x2-x1)*(x2-x1);
+            const K = 0.5 * m1 * v1*v1 + 0.5 * m2 * v2*v2;
+            document.getElementById('metric-potential_energy').textContent = U.toExponential(2);
+            document.getElementById('metric-kinetic_energy').textContent = K.toExponential(2);
+            document.getElementById('metric-total_energy').textContent = (U + K).toExponential(2);
+
+            // Simplified normal mode frequency calculation for identical masses and outer springs
+            if (m1 === m2 && k1 === k3) {
+                 const w_s = Math.sqrt(k1 / m1);
+                 const w_a = Math.sqrt((k1 + 2 * k2) / m1);
+                 document.getElementById('metric-w_symm').textContent = w_s.toFixed(2);
+                 document.getElementById('metric-w_anti').textContent = w_a.toFixed(2);
+            } else {
+                 document.getElementById('metric-w_symm').textContent = 'N/A';
+                 document.getElementById('metric-w_anti').textContent = 'N/A';
+            }
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+
+            const dt = 1/60 * this.params.timeScale;
+            this.update(dt);
+            this.draw();
+            this.updateMetrics();
+
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>

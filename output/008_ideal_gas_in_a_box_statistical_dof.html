@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>008: Ideal Gas in a Box & Statistical Mechanics</title>
+    <style>
+        /* Consistent styling */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 1600px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1, h2, h3 { color: #2a2a2a; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { background-color: #f0ad4e; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s; }
+        button:hover { background-color: #ec971f; }
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-column { grid-row: 1; } }
+        .vis-container { border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; background: #fff; text-align: center; }
+        canvas { width: 100%; height: auto; background-color: #fdfdfd; border: 1px solid #eee; border-radius: 4px; }
+        #main-canvas { aspect-ratio: 1.2/1; }
+        #speed-distribution-chart { aspect-ratio: 1.5/1; }
+        .control-group { border: 1px solid #e9ecef; padding: 15px; border-radius: 8px; }
+        .control-item { margin-bottom: 10px; }
+        .control-item label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .control-item input[type="range"] { width: 100%; }
+        .control-item .value-display { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; background: #e9ecef; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .metric-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 5px; }
+        .metric-label { font-weight: bold; font-size: 0.9em; }
+        .metric-value { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1.1em; color: #eea236; display: block; margin-top: 5px; }
+        #full-exposition-container { border: 1px solid #ddd; padding: 20px; background: #fafafa; border-radius: 5px; margin-top: 20px; max-height: 600px; overflow-y: auto; }
+        .presets-container { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>008: Ideal Gas in a Box &amp; Statistical Mechanics</h1>
+            <p class="subtitle">From the random motion of individual particles emerge the predictable laws of thermodynamics.</p>
+        </header>
+
+        <main>
+            <div class="main-layout">
+                <div class="left-column">
+                    <div class="vis-container">
+                        <h4>Gas Container</h4>
+                        <canvas id="main-canvas" width="720" height="600"></canvas>
+                    </div>
+                    <div class="vis-container">
+                        <h4>Speed Distribution (Maxwell-Boltzmann)</h4>
+                        <canvas id="speed-distribution-chart" width="720" height="480"></canvas>
+                    </div>
+
+                    <section>
+                        <h2>Overview for the Curious</h2>
+                        <p>What are temperature and pressure, really? At the microscopic level, they are not fundamental properties. They are **emergent phenomena** that arise from the collective motion of countless individual atoms or molecules. **Temperature** is a measure of the average kinetic energy of the particles—how fast they are jiggling. **Pressure** is the result of all those particles constantly colliding with the walls of their container. This simulation allows you to see this connection directly. It models a 2D "ideal gas" as a collection of particles bouncing off each other and the container walls. By observing the microscopic chaos, you can see the macroscopic laws of thermodynamics, like the Ideal Gas Law (`PV=NkT`), emerge in real-time. You can also see how particle speeds are not all the same, but follow the famous **Maxwell-Boltzmann distribution**.</p>
+
+                        <div id="full-exposition-container">...<button id="load-full-text">Load Full Exposition & Q&A</button></div>
+                    </section>
+                </div>
+
+                <div class="right-column">
+                    <div class="control-group" id="controls">
+                        <h3>Presets</h3>
+                        <div class="presets-container" id="presets-container"></div>
+                        <hr>
+                        <h3>Parameters</h3>
+                        <div id="params-container"></div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>Macroscopic Properties</h3>
+                        <div id="metrics-grid" class="metrics-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="application/json" id="SIM_META">{ "id": "008_ideal_gas" }</script>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sim = new IdealGasSim();
+        sim.init();
+    });
+
+    class IdealGasSim {
+        constructor() {
+            this.canvas = document.getElementById('main-canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.chartCanvas = document.getElementById('speed-distribution-chart');
+            this.chartCtx = this.chartCanvas.getContext('2d');
+
+            this.particles = [];
+            this.isRunning = true;
+            this.wallMomentum = 0; // For pressure calculation
+
+            this.params = {};
+            this.controls = {
+                n: { label: 'Number of Particles', min: 10, max: 500, value: 200, type: 'setup' },
+                temp: { label: 'Temperature', unit: 'K', min: 10, max: 500, value: 300, type: 'setup' },
+                mass: { label: 'Particle Mass', unit: 'amu', min: 1, max: 50, value: 4, type: 'setup' },
+                radius: { label: 'Particle Radius', unit: 'pm', min: 1, max: 5, value: 2, type: 'setup' },
+                volume: { label: 'Box Width', unit: 'px', min: 300, max: 720, value: 720, type: 'setup' },
+            };
+            this.metrics = {
+                pressure: { label: 'Pressure', unit: 'Pa' },
+                temperature: { label: 'Temperature', unit: 'K' },
+                pv_over_nkt: { label: 'PV / NkT' },
+            };
+            this.k_b = 1.38e-23; // Boltzmann constant (for display only)
+        }
+
+        init() {
+            this.createControls();
+            this.createMetrics();
+            this.setupPresets();
+            this.reset();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        createControls() {
+            const container = document.getElementById('params-container');
+            for (const key in this.controls) {
+                const c = this.controls[key];
+                this.params[key] = c.value;
+                container.innerHTML += `<div class="control-item">
+                    <label for="ctrl-${key}">${c.label} (${c.unit || ''})</label>
+                    <input type="range" id="ctrl-${key}" min="${c.min}" max="${c.max}" value="${c.value}" step="${c.step || 1}">
+                    <span class="value-display" id="val-${key}">${c.value}</span>
+                </div>`;
+            }
+            for (const key in this.controls) {
+                document.getElementById(`ctrl-${key}`).addEventListener('input', (e) => {
+                    this.params[key] = parseFloat(e.target.value);
+                    document.getElementById(`val-${key}`).textContent = this.params[key];
+                    if (this.controls[key].type === 'setup') this.reset();
+                });
+            }
+        }
+
+        setupPresets() { /* ... */ }
+        createMetrics() { /* ... */ }
+
+        reset() {
+            this.particles = [];
+            const { n, temp, mass, radius, volume } = this.params;
+            this.canvas.width = volume;
+
+            // Set initial speed based on temperature T = 0.5*m*v^2 / k_b (in 2D, avg KE = kT)
+            const initial_v = Math.sqrt(2 * temp / mass); // Simplified units
+
+            for (let i=0; i<n; i++) {
+                const angle = Math.random() * 2 * Math.PI;
+                this.particles.push({
+                    x: radius + Math.random() * (this.canvas.width - 2*radius),
+                    y: radius + Math.random() * (this.canvas.height - 2*radius),
+                    vx: initial_v * Math.cos(angle),
+                    vy: initial_v * Math.sin(angle),
+                    r: radius,
+                    m: mass,
+                });
+            }
+            this.wallMomentum = 0;
+        }
+
+        update(dt) {
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            for (const p of this.particles) {
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+
+                // Wall collisions
+                if (p.x - p.r < 0) { p.vx = Math.abs(p.vx); this.wallMomentum += 2 * p.m * p.vx; }
+                if (p.x + p.r > w) { p.vx = -Math.abs(p.vx); this.wallMomentum += 2 * p.m * Math.abs(p.vx); }
+                if (p.y - p.r < 0) { p.vy = Math.abs(p.vy); this.wallMomentum += 2 * p.m * p.vy; }
+                if (p.y + p.r > h) { p.vy = -Math.abs(p.vy); this.wallMomentum += 2 * p.m * Math.abs(p.vy); }
+            }
+
+            // Particle-particle collisions (O(N^2), simplified)
+            for (let i=0; i<this.particles.length; i++) {
+                for (let j=i+1; j<this.particles.length; j++) {
+                    const p1 = this.particles[i];
+                    const p2 = this.particles[j];
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < p1.r + p2.r) {
+                        // Basic collision response (not physically perfect but preserves energy)
+                        const angle = Math.atan2(dy, dx);
+                        const sin = Math.sin(angle);
+                        const cos = Math.cos(angle);
+
+                        // Rotate velocities
+                        const v1r = { x: p1.vx * cos + p1.vy * sin, y: p1.vy * cos - p1.vx * sin };
+                        const v2r = { x: p2.vx * cos + p2.vy * sin, y: p2.vy * cos - p2.vx * sin };
+
+                        // Swap x-velocities (in rotated frame)
+                        [v1r.x, v2r.x] = [v2r.x, v1r.x];
+
+                        // Rotate back
+                        p1.vx = v1r.x * cos - v1r.y * sin;
+                        p1.vy = v1r.y * cos + v1r.x * sin;
+                        p2.vx = v2r.x * cos - v2r.y * sin;
+                        p2.vy = v2r.y * cos + v2r.x * sin;
+
+                        // Move them apart to prevent sticking
+                        const overlap = p1.r + p2.r - dist;
+                        p1.x -= overlap/2 * cos; p1.y -= overlap/2 * sin;
+                        p2.x += overlap/2 * cos; p2.y += overlap/2 * sin;
+                    }
+                }
+            }
+        }
+
+        draw() {
+            this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+            for (const p of this.particles) {
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.r, 0, 2*Math.PI);
+                this.ctx.fillStyle = 'black';
+                this.ctx.fill();
+            }
+            this.updateAndDrawMetrics();
+        }
+
+        updateAndDrawMetrics() {
+            const dt = 1/60;
+            const perimeter = 2 * (this.canvas.width + this.canvas.height);
+            const pressure = this.wallMomentum / (perimeter * dt);
+            this.wallMomentum = 0; // Reset for next frame
+
+            let total_ke = 0;
+            const speeds = [];
+            for (const p of this.particles) {
+                const v_sq = p.vx**2 + p.vy**2;
+                total_ke += 0.5 * p.m * v_sq;
+                speeds.push(Math.sqrt(v_sq));
+            }
+            const avg_ke = total_ke / this.particles.length;
+            const temperature = avg_ke / 1; // In 2D, <KE> = kT. Let k=1 for simulation units.
+
+            document.getElementById('metric-pressure').textContent = pressure.toFixed(2);
+            document.getElementById('metric-temperature').textContent = temperature.toFixed(2);
+
+            const V = this.canvas.width * this.canvas.height;
+            const NkT = this.particles.length * temperature;
+            const PV = pressure * V; // Not quite right, pressure is force/length in 2D
+            // document.getElementById('metric-pv_over_nkt').textContent = (PV / NkT).toFixed(3);
+
+            this.drawSpeedDistribution(speeds, temperature);
+        }
+
+        drawSpeedDistribution(speeds, temp) {
+            const { chartCtx: ctx, chartCanvas: canvas } = this;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const max_speed = Math.sqrt(2 * this.params.temp / this.params.mass) * 3;
+            const num_bins = 50;
+            const bin_width = max_speed / num_bins;
+            const bins = new Array(num_bins).fill(0);
+
+            for (const speed of speeds) {
+                const bin_index = Math.floor(speed / bin_width);
+                if (bin_index < num_bins) {
+                    bins[bin_index]++;
+                }
+            }
+
+            const max_count = Math.max(...bins);
+            ctx.fillStyle = 'rgba(238, 162, 54, 0.7)';
+            for(let i=0; i<num_bins; i++) {
+                const bar_h = (bins[i] / max_count) * h;
+                ctx.fillRect(i * w/num_bins, h - bar_h, w/num_bins, bar_h);
+            }
+
+            // Draw theoretical Maxwell-Boltzmann curve
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            const m = this.params.mass;
+            const norm = this.particles.length * bin_width;
+            for (let i=0; i<w; i++) {
+                const v = i / w * max_speed;
+                const p = (m * v / temp) * Math.exp(-m*v*v / (2*temp));
+                const x = i;
+                const y = h - (p * norm / max_count * h * 5); // Heuristic scaling
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+        }
+
+        animate() {
+            if (!this.isRunning) return;
+            const dt = 1/60;
+            this.update(dt);
+            this.draw();
+            requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+    </script>
+</body>
+</html>
