@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Eternal Schwarzschild Black Hole</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #e76f51; --secondary-color: #f4a261; --border-color: #444; --card-bg: #2c2c2e; --code-bg: #3a3a3c; --link-color: #e76f51; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--secondary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: crosshair; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Eternal Schwarzschild Black Hole</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">A journey through two universes, a black hole, and a white hole.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Inspector</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: A Bridge to Nowhere</h2>
+                    <p>The Penrose diagram for a black hole is one of the most fascinating and mind-bending maps in all of science. Unlike the simple diamond of flat spacetime, the map for the simplest, non-rotating, uncharged black hole—described by the Schwarzschild solution—reveals a shocking structure. It shows not just one universe, but two, connected by a wormhole, or an **Einstein-Rosen bridge**.</p>
+                    <p>The diagram is split into four regions:
+                    <ul>
+                        <li><strong>Region I:</strong> Our universe, or an identical, asymptotically flat spacetime.</li>
+                        <li><strong>Region II:</strong> The black hole interior. Once you enter this region, you can never leave. All paths inevitably lead to the crushing singularity.</li>
+                        <li><strong>Region III:</strong> A "parallel" universe, identical to our own.</li>
+                        <li><strong>Region IV:</strong> The "white hole." This is the time-reversal of a black hole. Nothing can enter it, things can only come out.</li>
+                    </ul>
+                    These regions are separated by **event horizons**, which are one-way membranes. In this diagram, they are the 45-degree lines. Crossing from Region I into Region II is a one-way trip into the black hole. Similarly, matter can emerge from the white hole (Region IV) into either our universe or the parallel one, but nothing can go back.</p>
+                    <p>The most tantalizing feature is the "bridge" connecting our universe to the other. Can we cross it? The diagram reveals the cruel answer: no. The bridge (the connection between Region I and III) exists, but it's dynamic. It pinches off faster than any signal—even light—can make it across. Trying to fly through the wormhole is impossible; you would need to travel faster than light, and you would inevitably crash into the future singularity that seals the path. This map shows us that while spacetimes can have incredibly complex structures, the laws of causality are absolute.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: From Schwarzschild to Kruskal-Szekeres</h2>
+                    <p>The journey to this diagram begins with the Schwarzschild metric, which describes spacetime outside a spherical mass `M`:</p>
+                    <p><code>ds² = -(1 - 2M/r)dt² + (1 - 2M/r)⁻¹dr² + r²dΩ²</code></p>
+                    <p>This metric has a problem at `r = 2M`, the Schwarzschild radius. The coefficient of `dt²` goes to zero, and the coefficient of `dr²` blows up. For decades, this was thought to be a physical singularity. However, it was later understood to be a mere **coordinate singularity**, an artifact of a poor choice of map, much like the North and South poles on a Mercator map of the Earth. The true, physical singularity lies at `r = 0`.</p>
+
+                    <h4>1. Kruskal-Szekeres Coordinates (T, X)</h4>
+                    <p>The solution is to find a better set of coordinates that are well-behaved at the event horizon. These are the Kruskal-Szekeres coordinates (T, X). The transformation is highly non-trivial and depends on which region you are in. For Region I (our universe, where `r > 2M`):</p>
+                    <p><code>T = (r/2M - 1)¹/² * e^(r/4M) * sinh(t/4M)</code></p>
+                    <p><code>X = (r/2M - 1)¹/² * e^(r/4M) * cosh(t/4M)</code></p>
+                    <p>In these coordinates, the metric takes a simple form: <code>ds² = (32M³/r)e^(-r/2M)(-dT² + dX²) + r²dΩ²</code>. Notice that the first part is just a conformal factor multiplying a flat Minkowski metric. This means that near the horizon, spacetime is smooth and light rays still travel at 45 degrees. In these coordinates, lines of constant `r` are hyperbolae `X² - T² = const`, and lines of constant `t` are straight lines through the origin `T/X = tanh(t/4M)`.</p>
+
+                    <h4>2. Conformal Mapping to the Penrose Diagram</h4>
+                    <p>The (T, X) coordinates still extend to infinity. We perform a final conformal mapping, similar to the Minkowski case, to bring infinity to a finite distance:
+                    <br><code>T' = T - X</code>
+                    <br><code>X' = T + X</code>
+                    <br><code>τ = tan⁻¹(X') + tan⁻¹(T')</code>
+                    <br><code>σ = tan⁻¹(X') - tan⁻¹(T')</code>
+                    <br>This final transformation maps the entire, maximally extended Schwarzschild spacetime into the finite Penrose diamond. The physical singularities at `r=0` are mapped to the jagged horizontal lines at the top and bottom, which are **spacelike** surfaces. The event horizons become the diagonals separating the four regions.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is an "eternal" black hole?</strong> It's a mathematical idealization that has existed for all time. It wasn't formed from a collapsing star. This is why it has a "white hole" counterpart in its past. Real astrophysical black holes are formed from collapse and have a different, simpler Penrose diagram.</li>
+                        <li><strong>What is a white hole?</strong> It's the time-reversal of a black hole. Just as nothing can escape a black hole's event horizon, nothing can enter a white hole's. It can be thought of as a source from which matter and energy can emerge, but it is unstable and not believed to exist in our universe.</li>
+                        <li><strong>Why is the singularity at r=0 "spacelike"?</strong> In the Penrose diagram, the singularity is a horizontal line. Lines of constant time (τ) are spacelike. This means the singularity is not a place in space, but a moment in time. Once you cross the event horizon, the singularity is in your future, and you are destined to hit it, just as you are destined to hit "tomorrow."</li>
+                        <li><strong>Can I use the Einstein-Rosen bridge to travel to the other universe?</strong> No. To get from a point in Region I to a point in Region III, you would have to travel faster than the speed of light. The "throat" of the wormhole expands from the past singularity and pinches off at the future singularity so quickly that not even light has time to make it across.</li>
+                        <li><strong>What do the lines of constant 'r' and 't' look like?</strong> In the Penrose diagram, lines of constant Schwarzschild `r` are hyperbolae opening either vertically (for `r>2M`) or horizontally (for `r<2M`). Lines of constant Schwarzschild `t` are straight lines passing through the center of the diagram.</li>
+                        <li><strong>Why is this called the "maximal extension" of Schwarzschild spacetime?</strong> Because the Kruskal-Szekeres coordinates cover every possible path (geodesic) that can exist in the spacetime. There are no "edges" except for the true physical singularities. The original Schwarzschild coordinates only covered Regions I and II.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class SchwarzschildMapper {
+                constructor(M = 1) { this.M = M; this.r_s = 2 * M; }
+
+                schwarzschildToKruskal(t, r) {
+                    const r_star = r + this.r_s * Math.log(Math.abs(r / this.r_s - 1));
+                    const u_null = t - r_star, v_null = t + r_star;
+                    if (r > this.r_s) {
+                        const U = -Math.exp(-u_null / (2 * this.r_s));
+                        const V = Math.exp(v_null / (2 * this.r_s));
+                        return { T: (V + U) / 2, X: (V - U) / 2 };
+                    } else {
+                        const U = Math.exp(u_null / (2 * this.r_s));
+                        const V = -Math.exp(-v_null / (2 * this.r_s));
+                        return { T: (V + U) / 2, X: (V - U) / 2 };
+                    }
+                }
+
+                kruskalToSchwarzschild(T, X) {
+                    const U = T - X, V = T + X;
+                    const r_term = 1 - U * V;
+                    if (r_term <= 0) return { r: NaN, t: NaN, region: 'Singularity' };
+                    const r = this.r_s * this.lambertW(r_term / Math.E);
+                    const t = (this.r_s / 2) * Math.log(-V / U);
+                    let region;
+                    if (V > 0 && U < 0) region = 'I (Our Universe)'; else if (T > Math.abs(X)) region = 'II (Black Hole)';
+                    else if (V < 0 && U > 0) region = 'III (Parallel Universe)'; else region = 'IV (White Hole)';
+                    return { r, t, region };
+                }
+
+                kruskalToPenrose(T, X) { return { tau: Math.atan(T + X) + Math.atan(T - X), sigma: Math.atan(T + X) - Math.atan(T - X) }; }
+                penroseToKruskal(tau, sigma) { const up = (tau-sigma)/2, vp = (tau+sigma)/2; return { T: Math.tan(vp), X: Math.tan(up) }; }
+                lambertW(x) { let w=x<10?Math.log(x<1e-6?1e-6:x):Math.log(x); for(let i=0;i<5;i++){const e=Math.exp(w);const d=w*e-x;w-=d/(e*(w+1)-(w+2)*d/(2*w+2));} return w; }
+            }
+
+            class CanvasManager {
+                constructor(c,m){this.canvas=c;this.ctx=c.getContext('2d');this.width=c.width;this.height=c.height;this.mapper=m;this.options={showR:true,showT:true};}
+                clear(){this.ctx.fillStyle='#000';this.ctx.fillRect(0,0,this.width,this.height);}
+                p2c(tau,sigma){return{x:(sigma/Math.PI)*(this.width/2)+this.width/2,y:(-tau/Math.PI)*(this.height/2)+this.height/2};}
+                drawGrid() {
+                    const regions = [{r_mult:1,t_mult:1},{r_mult:-1,t_mult:1},{r_mult:-1,t_mult:-1},{r_mult:1,t_mult:-1}];
+                    if(this.options.showR) {
+                        this.ctx.strokeStyle='rgba(255,255,255,0.15)';this.ctx.lineWidth=1;
+                        for (let r_val=0.25*this.mapper.r_s;r_val<3*this.mapper.r_s;r_val+=0.25*this.mapper.r_s){
+                            regions.forEach(reg=>{this.ctx.beginPath();for(let t=-40;t<=40;t+=0.5){const{T,X}=this.mapper.schwarzschildToKruskal(t,r_val);const{tau,sigma}=this.mapper.kruskalToPenrose(T*reg.r_mult,X*reg.r_mult);const{x,y}=this.p2c(tau,sigma);if(t===-40)this.ctx.moveTo(x,y);else this.ctx.lineTo(x,y);}this.ctx.stroke();});
+                        }
+                    }
+                    if(this.options.showT) {
+                         this.ctx.strokeStyle='rgba(233,196,106,0.15)';this.ctx.lineWidth=1;
+                         for(let t_val=-10; t_val<=10; t_val+=1){
+                            regions.forEach(reg=>{this.ctx.beginPath();for(let r=0.01;r<5*this.mapper.r_s;r+=0.1){const{T,X}=this.mapper.schwarzschildToKruskal(t_val*reg.t_mult,r);const{tau,sigma}=this.mapper.kruskalToPenrose(T*reg.r_mult,X*reg.r_mult);const{x,y}=this.p2c(tau,sigma);if(r===0.01)this.ctx.moveTo(x,y);else this.ctx.lineTo(x,y);}this.ctx.stroke();});
+                         }
+                    }
+                }
+                drawLabels(){this.ctx.fillStyle='#aaa';this.ctx.font='18px sans-serif';let p=this.p2c(0,0);this.ctx.fillText("I",p.x-10,p.y+5);p=this.p2c(Math.PI/2-0.4,0);this.ctx.fillText("II",p.x-10,p.y+20);p=this.p2c(0,-Math.PI+0.6);this.ctx.fillText("III",p.x+10,p.y+5);p=this.p2c(-Math.PI/2+0.4,0);this.ctx.fillText("IV",p.x-10,p.y-10);}
+                drawSingularities(){this.ctx.strokeStyle='#e76f51';this.ctx.lineWidth=4;this.ctx.beginPath();let p1=this.p2c(Math.PI/2,-Math.PI/2);let p2=this.p2c(Math.PI/2,Math.PI/2);this.ctx.moveTo(p1.x,p1.y);this.ctx.lineTo(p2.x,p2.y);p1=this.p2c(-Math.PI/2,-Math.PI/2);p2=this.p2c(-Math.PI/2,Math.PI/2);this.ctx.moveTo(p1.x,p1.y);this.ctx.lineTo(p2.x,p2.y);this.ctx.stroke();}
+                drawHorizons(){this.ctx.strokeStyle='#fff';this.ctx.setLineDash([5,5]);this.ctx.lineWidth=1.5;this.ctx.beginPath();let p1=this.p2c(-Math.PI/2,Math.PI/2);let p2=this.p2c(Math.PI/2,-Math.PI/2);this.ctx.moveTo(p1.x,p1.y);this.ctx.lineTo(p2.x,p2.y);p1=this.p2c(-Math.PI/2,-Math.PI/2);p2=this.p2c(Math.PI/2,Math.PI/2);this.ctx.moveTo(p1.x,p1.y);this.ctx.lineTo(p2.x,p2.y);this.ctx.stroke();this.ctx.setLineDash([]);}
+                drawPoint(x,y){this.ctx.fillStyle='#f4a261';this.ctx.beginPath();this.ctx.arc(x,y,5,0,2*Math.PI);this.ctx.fill();}
+                drawWorldline(pts,color){if(pts.length<2)return;this.ctx.strokeStyle=color;this.ctx.lineWidth=3;this.ctx.beginPath();this.ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)this.ctx.lineTo(pts[i].x,pts[i].y);this.ctx.stroke();}
+            }
+
+            class UI {
+                constructor(m){this.mapper=m;this.cm=new CanvasManager(DOM.canvas,m);this.worldlines=[];this.tool='hover';this.init();}
+                init(){this.buildControls();this.addEventListeners();this.redraw();}
+                buildControls(){DOM.controlsPanel.innerHTML=`<div class="control-group"><label><input type="checkbox" id="showR" checked> Show 'r' grid</label><br><label><input type="checkbox" id="showT" checked> Show 't' grid</label></div><div class="control-group"><label>Worldline Tool:</label><br><button id="tool-timelike">Timelike</button> <button id="tool-null">Null</button> <button id="tool-clear">Clear</button></div>`;document.getElementById('showR').onchange=e=>{this.cm.options.showR=e.target.checked;this.redraw();};document.getElementById('showT').onchange=e=>{this.cm.options.showT=e.target.checked;this.redraw();};document.querySelectorAll('[id^=tool-]').forEach(b=>b.onclick=e=>{this.tool=e.target.id.slice(5);if(this.tool==='clear'){this.worldlines=[];this.redraw();}});}
+                addEventListeners(){let drawing=false;let currentLine=[];DOM.canvas.onmousedown=e=>{if(this.tool==='hover'||this.tool==='clear')return;drawing=true;const{tau,sigma}=this.getPenroseCoords(e);currentLine=[{tau,sigma}];};DOM.canvas.onmouseup=()=>{if(!drawing)return;drawing=false;this.worldlines.push({points:currentLine,color:this.tool==='null'?'#e9c46a':'#2a9d8f'});};DOM.canvas.onmouseleave=()=>{drawing=false;};DOM.canvas.onmousemove=e=>{const{tau,sigma}=this.getPenroseCoords(e);this.redraw();if(drawing){const lastPt=currentLine[currentLine.length-1];const dt=tau-lastPt.tau,ds=sigma-lastPt.sigma;let nextTau=tau,nextSigma=sigma;if(this.tool==='null'){if(Math.abs(dt)>Math.abs(ds)){nextSigma=lastPt.sigma+ds/Math.abs(ds)*Math.abs(dt);}else{nextTau=lastPt.tau+dt/Math.abs(dt)*Math.abs(ds);}}else if(Math.abs(ds)>Math.abs(dt)){nextTau=lastPt.tau+dt;nextSigma=lastPt.sigma+ds/Math.abs(ds)*Math.abs(dt);}currentLine.push({tau:nextTau,sigma:nextSigma});this.drawWorldline({points:currentLine,color:'#fff'});}this.cm.drawPoint(e.offsetX,e.offsetY);this.updateInfo(tau,sigma);};}
+                getPenroseCoords(e){const rect=DOM.canvas.getBoundingClientRect();const x=e.clientX-rect.left,y=e.clientY-rect.top;return{sigma:(x-this.cm.w/2)/(this.cm.w/2)*Math.PI,tau:-(y-this.cm.h/2)/(this.cm.h/2)*Math.PI};}
+                redraw(){this.cm.clear();this.cm.drawGrid();this.cm.drawSingularities();this.cm.drawHorizons();this.cm.drawLabels();this.worldlines.forEach(l=>this.drawWorldline(l));}
+                drawWorldline(l){const pts=l.points.map(p=>this.cm.p2c(p.tau,p.sigma));this.cm.drawWorldline(pts,l.color);}
+                updateInfo(tau,sigma){const{T,X}=this.mapper.penroseToKruskal(tau,sigma);const{r,t,region}=this.mapper.kruskalToSchwarzschild(T,X);DOM.infoPanel.innerHTML=`<h4>Spacetime Inspector</h4><p><b>Region:</b> ${region||'N/A'}</p><p><b>Schwarzschild:</b><br> r/r&#x209B; = ${(r/this.mapper.r_s).toFixed(2)}, t/r&#x209B; = ${(t/this.mapper.r_s).toFixed(2)}</p><p><b>Kruskal:</b> T=${T.toFixed(2)}, X=${X.toFixed(2)}</p><p><b>Penrose:</b> τ=${tau.toFixed(3)}, σ=${sigma.toFixed(3)}</p>`;}
+            }
+            document.addEventListener('DOMContentLoaded',()=>new UI(new SchwarzschildMapper()));
+        })();
+    </script>
+</body>
+</html>

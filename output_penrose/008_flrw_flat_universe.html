@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Expanding FLRW Universe and the Particle Horizon</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #d90429; --secondary-color: #ef233c; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: default; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The FLRW Universe and the Growing Horizon</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Visualizing the expanding boundary of our observable universe.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram of a Flat, Matter-Dominated Universe</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: The Edge of Sight</h2>
+                    <p>Our universe began with the Big Bang and has been expanding ever since. Because the universe has a finite age (about 13.8 billion years) and the speed of light is finite, we cannot see the entire universe. There is a boundary to what we can observe, called the **particle horizon**. This isn't a physical wall, but a conceptual one: it's the current "edge" of the observable universe. It represents the distance that light, traveling uninterrupted since the very beginning of time, could have possibly reached us by today. As time goes on, light from more distant regions has more time to reach us, and so our particle horizon expands.</p>
+                    <p>This simulation visualizes the spacetime for a simplified "standard model" universe—one that is spatially flat and dominated by matter. Its Penrose diagram is a triangle.
+                    <ul>
+                        <li>The jagged line at the bottom represents the **Big Bang singularity**, the moment in the past from which everything originated.</li>
+                        <li>The right and left edges represent **future null infinity**, the destination of all light rays.</li>
+                        <li>The vertical lines represent galaxies that are "at rest" and are being carried apart by the expansion of space.</li>
+                    </ul>
+                    The key interactive feature is the time slider. You control the "present moment" for the central observer (Galaxy C). The diamond shape that appears is that observer's **past light cone**. The bottom tip of the diamond touches the Big Bang, and its width at any given time represents the size of the particle horizon at that moment. As you drag the slider forward in time, you can see this diamond grow, encompassing more and more of the other galaxies. You can see how, in the early universe, Galaxy E was outside our particle horizon (we couldn't see it yet), but at later times, it enters our observable patch of the cosmos.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Particle Horizon in an FLRW Spacetime</h2>
+                    <p>The Friedmann-Lemaître-Robertson-Walker (FLRW) metric describes a homogeneous, isotropic universe. For a spatially flat (`k=0`) universe, the metric is:</p>
+                    <p><code>ds² = -dt² + a(t)²[dr² + r²dΩ²]</code></p>
+                    <p>Here, `a(t)` is the scale factor, which describes the expansion of space. In an era dominated by matter (like most of our universe's history), the scale factor grows as `a(t) ∝ t²/³`.</p>
+
+                    <h4>The Big Bang Singularity</h4>
+                    <p>At `t=0`, the scale factor `a(t)` is zero. This is the **Big Bang singularity**. It is a spacelike singularity, meaning it is a moment in time, not a place in space. In the Penrose diagram, this is represented by the jagged horizontal line at the bottom (`τ = -σ` and `τ = σ - π`). All worldlines of comoving observers originate from this surface.</p>
+
+                    <h4>The Particle Horizon</h4>
+                    <p>The particle horizon, `d_p(t)`, is the maximum distance a comoving observer can see at a given cosmic time `t`. It is the distance that light could have traveled from the beginning of the universe (`t=0`) to time `t`. It is calculated by integrating the path of a light ray (`ds²=0`) from the beginning of time:</p>
+                    <p><code>d_p(t) = a(t) ∫₀ᵗ dt' / a(t')</code></p>
+                    <p>For a matter-dominated universe where `a(t) ∝ t²/³`, this integral evaluates to `d_p(t) = 3t`. This means the boundary of the observable universe recedes faster than the speed of light (`c=1` in our units), which is why new galaxies can "enter" our horizon over time. In the Penrose diagram, the particle horizon for an observer at a time `τ` is simply their past light cone, which forms a diamond shape with the Big Bang singularity at its past vertex.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why is the Big Bang singularity a jagged line?</strong> This is a convention to show that it is a physical singularity where the curvature of spacetime becomes infinite, and our laws of physics break down. It's not a smooth, predictable boundary.</li>
+                        <li><strong>Is the particle horizon the same as the event horizon in de Sitter space?</strong> No, they are almost opposite concepts. A particle horizon is a boundary in our *past*—it limits what we can currently see. A cosmological event horizon is a boundary in our *future*—it limits what we will *ever* be able to see.</li>
+                        <li><strong>If the particle horizon expands, can we eventually see the whole universe?</strong> In this specific model (flat, matter-only), yes. As `t → ∞`, the particle horizon also goes to infinity, eventually encompassing any comoving object, no matter how far away. However, in our *actual* universe, which has dark energy, the future is described by de Sitter space, which *does* have an event horizon. This means there are distant galaxies we see today that we will never be able to see in the far future, as the accelerating expansion will carry them beyond our event horizon.</li>
+                        <li><strong>What is the "flatness problem"?</strong> The `k=0` (flat) universe is an unstable solution. Any tiny deviation from perfect flatness in the early universe would have been magnified enormously by the expansion. The fact that we observe our universe to be very close to flat today is a major puzzle, which is one of the key problems solved by the theory of cosmic inflation.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class FLRWManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.num_observers = 7;
+                    this.observers = [];
+                    this.currentTime = 0.5; // From 0 to 1
+                    this.init();
+                }
+
+                init() {
+                    for (let i = 0; i < this.num_observers; i++) {
+                        const x = (i + 1) * (this.width / (this.num_observers + 1));
+                        this.observers.push({ x, name: `Galaxy ${String.fromCharCode(65 + i)}` });
+                    }
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawDiagram();
+                    this.drawObservers();
+                    this.drawParticleHorizon();
+                    this.updateInfo();
+                }
+
+                drawDiagram() {
+                    this.ctx.strokeStyle = '#444'; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath(); this.ctx.moveTo(this.width / 2, 0); this.ctx.lineTo(this.width, this.height);
+                    this.ctx.moveTo(this.width / 2, 0); this.ctx.lineTo(0, this.height);
+                    this.ctx.stroke();
+
+                    this.ctx.strokeStyle = '#d90429'; this.ctx.lineWidth = 4;
+                    this.ctx.beginPath();
+                    for(let i=0; i<=this.width; i++) {
+                        const x = i;
+                        const y = this.height - Math.abs(x - this.width/2) + 10 * Math.random();
+                        if(i===0) this.ctx.moveTo(x,y); else this.ctx.lineTo(x,y);
+                    }
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = '#aaa'; this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("Future Null Infinity (ℐ⁺)", 10, this.height - 10);
+                    this.ctx.fillText("Big Bang Singularity", this.width/2 - 50, this.height - 20);
+                }
+
+                drawObservers() {
+                    for (let i = 0; i < this.observers.length; i++) {
+                        const obs = this.observers[i];
+                        this.ctx.strokeStyle = '#ef233c'; this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(obs.x, this.height); this.ctx.lineTo(this.width/2, 0);
+                        this.ctx.stroke();
+                        this.ctx.fillStyle = '#fff';
+                        this.ctx.fillText(obs.name, obs.x - 10, this.height - 5);
+                    }
+                }
+
+                drawParticleHorizon() {
+                    const obs_x = this.width / 2;
+                    const obs_y = this.height * (1 - this.currentTime);
+
+                    this.ctx.fillStyle = 'rgba(137, 207, 240, 0.2)';
+                    this.ctx.strokeStyle = '#89CFF0';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(obs_x, obs_y);
+
+                    // Past light cone
+                    const cone_tip_y = obs_y + obs_x;
+                    const cone_tip_x = 0;
+                    if(cone_tip_y > this.height) { // hits singularity
+                        const intersect_y = this.height;
+                        const intersect_x = obs_x - (this.height - obs_y);
+                        this.ctx.lineTo(intersect_x, intersect_y);
+                        this.ctx.lineTo(this.width - intersect_x, intersect_y);
+
+                    } else {
+                         this.ctx.lineTo(cone_tip_x, cone_tip_y);
+                    }
+
+                    this.ctx.closePath();
+                    this.ctx.fill();
+                    this.ctx.stroke();
+
+                    // Draw observer's "now" point
+                    this.ctx.fillStyle = '#80ed99';
+                    this.ctx.beginPath();
+                    this.ctx.arc(obs_x, obs_y, 8, 0, 2*Math.PI);
+                    this.ctx.fill();
+                }
+
+                updateInfo() {
+                     const obs_x = this.width / 2;
+                     const obs_y = this.height * (1 - this.currentTime);
+                     let visible_galaxies = [];
+                     this.observers.forEach(obs => {
+                         const dx = Math.abs(obs.x - obs_x);
+                         const dy = this.height - obs_y;
+                         if (dx < dy) {
+                             visible_galaxies.push(obs.name);
+                         }
+                     });
+                     DOM.infoPanel.innerHTML = `<h4>Observable Galaxies:</h4><p>${visible_galaxies.join(', ')}</p>`;
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new FLRWManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><label for="time-slider">Cosmic Time: <span id="time-val">${this.manager.currentTime.toFixed(2)}</span></label><input type="range" id="time-slider" min="0.01" max="1" value="0.5" step="0.01"></div>`;
+                    document.getElementById('time-slider').oninput = (e) => {
+                        this.manager.currentTime = parseFloat(e.target.value);
+                        document.getElementById('time-val').textContent = this.manager.currentTime.toFixed(2);
+                        this.manager.redraw();
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

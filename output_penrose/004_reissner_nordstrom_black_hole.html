@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Reissner-Nordström Black Hole's Infinite Universes</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #fca311; --secondary-color: #e5e5e5; --border-color: #444; --card-bg: #2c2c2e; --code-bg: #3a3a3c; --link-color: #fca311; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: crosshair; }
+        /* Other styles from previous simulations */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Reissner-Nordström Black Hole</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">A Gateway to Infinite Universes?</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel" style="flex: 3;">
+                    <h3>Penrose Diagram</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar" style="flex: 1;">
+                    <h2>Controls & Inspector</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: Avoiding the End, Finding Infinity</h2>
+                    <p>What if a black hole's singularity wasn't an inevitable, all-crushing end? The Reissner-Nordström black hole, a solution describing a black hole with electric charge but no rotation, presents exactly this bizarre possibility. Its Penrose diagram reveals one of the strangest structures in theoretical physics: a gateway to an infinite number of other universes.</p>
+                    <p>Unlike the Schwarzschild black hole, which has one event horizon, a charged black hole has two.
+                    <ul>
+                        <li>An **outer event horizon**, which is much like the one we've seen before. Once you cross it, you cannot return to your original universe.</li>
+                        <li>An **inner Cauchy horizon**. This is a new, more mysterious boundary. Crossing this horizon is what allows access to the other universes.</li>
+                    </ul>
+                    The most profound difference is the singularity. In the Schwarzschild case, the singularity was a "spacelike" line—a moment in time that you were guaranteed to hit. Here, the singularity is **"timelike"**. It's a place in space, not a moment in time. This means an intrepid traveler who crosses both horizons can, in principle, look at the singularity from a safe distance and choose to avoid it, continuing their journey into a new region of spacetime.</p>
+                    <p>The Penrose diagram for this spacetime looks like an infinite ladder. Each "rung" of the ladder is a new universe. By crossing the outer and inner horizons, you can leave your universe (Universe #1), avoid the singularity, and emerge from a white hole's inner horizon into a completely new one (Universe #2). From there, you could repeat the process, entering that universe's black hole to reach Universe #3, and so on, forever. However, this incredible journey comes with a major caveat: the inner horizon is believed to be violently unstable. Any tiny bit of energy falling in would create an infinite energy shockwave, destroying any would-be traveler. So while it's a mathematical possibility, it's almost certainly not a practical one.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Two Horizons and a Timelike Singularity</h2>
+                    <p>The Reissner-Nordström metric is given by:</p>
+                    <p><code>ds² = -f(r)dt² + f(r)⁻¹dr² + r²dΩ²</code>, where <code>f(r) = (1 - 2M/r + Q²/r²)</code></p>
+                    <p>Here, `M` is the mass and `Q` is the electric charge. The horizons are the locations where `f(r) = 0`. This quadratic equation has two solutions:</p>
+                    <p><code>r₊ = M + √(M² - Q²)</code> (Outer event horizon)</p>
+                    <p><code>r₋ = M - √(M² - Q²)</code> (Inner Cauchy horizon)</p>
+                    <p>For a black hole to form, we need `M ≥ |Q|`. The case `M = |Q|` is an "extremal" black hole with only one horizon.</p>
+
+                    <h4>The Infinite Ladder</h4>
+                    <p>To create the Penrose diagram, a series of coordinate transformations similar to the Kruskal-Szekeres case are performed, but they are more complex due to the two horizons. The resulting maximal extension of the spacetime reveals an infinite chain of regions. A journey from our universe (Region I) involves the following steps:</p>
+                    <ol>
+                        <li>Cross the outer horizon `r₊` into a region (`r₋ < r < r₊`) that is like a black hole interior.</li>
+                        <li>Cross the inner horizon `r₋` into a new region (`r > r₊`) that is the interior of a white hole in another universe.</li>
+                        <li>Emerge from that white hole's outer horizon into a new asymptotically flat universe (Region I').</li>
+                    </ol>
+                    This process can be repeated infinitely. The singularity at `r=0` is now a vertical line in the diagram, representing a timelike path. An observer can travel "alongside" it in time without ever hitting it, unlike the spacelike singularity in the Schwarzschild case which stretched across all of space at a future moment.</p>
+
+                    <h4>The Cauchy Horizon Instability</h4>
+                    <p>The inner horizon, `r₋`, is a Cauchy horizon. This is a boundary beyond which the future is no longer uniquely predictable from the past. While mathematically sound, such horizons are thought to be physically unstable. Any light ray or particle falling into the black hole gets infinitely blueshifted (gains infinite energy) as it approaches the Cauchy horizon from the perspective of an observer crossing it later. This creates an infinitely energetic shockwave that would not only destroy any traveler but would also likely collapse the wormhole structure, turning the timelike singularity into a more familiar spacelike one.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is a Cauchy horizon?</strong> It is the boundary of the region of spacetime that can be predicted from a given set of initial conditions. Crossing a Cauchy horizon means entering a region whose events are not determined by the past of the universe you came from.</li>
+                        <li><strong>Why is the singularity timelike?</strong> The charge of the black hole creates a repulsive electrostatic force that counteracts gravity. This repulsion is strong enough at the center to prevent the complete collapse of spacetime into a single spacelike moment. Instead, the singularity is confined to a "place" (`r=0`) that persists for all time.</li>
+                        <li><strong>What happens if Q > M?</strong> In this case, `f(r)` is always positive, meaning there are no horizons. The singularity at `r=0` is not hidden behind an event horizon. This is called a "naked singularity." According to the Cosmic Censorship Hypothesis, such objects should not be able to form in nature from realistic collapse.</li>
+                        <li><strong>What is an extremal black hole?</strong> This is the special case where `Q = M`. The inner and outer horizons merge into a single horizon at `r = M`. The interior structure is different, and the temperature of an extremal black hole is zero.</li>
+                        <li><strong>Does adding charge make the black hole bigger or smaller?</strong> The outer event horizon `r₊` is always smaller than the Schwarzschild radius `2M` for a given mass `M` (since `r₊ = M + √(M² - Q²)`). So, adding charge effectively shrinks the "point of no return."</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class RNMapper {
+                constructor(M, Q) { this.updateParams(M, Q); }
+                updateParams(M, Q) {
+                    this.M = M; this.Q = Q;
+                    if (M*M < Q*Q) this.Q = M; // Prevent naked singularity
+                    const delta = Math.sqrt(this.M*this.M - this.Q*this.Q);
+                    this.r_plus = this.M + delta;
+                    this.r_minus = this.M - delta;
+                    this.kappa_plus = (this.r_plus - this.r_minus) / (2 * this.r_plus * this.r_plus);
+                    this.kappa_minus = (this.r_minus - this.r_plus) / (2 * this.r_minus * this.r_minus);
+                }
+            }
+
+            class CanvasManager {
+                constructor(c, m) { this.canvas = c; this.ctx = c.getContext('2d'); this.width = c.width; this.height = c.height; this.mapper = m; this.worldlines = []; this.view = { y: 0, scale: 1 }; }
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawGrid();
+                    this.worldlines.forEach(l => this.drawWorldline(l.points, l.color));
+                }
+                drawGrid() {
+                    const blockHeight = this.height * 0.8;
+                    this.ctx.strokeStyle = '#444'; this.ctx.lineWidth = 1;
+                    for (let i = -3; i <= 3; i++) {
+                        const cy = this.height / 2 - i * blockHeight * this.view.scale + this.view.y;
+                        if (cy < -blockHeight || cy > this.height + blockHeight) continue;
+
+                        this.ctx.save();
+                        this.ctx.translate(this.width/2, cy);
+                        this.ctx.rotate(Math.PI/4);
+                        const w = (blockHeight / Math.sqrt(2));
+                        this.ctx.strokeRect(-w/2, -w/2, w, w);
+                        this.ctx.restore();
+
+                        this.ctx.strokeStyle = (i % 2 === 0) ? '#fca311' : '#e76f51';
+                        this.ctx.lineWidth = 3;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.width/2, cy - blockHeight/2 * this.view.scale);
+                        this.ctx.lineTo(this.width/2, cy + blockHeight/2 * this.view.scale);
+                        this.ctx.stroke();
+                    }
+                }
+                drawWorldline(pts, color) { if (pts.length < 2) return; this.ctx.strokeStyle = color; this.ctx.lineWidth = 2.5; this.ctx.beginPath(); this.ctx.moveTo(pts[0].x, pts[0].y * this.view.scale + this.view.y); for (let i = 1; i < pts.length; i++) this.ctx.lineTo(pts[i].x, pts[i].y * this.view.scale + this.view.y); this.ctx.stroke(); }
+            }
+
+            class UI {
+                constructor() { this.mapper = new RNMapper(1, 0.95); this.manager = new CanvasManager(DOM.canvas, this.mapper); this.init(); }
+                init() { this.buildControls(); this.addEventListeners(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><label for="q-slider">Charge (Q/M): <span id="q-val">0.95</span></label><input type="range" id="q-slider" min="0.05" max="1.0" value="0.95" step="0.01"></div><div class="control-group"><button id="preset-journey">Preset Journey</button><button id="clear">Clear</button></div>`;
+                    document.getElementById('q-slider').oninput = e => { const q = parseFloat(e.target.value); document.getElementById('q-val').textContent = q.toFixed(2); this.mapper.updateParams(1, q); this.manager.redraw(); };
+                    document.getElementById('clear').onclick = () => { this.manager.worldlines = []; this.manager.redraw(); };
+                    document.getElementById('preset-journey').onclick = () => this.drawPresetJourney();
+                }
+                addEventListeners() {
+                    let drawing = false, currentLine = [];
+                    DOM.canvas.onmousedown = e => { drawing = true; const y = (e.offsetY - this.manager.view.y) / this.manager.view.scale; currentLine = [{ x: e.offsetX, y: y }]; };
+                    DOM.canvas.onmouseup = () => { if(!drawing) return; drawing = false; this.manager.worldlines.push({ points: currentLine, color: '#f15bb5' }); };
+                    DOM.canvas.onmouseleave = () => { drawing = false; };
+                    DOM.canvas.onmousemove = e => { if (!drawing) return; const y = (e.offsetY - this.manager.view.y) / this.manager.view.scale; currentLine.push({ x: e.offsetX, y: y }); this.manager.redraw(); this.manager.drawWorldline(currentLine, '#fff'); };
+                    DOM.canvas.onwheel = e => { e.preventDefault(); this.manager.view.y += e.deltaY * -1; this.manager.redraw(); };
+                }
+                drawPresetJourney() {
+                    this.manager.worldlines = []; const journey = [];
+                    const h = this.manager.height, w = this.manager.width;
+                    const blockHeight = h * 0.8;
+                    journey.push({x: w/2, y: h/2 + blockHeight/2 - 20});
+                    journey.push({x: w/2, y: h/2 + blockHeight/4});
+                    journey.push({x: w/2+20, y: h/2});
+                    journey.push({x: w/2, y: h/2 - blockHeight/4});
+                    journey.push({x: w/2, y: h/2 - blockHeight/2 + 20});
+                    this.manager.worldlines.push({points: journey, color: '#9b5de5'});
+                    this.manager.redraw();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: Interactive Guide to Minkowski Spacetime</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #2a9d8f; --secondary-color: #e9c46a; --border-color: #444; --card-bg: #2c2c2e; --code-bg: #3a3a3c; --link-color: #2a9d8f; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--secondary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 1; min-width: 450px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; max-width: 400px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; }
+        .control-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 500; margin-bottom: 5px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
+        button:hover { background-color: #248a7f; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Guide to Minkowski Spacetime & its Penrose Diagram</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Mapping an infinite universe onto a finite page.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Minkowski Spacetime (t, x)</h3>
+                    <canvas id="minkowski-canvas"></canvas>
+                </div>
+                <div class="visual-panel">
+                    <h3>Penrose Diagram (τ, σ)</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Information</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: How to Map Infinity</h2>
+                    <p>Imagine trying to draw a map of the entire Earth. A globe does it perfectly, but a flat map always has distortions. The Mercator projection, for example, makes Greenland look as big as Africa. Spacetime, the fabric of our universe, presents an even bigger challenge: it's infinite. How can you possibly draw a map of an infinite space on a finite piece of paper (or a computer screen)? This is the problem that Penrose diagrams solve.</p>
+                    <p>The simplest universe is **Minkowski spacetime**—the flat, unchanging spacetime of Einstein's special relativity. It extends infinitely in all directions and for all time. If we try to draw it, we can only ever show a tiny piece. We can't see "all" of it at once, which makes it hard to understand the global, causal structure. For example, where do light rays that travel forever ultimately go? Where did they come from?</p>
+                    <p>A Penrose diagram is a clever trick, a special kind of map projection. It squishes the infinite Minkowski spacetime into a finite shape, usually a diamond. It does this using a mathematical technique called a **conformal transformation**. The key feature of this transformation is that it preserves angles. On our spacetime map, angles determine causality—the paths of light rays always make a 45-degree angle. By preserving these angles, the Penrose diagram gives us a distorted but causally accurate picture of the *entire* spacetime. We can see the ultimate origin and destination of any light ray and understand the causal relationships between any two points, no matter how far apart.</p>
+                    <p>In this simulation, you can interact with both the standard view of Minkowski space and its Penrose diagram. Click on one to see the corresponding point on the other. Draw the path of a spaceship or a light ray and see how its entire infinite journey is neatly mapped onto the finite diamond. This tool allows us to study the structure of infinity itself.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Conformal Transformation of Minkowski Space</h2>
+                    <p>The construction of a Penrose diagram involves a series of coordinate transformations designed to bring points at infinity to a finite distance. We start with the standard 1+1 dimensional Minkowski metric: <code>ds² = -dt² + dx²</code>.</p>
+
+                    <h4>1. Null Coordinates (u, v)</h4>
+                    <p>The first step is to switch to null or "light-cone" coordinates. These coordinates are defined along the paths of light rays.
+                    <br><code>u = t - x</code>
+                    <br><code>v = t + x</code>
+                    <br>In these coordinates, the metric becomes <code>ds² = -du dv</code>. Lines of constant `u` and constant `v` are the paths of light rays moving to the right and left, respectively. The entire spacetime is now a grid where the axes are at 45 degrees to the horizontal.</p>
+
+                    <h4>2. Conformal Compression (u', v')</h4>
+                    <p>The coordinates `u` and `v` still extend to infinity. The key trick is to compress them into a finite range using the arctangent function. We define new coordinates:
+                    <br><code>u' = tan⁻¹(u)</code>
+                    <br><code>v' = tan⁻¹(v)</code>
+                    <br>Now, as `u` and `v` go from -∞ to +∞, `u'` and `v'` go from -π/2 to +π/2. The entire infinite spacetime is now mapped to a finite diamond-shaped region in the (u', v') plane.</p>
+
+                    <h4>3. Temporal and Spatial Coordinates (τ, σ)</h4>
+                    <p>Finally, for better visualization, we rotate the diamond back so that time is vertical and space is horizontal. We define the final Penrose coordinates (τ, σ) as:
+                    <br><code>τ = v' + u'</code>
+                    <br><code>σ = v' - u'</code>
+                    <br>The metric in these new coordinates is <code>ds² = Ω²(-dτ² + dσ²)</code>, where <code>Ω² = (1/4)sec²(u')sec²(v')</code>. This is the crucial result: the metric is the same as the original Minkowski metric, just multiplied by a conformal factor Ω². Because the causal structure only depends on the <code>-dτ² + dσ²</code> part, and not the overall scale factor, we can be sure that light cones look the same in the Penrose diagram as they do in the original spacetime. We have successfully mapped the entire infinite spacetime onto a finite diamond without distorting its causal structure.</p>
+
+                    <h4>Interpreting the Boundaries</h4>
+                    <ul>
+                        <li><strong>Future Timelike Infinity (i⁺):</strong> The top corner of the diamond. This is the point where all massive, forward-moving particles eventually end up.</li>
+                        <li><strong>Past Timelike Infinity (i⁻):</strong> The bottom corner. This is the point from which all massive particles originated in the infinite past.</li>
+                        <li><strong>Spacelike Infinity (i⁰):</strong> The right and left corners. This represents the limit of all spacelike paths.</li>
+                        <li><strong>Future Null Infinity (ℐ⁺, "scri-plus"):</strong> The two upper edges of the diamond. This is the destination for all light rays that travel outwards forever.</li>
+                        <li><strong>Past Null Infinity (ℐ⁻, "scri-minus"):</strong> The two lower edges. This is the origin of all light rays that come in from the infinite past.</li>
+                    </ul>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is a conformal transformation?</strong> A transformation that preserves angles but not necessarily distances. It's like resizing a shape without skewing it. This is vital for Penrose diagrams because the causal structure of spacetime (what can influence what) is determined by the 45-degree angles of light cones.</li>
+                        <li><strong>Is the Penrose diagram a real "place"?</strong> No, it's a mathematical map, not a physical object. It's a tool for visualizing the global structure of a spacetime. The distortion of distances is extreme; a single point on the boundary of the diagram represents an infinite region of the actual spacetime.</li>
+                        <li><strong>Where is the point (t=0, x=0) on the diagram?</strong> It's at the very center of the diamond (τ=0, σ=0).</li>
+                        <li><strong>What does a horizontal line in the diagram represent?</strong> A line of constant τ. In the original spacetime, this corresponds to a surface that is "spacelike" everywhere.</li>
+                        <li><strong>What does a 45-degree line represent?</strong> The path of a light ray (a null geodesic). This is true in both the original spacetime and the Penrose diagram.</li>
+                        <li><strong>Can something travel from past null infinity to future null infinity?</strong> Yes, a light ray can do this. It represents a photon that has existed for all of time, traveling from one end of the universe to the other.</li>
+                        <li><strong>Can a massive particle reach null infinity?</strong> No. Massive particles must travel at less than the speed of light, so their worldlines always make an angle *less* than 45 degrees with the vertical. They must start at past timelike infinity (i⁻) and end at future timelike infinity (i⁺).</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+
+            const DOM = {
+                minkowskiCanvas: document.getElementById('minkowski-canvas'),
+                penroseCanvas: document.getElementById('penrose-canvas'),
+                controlsPanel: document.getElementById('controls-panel'),
+                infoPanel: document.getElementById('info-panel'),
+            };
+
+            class PenroseMinkowskiMapper {
+                constructor() {
+                    this.minkowskiRange = { t: 10, x: 10 };
+                }
+
+                // Forward transformations
+                minkowskiToNull(t, x) { return { u: t - x, v: t + x }; }
+                nullToCompressed(u, v) { return { up: Math.atan(u), vp: Math.atan(v) }; }
+                compressedToPenrose(up, vp) { return { tau: vp + up, sigma: vp - up }; }
+
+                minkowskiToPenrose(t, x) {
+                    const { u, v } = this.minkowskiToNull(t, x);
+                    const { up, vp } = this.nullToCompressed(u, v);
+                    return this.compressedToPenrose(up, vp);
+                }
+
+                // Inverse transformations
+                penroseToCompressed(tau, sigma) { return { up: (tau - sigma) / 2, vp: (tau + sigma) / 2 }; }
+                compressedToNull(up, vp) { return { u: Math.tan(up), v: Math.tan(vp) }; }
+                nullToMinkowski(u, v) { return { t: (v + u) / 2, x: (v - u) / 2 }; }
+
+                penroseToMinkowski(tau, sigma) {
+                    const { up, vp } = this.penroseToCompressed(tau, sigma);
+                    // Check if we are outside the valid range of atan
+                    if (Math.abs(up) >= Math.PI / 2 || Math.abs(vp) >= Math.PI / 2) return null;
+                    const { u, v } = this.compressedToNull(up, vp);
+                    return this.nullToMinkowski(u, v);
+                }
+            }
+
+            class CanvasManager {
+                constructor(canvas, type) {
+                    this.canvas = canvas;
+                    this.ctx = canvas.getContext('2d');
+                    this.type = type; // 'minkowski' or 'penrose'
+                    this.width = canvas.width;
+                    this.height = canvas.height;
+                }
+
+                clear() {
+                    this.ctx.fillStyle = '#000000';
+                    this.ctx.fillRect(0, 0, this.width, this.height);
+                }
+
+                drawGrid() {
+                    this.ctx.strokeStyle = '#333';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= 10; i++) {
+                        const p = i / 10;
+                        this.ctx.moveTo(p * this.width, 0); this.ctx.lineTo(p * this.width, this.height);
+                        this.ctx.moveTo(0, p * this.height); this.ctx.lineTo(this.width, p * this.height);
+                    }
+                    this.ctx.stroke();
+                }
+
+                drawMinkowskiAxes(range) {
+                    this.ctx.strokeStyle = '#888';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.width / 2, 0); this.ctx.lineTo(this.width / 2, this.height); // t-axis
+                    this.ctx.moveTo(0, this.height / 2); this.ctx.lineTo(this.width, this.height / 2); // x-axis
+                    this.ctx.stroke();
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText('t', this.width/2 + 5, 15);
+                    this.ctx.fillText('x', this.width - 15, this.height/2 - 5);
+                }
+
+                drawPenroseDiamond() {
+                    this.ctx.strokeStyle = '#fff';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.width / 2, 0); this.ctx.lineTo(this.width, this.height / 2);
+                    this.ctx.lineTo(this.width / 2, this.height); this.ctx.lineTo(0, this.height / 2);
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = '#e9c46a';
+                    this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("i⁺", this.width/2 - 5, 15);
+                    this.ctx.fillText("i⁻", this.width/2 - 5, this.height - 5);
+                    this.ctx.fillText("i⁰", this.width - 15, this.height/2 + 5);
+                    this.ctx.fillText("i⁰", 5, this.height/2 + 5);
+                    this.ctx.fillText("ℐ⁺", this.width - 40, this.height/2 - 30);
+                    this.ctx.fillText("ℐ⁻", 40, this.height/2 + 40);
+                }
+
+                drawPoint(x, y, color = '#f00') {
+                    this.ctx.fillStyle = color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                }
+
+                drawWorldline(points, color = '#2a9d8f') {
+                    if (points.length < 2) return;
+                    this.ctx.strokeStyle = color;
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(points[0].x, points[0].y);
+                    for (let i = 1; i < points.length; i++) {
+                        this.ctx.lineTo(points[i].x, points[i].y);
+                    }
+                    this.ctx.stroke();
+                }
+            }
+
+            class UI {
+                constructor(mapper) {
+                    this.mapper = mapper;
+                    this.minkowskiManager = new CanvasManager(DOM.minkowskiCanvas);
+                    this.penroseManager = new CanvasManager(DOM.penroseCanvas);
+                    this.worldlines = [];
+                    this.currentTool = 'hover';
+                    this.init();
+                }
+
+                init() {
+                    this.buildControls();
+                    this.addEventListeners();
+                    this.redrawAll();
+                }
+
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                            <label>Tool:</label>
+                            <button id="tool-hover" class="active">Hover & Inspect</button>
+                            <button id="tool-timelike">Draw Timelike</button>
+                            <button id="tool-null">Draw Null</button>
+                            <button id="tool-spacelike">Draw Spacelike</button>
+                            <button id="tool-clear">Clear Worldlines</button>
+                        </div>
+                    `;
+                    document.querySelectorAll('#controls-panel button').forEach(btn => {
+                        btn.onclick = (e) => {
+                            this.currentTool = e.target.id.replace('tool-','');
+                            document.querySelectorAll('#controls-panel button').forEach(b => b.classList.remove('active'));
+                            e.target.classList.add('active');
+                            if (this.currentTool === 'clear') {
+                                this.worldlines = [];
+                                this.redrawAll();
+                                this.currentTool = 'hover';
+                                document.getElementById('tool-hover').classList.add('active');
+                            }
+                        };
+                    });
+                }
+
+                addEventListeners() {
+                    let drawing = false;
+                    let currentLine = [];
+
+                    DOM.minkowskiCanvas.onmousedown = (e) => {
+                        if (this.currentTool === 'hover') return;
+                        drawing = true;
+                        currentLine = [this.getMinkowskiCoords(e)];
+                    };
+
+                    DOM.minkowskiCanvas.onmousemove = (e) => {
+                        const minkPt = this.getMinkowskiCoords(e);
+                        const penrosePt = this.mapper.minkowskiToPenrose(minkPt.t, minkPt.x);
+                        this.redrawAll();
+                        this.updateInfo(minkPt, penrosePt);
+
+                        if (drawing) {
+                            currentLine.push(minkPt);
+                            this.drawAllWorldlines();
+                            this.drawCurrentWorldline(currentLine);
+                        } else {
+                            this.minkowskiManager.drawPoint(e.offsetX, e.offsetY);
+                            const penroseCanvasCoords = this.penroseToCanvas(penrosePt.tau, penrosePt.sigma);
+                            this.penroseManager.drawPoint(penroseCanvasCoords.x, penroseCanvasCoords.y);
+                        }
+                    };
+
+                    DOM.minkowskiCanvas.onmouseup = () => {
+                        if (drawing) {
+                            this.worldlines.push(currentLine);
+                            currentLine = [];
+                        }
+                        drawing = false;
+                    };
+
+                     DOM.minkowskiCanvas.onmouseleave = () => { this.redrawAll(); this.drawAllWorldlines(); };
+                }
+
+                getMinkowskiCoords(e) {
+                    const rect = DOM.minkowskiCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const t = (this.minkowskiManager.height / 2 - y) / (this.minkowskiManager.height / 2) * this.mapper.minkowskiRange.t;
+                    const mx = (x - this.minkowskiManager.width / 2) / (this.minkowskiManager.width / 2) * this.mapper.minkowskiRange.x;
+                    return { t, x: mx };
+                }
+
+                minkowskiToCanvas(t, x) {
+                    const canvasX = (x / this.mapper.minkowskiRange.x) * (this.minkowskiManager.width / 2) + this.minkowskiManager.width / 2;
+                    const canvasY = (-t / this.mapper.minkowskiRange.t) * (this.minkowskiManager.height / 2) + this.minkowskiManager.height / 2;
+                    return { x: canvasX, y: canvasY };
+                }
+
+                penroseToCanvas(tau, sigma) {
+                    const canvasX = (sigma / Math.PI) * (this.penroseManager.width / 2) + this.penroseManager.width / 2;
+                    const canvasY = (-tau / Math.PI) * (this.penroseManager.height / 2) + this.penroseManager.height / 2;
+                    return { x: canvasX, y: canvasY };
+                }
+
+                redrawAll() {
+                    this.minkowskiManager.clear();
+                    this.minkowskiManager.drawGrid();
+                    this.minkowskiManager.drawMinkowskiAxes(this.mapper.minkowskiRange);
+                    this.penroseManager.clear();
+                    this.penroseManager.drawPenroseDiamond();
+                }
+
+                drawAllWorldlines() {
+                    this.worldlines.forEach(line => this.drawCurrentWorldline(line));
+                }
+
+                drawCurrentWorldline(line) {
+                    const minkowskiCanvasPoints = line.map(p => this.minkowskiToCanvas(p.t, p.x));
+                    const penroseCanvasPoints = line.map(p => this.mapper.minkowskiToPenrose(p.t, p.x))
+                                                    .map(p => this.penroseToCanvas(p.tau, p.sigma));
+                    this.minkowskiManager.drawWorldline(minkowskiCanvasPoints);
+                    this.penroseManager.drawWorldline(penroseCanvasPoints);
+                }
+
+                updateInfo(minkPt, penrosePt) {
+                    DOM.infoPanel.innerHTML = `
+                        <h4>Coordinate Inspector</h4>
+                        <p><b>Minkowski:</b><br> t=${minkPt.t.toFixed(2)}, x=${minkPt.x.toFixed(2)}</p>
+                        <p><b>Penrose:</b><br> τ=${penrosePt.tau.toFixed(3)}, σ=${penrosePt.sigma.toFixed(3)}</p>
+                    `;
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const mapper = new PenroseMinkowskiMapper();
+                new UI(mapper);
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: Anti-de Sitter Space, the Universe in a Box</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #457b9d; --secondary-color: #a8dadc; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: pointer; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Anti-de Sitter Space: The Universe in a Box</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">A spacetime with a boundary that acts like a perfect mirror.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram of AdS Space</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: A Room with Mirrored Walls</h2>
+                    <p>Imagine you are in a room whose walls are perfect mirrors. If you shine a flashlight at a wall, the beam doesn't disappear; it reflects off the wall and comes back. You can send a signal to the "edge" of your room, and it will return to you. This is the bizarre nature of **Anti-de Sitter (AdS) spacetime**. It is a universe that acts like a perfectly reflecting box.</p>
+                    <p>AdS space is the solution to Einstein's equations for a universe with a *negative* cosmological constant. Unlike the positive constant of de Sitter space that drives things apart, a negative constant pulls things together. This gravitational pull is so effective that it contains everything, even light. Nothing can ever escape to infinity, because infinity isn't a point in the future—it's a "timelike" boundary that surrounds the entire spacetime.</p>
+                    <p>The Penrose diagram for AdS is an infinite vertical strip. Time runs infinitely up and down, but space (the horizontal direction) is finite. The two vertical lines on the left and right represent this **timelike boundary**. Any light ray sent outwards will travel to this boundary in a finite time, reflect off it, and travel back towards the center. This simulation demonstrates this perfectly. You can click anywhere to create a flash of light. The light rays will travel outwards at 45 degrees, hit the walls of the diagram, and then bounce back, eventually re-converging. This property makes AdS a unique theoretical laboratory for studying quantum gravity and has led to one of the most profound ideas in modern physics: the holographic principle.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Timelike Boundaries and the Holographic Principle</h2>
+                    <p>Anti-de Sitter space is the maximally symmetric solution to Einstein's field equations with a negative cosmological constant, `Λ < 0`. The key feature that distinguishes it from Minkowski and de Sitter space is the nature of its conformal boundary.</p>
+
+                    <h4>The Penrose Diagram and Timelike Boundary</h4>
+                    <p>The Penrose diagram for AdS is an infinite cylinder, which when "unrolled" becomes an infinite 2D strip.
+                    <ul>
+                        <li>The time coordinate `τ` runs from -∞ to +∞ along the vertical axis.</li>
+                        <li>The spatial coordinate `σ` runs from -π/2 to +π/2 on the horizontal axis.</li>
+                    </ul>
+                    The vertical lines at `σ = ±π/2` represent the **timelike conformal boundary** of the spacetime. "Timelike" means that an observer can remain at a fixed spatial coordinate and simply advance in time. The boundary of AdS is like a place you can send a signal to. A light ray sent from the center (`σ=0`) will reach the boundary at `σ=π/2` in a finite time `Δτ = π/2`. Because nothing can leave the spacetime, the boundary conditions require that the light ray is "reflected" back into the bulk.</p>
+
+                    <h4>The AdS/CFT Correspondence</h4>
+                    <p>The unique "box-like" nature of AdS spacetime, with its well-defined timelike boundary, makes it a perfect setting for the **AdS/CFT correspondence**, also known as the holographic principle or gauge/gravity duality. This is a powerful and profound conjecture in theoretical physics that states that a theory of quantum gravity in a `d`-dimensional Anti-de Sitter spacetime is equivalent to a non-gravitational quantum field theory (specifically, a Conformal Field Theory or CFT) living on its `(d-1)`-dimensional boundary.</p>
+                    <p>This is a "hologram" in the sense that all the information about the "bulk" gravitational physics inside the box is encoded in a lower-dimensional theory on its surface. This duality provides a non-perturbative definition of string theory in certain spacetimes and has become an invaluable tool for studying difficult problems. For example, a strongly coupled problem in the CFT on the boundary can be mapped to a weakly coupled, and thus easier to solve, problem in the gravitational theory in the AdS bulk, and vice versa. It provides a concrete mathematical dictionary between gravity and quantum field theory.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why does the light ray "reflect"?</strong> This is a consequence of the boundary conditions we must impose on the spacetime. Since the boundary is timelike, a particle or light ray reaching it would have a well-defined state. To have a consistent, self-contained spacetime, we impose "reflective" boundary conditions, meaning anything that hits the boundary is sent back in. It's not a physical mirror, but a rule about how the geometry is structured.</li>
+                        <li><strong>Does AdS space have a center?</strong> Yes, the line `σ=0` represents the "center" of the space. An observer staying at this position is in geodesic motion, like floating in the middle of the box.</li>
+                        <li><strong>Can you have black holes in AdS?</strong> Yes. A black hole in AdS has a Penrose diagram that looks like a "bite" has been taken out of the infinite strip, replaced by the black hole's singularity and horizon. The boundary of the spacetime is still the same reflective timelike surface.</li>
+                        <li><strong>Why is AdS so important for string theory?</strong> String theory is a theory of quantum gravity, which is notoriously difficult to define and solve. The AdS/CFT correspondence provides a "holographic" definition of string theory in AdS backgrounds, relating it to more well-understood quantum field theories. This allows physicists to use the CFT as a tool to answer questions about quantum gravity.</li>
+                        <li><strong>Does our universe have anything to do with AdS?</strong> Not directly. Observations show that our universe is currently accelerating its expansion, which is characteristic of a de Sitter space (positive cosmological constant), not an Anti-de Sitter space (negative cosmological constant). However, the mathematical tools developed from studying AdS/CFT have provided deep insights into quantum field theory, which *does* describe the particles in our universe.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class AdSManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.rays = []; this.viewY = 0; this.animFrame = null;
+                }
+
+                fireRay(x, y) {
+                    const origin = { x: x, y: y - this.viewY };
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir: 1 });
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir: -1 });
+                    if (!this.animFrame) this.animate();
+                }
+
+                animate() {
+                    this.rays.forEach(ray => {
+                        const last = ray.points[ray.points.length - 1];
+                        const next_x = last.x + 2 * ray.dir;
+                        const next_y = last.y - 2;
+                        if (next_x <= 0 || next_x >= this.width) {
+                            ray.dir *= -1; // Reflect
+                        }
+                        ray.points.push({ x: last.x + 2 * ray.dir, y: next_y });
+                    });
+                    this.redraw();
+                    this.animFrame = requestAnimationFrame(() => this.animate());
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawBoundaries();
+                    this.rays.forEach(ray => this.drawRay(ray));
+                }
+
+                drawBoundaries() {
+                    this.ctx.strokeStyle = '#a8dadc'; this.ctx.lineWidth = 4;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, 0); this.ctx.lineTo(0, this.height);
+                    this.ctx.moveTo(this.width, 0); this.ctx.lineTo(this.width, this.height);
+                    this.ctx.stroke();
+                    this.ctx.fillStyle = '#aaa'; this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("Timelike Boundary (σ = -π/2)", 10, 20);
+                    this.ctx.fillText("Timelike Boundary (σ = +π/2)", this.width - 200, 20);
+                }
+
+                drawRay(ray) {
+                    this.ctx.strokeStyle = '#f1faee'; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(ray.points[0].x, ray.points[0].y + this.viewY);
+                    for (let i = 1; i < ray.points.length; i++) {
+                        this.ctx.lineTo(ray.points[i].x, ray.points[i].y + this.viewY);
+                    }
+                    this.ctx.stroke();
+                }
+            }
+
+            class UI {
+                constructor() {
+                    this.manager = new AdSManager(DOM.canvas);
+                    this.init();
+                }
+                init() {
+                    this.buildControls();
+                    this.addEventListeners();
+                    this.manager.redraw();
+                }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><p>Click on the diagram to fire a light ray. Use the mouse wheel to scroll through time.</p><button id="clear">Clear Rays</button></div>`;
+                    document.getElementById('clear').onclick = () => {
+                        this.manager.rays = [];
+                        if (this.manager.animFrame) {
+                            cancelAnimationFrame(this.manager.animFrame);
+                            this.manager.animFrame = null;
+                        }
+                        this.manager.redraw();
+                    };
+                }
+                addEventListeners() {
+                    DOM.canvas.onmousedown = (e) => this.manager.fireRay(e.offsetX, e.offsetY);
+                    DOM.canvas.onwheel = (e) => {
+                        e.preventDefault();
+                        this.manager.viewY += e.deltaY * -0.5;
+                        this.manager.redraw();
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

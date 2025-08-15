@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Realistic Black Hole from Stellar Collapse</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #9b5de5; --secondary-color: #f15bb5; --border-color: #444; --card-bg: #2c2c2e; --code-bg: #3a3a3c; --link-color: #9b5de5; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--secondary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: crosshair; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Realistic Black Hole: Gravitational Collapse</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">How a star's death gives birth to an event horizon.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram of Collapse</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Inspector</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: Closing the Back Door</h2>
+                    <p>The "eternal" black hole we saw previously is a beautiful mathematical object, but it's not how black holes actually form. It has a "white hole" in its past, a feature not believed to exist in our universe. Real black holes are the endpoints of stellar evolution; they are formed when a massive star runs out of fuel and collapses under its own gravity.</p>
+                    <p>The Penrose diagram for this more realistic scenario is dramatically different. The entire bottom half of the diamond—the white hole and the parallel universe—is gone. It is replaced by a region representing the collapsing star itself. The diagram starts at the bottom with flat, empty Minkowski spacetime, representing the universe before the star collapsed. The shaded region shows the surface of the star as it shrinks over time, eventually crushing down to a point of infinite density—the singularity.</p>
+                    <p>The most crucial feature is the **event horizon**, the boundary of the black hole. It's the diagonal line that begins at the center of the diagram and extends upwards and to the right. Notice that it does *not* extend all the way to the bottom. This means that early in the universe's history, there was no event horizon. It only formed at a specific moment, triggered by the star's collapse. This simulation allows you to explore this concept interactively. You can send light signals from the star's surface at different times:
+                    <ul>
+                        <li>A signal sent **before** the horizon forms can travel outwards and escape to infinity.</li>
+                        <li>A signal sent **after** the horizon has formed is trapped forever, destined to hit the singularity along with the rest of the star.</li>
+                    </ul>
+                    This diagram shows us that a black hole is not an object that has always existed, but a region of spacetime that is created, cutting off a piece of the universe from the rest forever. The "back door" of the white hole is sealed by the star that created the black hole in the first place.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Oppenheimer-Snyder Model</h2>
+                    <p>The first and simplest model of gravitational collapse was developed by J. Robert Oppenheimer and Hartland Snyder in 1939. They considered a spherical cloud of pressureless dust that collapses under its own gravity. The spacetime geometry is split into two parts, stitched together at the surface of the star.</p>
+
+                    <h4>1. Interior Geometry: A Collapsing FLRW Universe</h4>
+                    <p>Inside the collapsing ball of dust, the spacetime is homogeneous and isotropic. Its geometry is described by a piece of a collapsing Friedmann-Lemaître-Robertson-Walker (FLRW) universe. Specifically, it's a "closed" (k=+1) universe, which has the property of starting from a "big bang" and ending in a "big crunch." The worldlines of the dust particles are simply lines of constant comoving coordinates that start separated and converge at the future singularity.</p>
+
+                    <h4>2. Exterior Geometry: Schwarzschild Spacetime</h4>
+                    <p>Outside the star, a theorem by Birkhoff states that any spherically symmetric vacuum solution must be the Schwarzschild spacetime. So, the geometry outside the collapsing star is identical to the static spacetime we studied previously. The Penrose diagram for this region is a piece of the full Kruskal diagram.</p>
+
+                    <h4>3. Stitching the Diagram Together</h4>
+                    <p>The Penrose diagram for the full collapse scenario is created by "cutting and pasting" these two solutions. We take the Penrose diagram for flat spacetime (since far in the past, before the collapse, the star was just a static object in an empty universe). We then draw the timelike worldline representing the surface of the star. This surface starts at `t=-∞` at some finite radius, stays constant for a while, and then begins to move inwards, eventually crossing the `r=2M` line and hitting the `r=0` singularity.
+                    <br><br>The region "inside" this worldline represents the collapsing star's interior. The region "outside" is the exterior Schwarzschild vacuum. The event horizon is defined as the boundary of the region from which light can no longer escape to future null infinity (ℐ⁺). This boundary is a null line that starts at the center of the diagram (`t=0, r=0` in the final state) and extends outwards. The white hole (Region IV) and the parallel universe (Region III) from the eternal black hole diagram are never formed; they are replaced by the spacetime containing the collapsing star.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why is this model more "realistic"?</strong> Because it includes a mechanism for the black hole's formation. Black holes in our universe are not eternal objects; they are formed from the deaths of massive stars. This model captures that essential physical process.</li>
+                        <li><strong>What is "pressureless dust"?</strong> It's an idealization in general relativity for matter where the pressure between particles is zero. This is a reasonable approximation for a large cloud of non-interacting particles, and it simplifies the equations of motion immensely.</li>
+                        <li><strong>Where is the event horizon in this diagram?</strong> It's the 45-degree line that starts from the center and goes to the upper right. Note that it only exists for `t > 0` (in the coordinates of the final static black hole). Before that time, there was no black hole.</li>
+                        <li><strong>Can an observer on the collapsing star see the event horizon form?</strong> No. The event horizon is a global property of the spacetime. A local observer falling with the star's surface would not notice anything special as they cross `r=2M`. From their perspective, they are simply in freefall. They would only realize they are trapped after the fact, when they find they cannot send a signal out to a distant friend.</li>
+                        <li><strong>What does the singularity look like here?</strong> It is still a spacelike singularity, just like in the eternal case. It's a moment in the future that all matter inside the horizon is destined to reach. However, it only extends as far as the original matter that collapsed.</li>
+                        <li><strong>If I were far away, what would I "see"?</strong> You would see the star get smaller and dimmer. As its surface approaches the `r=2M` radius, the light it emits becomes infinitely redshifted due to gravitational time dilation. The star would appear to freeze at its Schwarzschild radius and fade to black over an infinite amount of time. You would never "see" it cross the horizon.</li>
+                        <li><strong>Does this model have an Einstein-Rosen bridge?</strong> No. The bridge, or wormhole, is a feature of the maximally extended eternal solution. In the realistic collapse scenario, the region of spacetime that would have formed the bridge is instead filled with the collapsing matter.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class CollapseSimulator {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.M = 1; this.r_s = 2 * this.M;
+                    this.worldlines = [];
+                    this.starSurfacePath = this.calculateStarSurfacePath();
+                }
+
+                p2c(tau, sigma) { return { x: (sigma / Math.PI) * (this.width / 2) + this.width / 2, y: (-tau / Math.PI) * (this.height / 2) + this.height / 2 }; }
+                s2k(t, r) { const r_star = r + this.r_s * Math.log(Math.abs(r / this.r_s - 1)); const u = t - r_star, v = t + r_star; const U = -Math.exp(-u / (2*this.r_s)), V = Math.exp(v / (2*this.r_s)); return { T: (V+U)/2, X: (V-U)/2 }; }
+                k2p(T, X) { return { tau: Math.atan(T + X) + Math.atan(T - X), sigma: Math.atan(T + X) - Math.atan(T - X) }; }
+
+                calculateStarSurfacePath() {
+                    const path = [];
+                    for (let t = -10; t <= 10; t += 0.5) {
+                        let r = 5 - 0.3 * (t + 5); // Simple linear collapse model
+                        if (r < 0.1) r = 0.1;
+                        if (t < -5) r = 5;
+                        const { T, X } = this.s2k(t, r);
+                        const { tau, sigma } = this.k2p(T, X);
+                        path.push(this.p2c(tau, sigma));
+                    }
+                    return path;
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawStar(); this.drawHorizon(); this.drawSingularity(); this.drawInfinities();
+                    this.worldlines.forEach(line => this.drawWorldline(line.points, line.color));
+                }
+
+                drawStar() {
+                    this.ctx.fillStyle = 'rgba(155, 93, 229, 0.2)'; this.ctx.strokeStyle = 'rgba(155, 93, 229, 0.8)'; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath(); this.ctx.moveTo(this.starSurfacePath[0].x, this.starSurfacePath[0].y);
+                    this.starSurfacePath.forEach(p => this.ctx.lineTo(p.x, p.y));
+                    this.ctx.stroke();
+                    const p_inf = this.p2c(-Math.PI/2, -Math.PI/2); const p_sing = this.p2c(Math.PI,0);
+                    this.ctx.lineTo(p_sing.x, p_sing.y); this.ctx.lineTo(p_inf.x, p_inf.y); this.ctx.closePath(); this.ctx.fill();
+                }
+
+                drawHorizon() { this.ctx.strokeStyle='#fff';this.ctx.setLineDash([5,5]);this.ctx.lineWidth=1.5;this.ctx.beginPath();const c=this.p2c(0,0),fni=this.p2c(Math.PI/2,Math.PI/2);this.ctx.moveTo(c.x,c.y);this.ctx.lineTo(fni.x,fni.y);this.ctx.stroke();this.ctx.setLineDash([]);}
+                drawSingularity() { this.ctx.strokeStyle='#f15bb5';this.ctx.lineWidth=4;this.ctx.beginPath();const p_start=this.starSurfacePath[this.starSurfacePath.length-1];const p_end=this.p2c(Math.PI/2,Math.PI/2);this.ctx.moveTo(p_start.x,p_start.y);this.ctx.lineTo(p_end.x,p_end.y);this.ctx.stroke();}
+                drawInfinities() {this.ctx.strokeStyle='#aaa';this.ctx.lineWidth=1;this.ctx.beginPath();let p1=this.p2c(-Math.PI/2,-Math.PI/2),p2=this.p2c(0,-Math.PI),p3=this.p2c(Math.PI/2,-Math.PI/2);this.ctx.moveTo(p1.x,p1.y);this.ctx.lineTo(p2.x,p2.y);this.ctx.lineTo(p3.x,p3.y);this.ctx.stroke();}
+                drawWorldline(pts,color){if(pts.length<2)return;this.ctx.strokeStyle=color;this.ctx.lineWidth=2;this.ctx.beginPath();this.ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)this.ctx.lineTo(pts[i].x,pts[i].y);this.ctx.stroke();}
+
+                fireLightRay(startTime) {
+                    const points = [];
+                    let r_start = 5 - 0.3 * (startTime + 5); if (startTime < -5) r_start = 5; if (r_start < 0.1) r_start = 0.1;
+                    const r_star_start = r_start + this.r_s * Math.log(Math.abs(r_start / this.r_s - 1));
+                    const u_const = startTime - r_star_start;
+                    for (let v_t = startTime + r_star_start; v_t < 100; v_t += 1) {
+                        const t_new = (v_t + u_const) / 2;
+                        const r_star_new = (v_t - u_const);
+                        let r_new = this.r_s * (1 + Math.exp((r_star_new - this.r_s)/this.r_s)); // Approx inversion
+                        if (r_new < 0) break;
+                        const {T,X} = this.s2k(t_new, r_new); const {tau,sigma} = this.k2p(T,X);
+                        points.push(this.p2c(tau, sigma));
+                    }
+                    this.worldlines.push({points, color: '#f4a261'});
+                    this.redraw();
+                }
+            }
+
+            class UI {
+                constructor(){this.sim=new CollapseSimulator(DOM.canvas);this.init();}
+                init(){this.buildControls();this.sim.redraw();}
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><label for="time-slider">Light Ray Emission Time (t): <span id="time-val">0</span></label><input type="range" id="time-slider" min="-10" max="8" value="0" step="0.5"><button id="fire-ray">Fire</button></div><div class="control-group"><button id="preset-early">Preset: Early</button> <button id="preset-late">Preset: Late</button> <button id="clear-rays">Clear</button></div>`;
+                    document.getElementById('fire-ray').onclick = () => this.sim.fireLightRay(parseFloat(document.getElementById('time-slider').value));
+                    document.getElementById('time-slider').oninput = e => document.getElementById('time-val').textContent = parseFloat(e.target.value).toFixed(1);
+                    document.getElementById('preset-early').onclick = () => this.sim.fireLightRay(-2);
+                    document.getElementById('preset-late').onclick = () => this.sim.fireLightRay(6);
+                    document.getElementById('clear-rays').onclick = () => { this.sim.worldlines = []; this.sim.redraw(); };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

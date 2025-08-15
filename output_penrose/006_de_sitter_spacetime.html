@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Lonely Universe of de Sitter Spacetime</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #80ed99; --secondary-color: #57cc99; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: pointer; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Lonely Universe: de Sitter Spacetime</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">An eternally accelerating universe where galaxies disappear from view.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram of de Sitter Space</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Inspector</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: The Disappearing Galaxies</h2>
+                    <p>Imagine you are standing in the middle of an empty, infinitely large room, but the room itself is expanding, and the expansion is accelerating. The floor is stretching faster and faster every second. Two friends are standing some distance away from you. The nearby friend seems to be moving away, but you can still shout and get a message to them. The faraway friend, however, is being carried away by the expanding floor so quickly that the space between you is growing faster than the speed of sound. No matter how loud you shout, your voice will never reach them. They have crossed your "shouting horizon."</p>
+                    <p>This is a precise analogy for **de Sitter spacetime**, a universe containing nothing but a "cosmological constant" that drives accelerated expansion. This is thought to be a good description of our universe during the inflationary period and what it will become in the far future. In such a universe, every observer has a **cosmological event horizon**. This isn't a physical object like a black hole horizon; it's a horizon of perception. Galaxies beyond this horizon are receding from us faster than the speed of light. Light they emit after crossing it will never reach us. From our perspective, they will seem to freeze and fade away, forever lost to us.</p>
+                    <p>The Penrose diagram for de Sitter space is a simple square. Time runs from the bottom (`τ=-π/2`) to the top (`τ=+π/2`). The entire infinite space at any given moment is represented by the horizontal line at that time. This simulation shows the worldlines of several galaxies (observers) that are at rest but are being carried apart by the expansion. You can select an observer and see their personal event horizon. Then, you can try to send light signals between them to see who can communicate and who is doomed to an eternity of causal isolation—a lonely universe, indeed.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Cosmological Horizons</h2>
+                    <p>De Sitter space is the maximally symmetric vacuum solution to Einstein's field equations with a positive cosmological constant, `Λ > 0`. Its metric can be written in static coordinates as:</p>
+                    <p><code>ds² = -(1 - r²/α²)dt² + (1 - r²/α²)⁻¹dr² + r²dΩ²</code></p>
+                    <p>where `α = √(3/Λ)` is the de Sitter radius. This form immediately reveals a coordinate singularity at `r = α`, which represents the cosmological event horizon. An observer at `r=0` can never receive signals from any event that occurs at `r > α`.</p>
+
+                    <h4>The Penrose Diagram</h4>
+                    <p>By performing a series of coordinate transformations, the entire infinite de Sitter spacetime can be mapped onto a finite square. In this conformal representation:
+                    <ul>
+                        <li>The bottom horizontal line (`τ=-π/2`) represents the past spacelike infinity of the entire universe.</li>
+                        <li>The top horizontal line (`τ=+π/2`) represents the future spacelike infinity.</li>
+                        <li>The left and right corners are past and future timelike infinities, but they are single points, unlike in Minkowski space.</li>
+                        <li>The worldlines of "comoving" observers (those at rest with respect to the expanding coordinates) are vertical lines that begin at past infinity and end at future infinity.</li>
+                    </ul>
+                    </p>
+
+                    <h4>Observer-Dependent Horizons</h4>
+                    <p>The crucial concept in de Sitter space is the observer-dependence of the horizon. Consider an observer `O` whose worldline is the central vertical line in the diagram. Their **cosmological event horizon** is the boundary of the region of spacetime that they can ever receive signals from. This corresponds to the two 45-degree null lines that intersect at the top point of `O`'s worldline at future infinity. Any event outside the diamond formed by these light rays is causally disconnected from `O`.</p>
+                    <p>Now consider another observer `O'` whose worldline is further to the right. They have their own cosmological event horizon, defined by the light rays that reach *their* worldline at future infinity. Their causal patch of the universe is a different diamond, shifted to the right. This simulation allows you to switch between observers and see how their personal view of the causally accessible universe changes.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Is de Sitter space empty?</strong> Yes, in the sense that it contains no matter or radiation. Its curvature is driven entirely by the energy density of the vacuum itself (the cosmological constant).</li>
+                        <li><strong>Is our universe a de Sitter space?</strong> Not exactly, but it's getting closer. Currently, our universe contains matter, radiation, and dark energy (which acts like a cosmological constant). In the far future, the density of matter and radiation will dilute to zero, and the universe will be almost perfectly described by a de Sitter space. It's also believed the universe went through a de Sitter-like phase called inflation very early on.</li>
+                        <li><strong>What is the difference between a black hole horizon and a cosmological horizon?</strong> A black hole horizon is a localized object defined by the gravity of a mass. Everyone agrees on its location. A cosmological horizon is a global, observer-dependent phenomenon created by the universe's expansion. Different observers will disagree on the exact location of their horizons.</li>
+                        <li><strong>What happens to a galaxy that crosses our cosmological horizon?</strong> From our perspective, we would see its light become progressively redshifted. It would appear to slow down, freeze at the horizon, and fade away over an infinite amount of time. We would never see it "wink out."</li>
+                        <li><strong>Can I travel past the horizon?</strong> From your own perspective, yes. You could fly in a rocket past the point that used to be your horizon. However, as you travel, your own horizon would move with you. You are always at the center of your own observable patch.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class DeSitterManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.num_observers = 5;
+                    this.observers = [];
+                    this.light_rays = [];
+                    this.selected_observer_idx = 2;
+                    this.animFrame = null;
+                    this.init();
+                }
+
+                init() {
+                    for (let i = 0; i < this.num_observers; i++) {
+                        const x = (i + 1) * (this.width / (this.num_observers + 1));
+                        this.observers.push({ x: x, name: `Galaxy ${String.fromCharCode(65 + i)}` });
+                    }
+                }
+
+                p2c(tau, sigma) { return { x: (sigma + Math.PI/2) / Math.PI * this.width, y: (-tau + Math.PI/2) / Math.PI * this.height }; }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawDiagram();
+                    this.drawObservers();
+                    this.drawHorizon();
+                    this.light_rays.forEach(ray => this.drawRay(ray));
+                }
+
+                drawDiagram() {
+                    this.ctx.strokeStyle = '#444'; this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(0, 0, this.width, this.height);
+                    this.ctx.fillStyle = '#aaa'; this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("Future Infinity (τ = π/2)", 10, 20);
+                    this.ctx.fillText("Past Infinity (τ = -π/2)", 10, this.height - 10);
+                }
+
+                drawObservers() {
+                    for (let i = 0; i < this.observers.length; i++) {
+                        const obs = this.observers[i];
+                        this.ctx.strokeStyle = (i === this.selected_observer_idx) ? '#80ed99' : '#57cc99';
+                        this.ctx.lineWidth = (i === this.selected_observer_idx) ? 4 : 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(obs.x, 0); this.ctx.lineTo(obs.x, this.height);
+                        this.ctx.stroke();
+                        this.ctx.fillStyle = (i === this.selected_observer_idx) ? '#80ed99' : '#57cc99';
+                        this.ctx.fillText(obs.name, obs.x + 5, this.height - 10);
+                    }
+                }
+
+                drawHorizon() {
+                    const obs = this.observers[this.selected_observer_idx];
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    this.ctx.setLineDash([5, 5]); this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(obs.x, 0); this.ctx.lineTo(0, obs.x);
+                    this.ctx.moveTo(obs.x, 0); this.ctx.lineTo(this.width, this.height - (this.width - obs.x));
+                    this.ctx.moveTo(obs.x, this.height); this.ctx.lineTo(0, this.height - obs.x);
+                    this.ctx.moveTo(obs.x, this.height); this.ctx.lineTo(this.width, obs.x);
+                    this.ctx.stroke(); this.ctx.setLineDash([]);
+                }
+
+                sendSignal() {
+                    const obs = this.observers[this.selected_observer_idx];
+                    this.light_rays.push({ x: obs.x, y: this.height / 2, t: 0, dir: 1 });
+                    this.light_rays.push({ x: obs.x, y: this.height / 2, t: 0, dir: -1 });
+                    if(this.animFrame === null) this.animate();
+                }
+
+                animate() {
+                    let all_done = true;
+                    this.light_rays.forEach(ray => {
+                        ray.y -= 2; // Move up in time
+                        const dx = 2 * ray.dir;
+                        ray.x += dx;
+                        if (ray.x > 0 && ray.x < this.width && ray.y > 0) all_done = false;
+                    });
+                    this.redraw();
+                    if(all_done) { cancelAnimationFrame(this.animFrame); this.animFrame = null; }
+                    else { this.animFrame = requestAnimationFrame(() => this.animate()); }
+                }
+
+                drawRay(ray) { this.ctx.fillStyle='#f15bb5'; this.ctx.beginPath(); this.ctx.arc(ray.x, ray.y, 4, 0, 2*Math.PI); this.ctx.fill(); }
+            }
+
+            class UI {
+                constructor() { this.manager = new DeSitterManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.addEventListeners(); this.manager.redraw(); }
+                buildControls() {
+                    let observer_buttons = this.manager.observers.map((obs, i) => `<button id="obs-${i}">${obs.name}</button>`).join(' ');
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><label>Select Observer:</label>${observer_buttons}</div><div class="control-group"><button id="send-signal">Send Light Signal</button><button id="clear">Clear</button></div>`;
+                }
+                addEventListeners() {
+                    document.getElementById('send-signal').onclick = () => this.manager.sendSignal();
+                    document.getElementById('clear').onclick = () => { this.manager.light_rays = []; this.manager.redraw(); };
+                    this.manager.observers.forEach((obs, i) => {
+                        document.getElementById(`obs-${i}`).onclick = () => {
+                            this.manager.selected_observer_idx = i;
+                            this.manager.light_rays = [];
+                            this.manager.redraw();
+                        };
+                    });
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

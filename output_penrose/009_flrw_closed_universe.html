@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Diagrams: The Big Crunch in a Closed FLRW Universe</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #e63946; --secondary-color: #f1faee; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; cursor: pointer; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Big Crunch: A Closed FLRW Universe</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">A universe with a beginning and an inevitable, all-encompassing end.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Penrose Diagram of a Closed Universe</h3>
+                    <canvas id="penrose-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: The Ultimate Collapse</h2>
+                    <p>We've seen universes that are flat and expand forever, and universes that are empty and accelerate apart. But what if the universe had enough matter and energy to halt its own expansion and pull itself back together? This scenario describes a **closed universe**, and its ultimate fate is the **Big Crunch**—a mirror image of the Big Bang.</p>
+                    <p>A closed universe is one with positive spatial curvature (`k=+1`). You can think of it as the 3D surface of a 4D sphere. It is finite in volume but has no edge. If you travel in a straight line for long enough, you would end up back where you started. The gravity from all the matter within this finite volume is strong enough to overcome the initial expansion. The universe expands from the Big Bang, reaches a moment of maximum size, and then begins to contract, with all galaxies rushing back together towards a final, cataclysmic singularity.</p>
+                    <p>The Penrose diagram for this spacetime is a diamond, completely sealed at both the top and bottom.
+                    <ul>
+                        <li>The jagged line at the bottom is the **Big Bang singularity**, the beginning of time and space.</li>
+                        <li>The jagged line at the top is the **Big Crunch singularity**, the end of time and space.</li>
+                        <li>The left and right corners represent the "poles" of the finite spherical universe.</li>
+                    </ul>
+                    The entire history of this universe is contained within this diamond. There is no "outside" and no "infinity" for light to escape to. This simulation demonstrates this fact vividly. You can click to create a flash of light at any point in the universe's history. No matter where or when you fire the light rays, you will see that they are trapped. They travel outwards, are re-focused by the universe's curvature as it begins to re-collapse, and ultimately fall into the Big Crunch singularity. In a closed universe, the end is inevitable for everyone and everything.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Positively Curved Spacetime</h2>
+                    <p>The FLRW metric for a universe with positive curvature (`k=+1`) is often written using hyperspherical coordinates:</p>
+                    <p><code>ds² = -dt² + a(t)²[dχ² + sin²(χ)dΩ²]</code></p>
+                    <p>Here, `χ` is the hyperspherical angle. The scale factor `a(t)` for a matter-dominated closed universe follows a cycloid solution: it starts at `a=0` (Big Bang), increases to a maximum value `a_max`, and then decreases back to `a=0` (Big Crunch).</p>
+
+                    <h4>The Diamond Diagram</h4>
+                    <p>After a conformal transformation of the time coordinate, this entire history can be mapped onto a finite Penrose diagram that is a square rotated by 45 degrees—a diamond.
+                    <ul>
+                        <li>**Past Singularity:** The Big Bang at `t=0` corresponds to the two lower edges of the diamond (`τ = -σ` and `τ = σ - π`). It is a spacelike singularity from which all worldlines emerge.</li>
+                        <li>**Future Singularity:** The Big Crunch at the universe's final moment corresponds to the two upper edges of the diamond (`τ = π - σ` and `τ = σ`). It is also a spacelike singularity, into which all worldlines must terminate.</li>
+                        <li>**Poles:** The left and right vertices (`σ=0` and `σ=π`) represent the antipodal points of the 3-sphere universe. A light ray sent from one pole will travel "around the universe" and arrive at the other.</li>
+                    </ul>
+                    Unlike the flat or open universes, there is no future null infinity (ℐ⁺). Light cannot escape because the universe itself is finite and eventually re-collapses. This causal structure is completely self-contained.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Is our universe closed?</strong> Current observations strongly suggest it is not. Measurements of the cosmic microwave background and the large-scale distribution of galaxies indicate that the universe is spatially flat (or very close to it, `k=0`) to high precision. Furthermore, the observed accelerated expansion means our universe will not re-collapse.</li>
+                        <li><strong>What does it mean for space to be "positively curved"?</strong> It means that the rules of geometry are different from the flat Euclidean space we are used to. For example, the sum of the angles in a very large triangle would be greater than 180 degrees. The surface of the Earth is a good 2D analogy: it's finite but has no edge, and the angles of a large triangle (e.g., from the North Pole to the equator and back) sum to more than 180 degrees.</li>
+                        <li><strong>Can a light ray travel all the way around the universe and see the back of its own head?</strong> In principle, yes. An observer who lives long enough could emit a photon, which travels around the 3-sphere and returns to its starting point. In the Penrose diagram, this is a light ray that travels from one side (`σ=0`) to the other (`σ=π`). However, for a realistic cosmological model, the time required for this is longer than the entire lifetime of the universe from Bang to Crunch.</li>
+                        <li><strong>How is the Big Crunch different from a black hole singularity?</strong> They are very similar in nature—both are regions where spacetime curvature becomes infinite. The key difference is scope. A black hole singularity is a localized region *within* a wider spacetime. The Big Crunch singularity is a global event that happens everywhere in the universe at the same final moment of time.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('penrose-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class BigCrunchManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.rays = []; this.animFrame = null;
+                }
+
+                fireRay(x, y) {
+                    const origin = { x, y };
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir_x: 1, dir_y: -1 });
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir_x: -1, dir_y: -1 });
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir_x: 1, dir_y: 1 });
+                    this.rays.push({ origin: { ...origin }, points: [{...origin}], dir_x: -1, dir_y: 1 });
+                    if (!this.animFrame) this.animate();
+                }
+
+                animate() {
+                    let all_done = true;
+                    this.rays.forEach(ray => {
+                        const last = ray.points[ray.points.length - 1];
+                        if (this.isAtSingularity(last)) return;
+
+                        all_done = false;
+                        const next_x = last.x + 2 * ray.dir_x;
+                        const next_y = last.y + 2 * ray.dir_y;
+                        ray.points.push({ x: next_x, y: next_y });
+                    });
+
+                    this.redraw();
+                    if(all_done) { cancelAnimationFrame(this.animFrame); this.animFrame = null; }
+                    else { this.animFrame = requestAnimationFrame(() => this.animate()); }
+                }
+
+                isAtSingularity(p) {
+                    const cx = this.width / 2, cy = this.height / 2;
+                    const dx = Math.abs(p.x - cx), dy = Math.abs(p.y - cy);
+                    return (dx + dy) >= (this.width / 2);
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawDiagram();
+                    this.rays.forEach(ray => this.drawRay(ray));
+                }
+
+                drawDiagram() {
+                    this.ctx.strokeStyle = '#444'; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.width / 2, 0); this.ctx.lineTo(this.width, this.height / 2);
+                    this.ctx.lineTo(this.width / 2, this.height); this.ctx.lineTo(0, this.height / 2);
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+
+                    this.ctx.strokeStyle = '#e63946'; this.ctx.lineWidth = 4;
+                    this.drawJaggedLine(this.width/2, this.height, 0, this.height/2);
+                    this.drawJaggedLine(0, this.height/2, this.width/2, 0);
+                    this.drawJaggedLine(this.width/2, 0, this.width, this.height/2);
+                    this.drawJaggedLine(this.width, this.height/2, this.width/2, this.height);
+
+                    this.ctx.fillStyle = '#aaa'; this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("Big Crunch", this.width/2 - 30, 20);
+                    this.ctx.fillText("Big Bang", this.width/2 - 30, this.height - 10);
+                }
+
+                drawJaggedLine(x1, y1, x2, y2) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x1, y1);
+                    const segments = 20;
+                    for(let i=1; i<=segments; i++) {
+                        const t = i / segments;
+                        const x = x1 + t * (x2 - x1);
+                        const y = y1 + t * (y2 - y1);
+                        const perp_x = -(y2-y1); const perp_y = (x2-x1);
+                        const mag = Math.sqrt(perp_x*perp_x + perp_y*perp_y);
+                        const rand = (Math.random() - 0.5) * 10;
+                        this.ctx.lineTo(x + rand * perp_x / mag, y + rand * perp_y / mag);
+                    }
+                    this.ctx.stroke();
+                }
+
+                drawRay(ray) {
+                    this.ctx.strokeStyle = '#f1faee'; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(ray.points[0].x, ray.points[0].y);
+                    for (let i = 1; i < ray.points.length; i++) {
+                        this.ctx.lineTo(ray.points[i].x, ray.points[i].y);
+                    }
+                    this.ctx.stroke();
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new BigCrunchManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><p>Click on the diagram to create a flash of light.</p><button id="clear">Clear Rays</button></div>`;
+                    document.getElementById('clear').onclick = () => {
+                        this.manager.rays = [];
+                        if (this.manager.animFrame) { cancelAnimationFrame(this.manager.animFrame); this.manager.animFrame = null; }
+                        this.manager.redraw();
+                    };
+                    DOM.canvas.onmousedown = (e) => this.manager.fireRay(e.offsetX, e.offsetY);
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

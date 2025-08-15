@@ -1,0 +1,67 @@
+{
+  "project_name": "Spacetime Maps: Penrose Diagram Simulations",
+  "version": "1.0.0",
+  "date_completed": "2025-08-15",
+  "simulations": [
+    {
+      "id": "P01",
+      "title": "Minkowski Spacetime",
+      "filename": "output_penrose/001_minkowski_spacetime_penrose_diagram.html",
+      "tags": ["minkowski", "special relativity", "flat spacetime", "conformal mapping"]
+    },
+    {
+      "id": "P02",
+      "title": "Eternal Schwarzschild Black Hole",
+      "filename": "output_penrose/002_eternal_schwarzschild_black_hole.html",
+      "tags": ["schwarzschild", "black hole", "kruskal-szekeres", "event horizon", "white hole"]
+    },
+    {
+      "id": "P03",
+      "title": "Black Hole from Gravitational Collapse",
+      "filename": "output_penrose/003_collapsing_star_black_hole.html",
+      "tags": ["gravitational collapse", "oppenheimer-snyder", "event horizon", "realistic black hole"]
+    },
+    {
+      "id": "P04",
+      "title": "Reissner-Nordström (Charged) Black Hole",
+      "filename": "output_penrose/004_reissner_nordstrom_black_hole.html",
+      "tags": ["reissner-nordstrom", "charged black hole", "cauchy horizon", "timelike singularity"]
+    },
+    {
+      "id": "P05",
+      "title": "Kerr (Rotating) Black Hole",
+      "filename": "output_penrose/005_kerr_black_hole.html",
+      "tags": ["kerr", "rotating black hole", "ergosphere", "ring singularity", "ctc"]
+    },
+    {
+      "id": "P06",
+      "title": "de Sitter Spacetime",
+      "filename": "output_penrose/006_de_sitter_spacetime.html",
+      "tags": ["de sitter", "cosmological constant", "inflation", "cosmological horizon"]
+    },
+    {
+      "id": "P07",
+      "title": "Anti-de Sitter (AdS) Spacetime",
+      "filename": "output_penrose/007_anti_de_sitter_spacetime.html",
+      "tags": ["anti-de sitter", "ads/cft", "holographic principle", "timelike boundary"]
+    },
+    {
+      "id": "P08",
+      "title": "Flat FLRW Universe",
+      "filename": "output_penrose/008_flrw_flat_universe.html",
+      "tags": ["flrw", "cosmology", "big bang", "particle horizon", "flat universe"]
+    },
+    {
+      "id": "P09",
+      "title": "Closed 'Big Crunch' FLRW Universe",
+      "filename": "output_penrose/009_flrw_closed_universe.html",
+      "tags": ["flrw", "cosmology", "big crunch", "closed universe", "singularity"]
+    },
+    {
+      "id": "P10",
+      "title": "Traversable Wormhole",
+      "filename": "output_penrose/010_traversable_wormhole.html",
+      "tags": ["wormhole", "morris-thorne", "exotic matter", "causality", "ctc"]
+    }
+  ]
+}
