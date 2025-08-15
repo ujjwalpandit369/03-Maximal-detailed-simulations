@@ -1,0 +1,67 @@
+{
+  "project_name": "Cosmic Canvas: Simulations of Topological Defects",
+  "version": "1.0.0",
+  "date_completed": "2025-08-15",
+  "simulations": [
+    {
+      "id": "001",
+      "title": "Domain Walls (Ising Model)",
+      "filename": "output/001_domain_walls_ising_model_simulation.html",
+      "tags": ["domain wall", "ising model", "z2 symmetry", "phase transition"]
+    },
+    {
+      "id": "002",
+      "title": "Cosmic Strings (Kibble Mechanism)",
+      "filename": "output/002_cosmic_strings_kibble_mechanism_visualizer.html",
+      "tags": ["cosmic string", "kibble mechanism", "u(1) symmetry", "scalar field"]
+    },
+    {
+      "id": "003",
+      "title": "Magnetic Monopoles (Hedgehog Defect)",
+      "filename": "output/003_magnetic_monopoles_hedgehog_defect_so3_breaking.html",
+      "tags": ["monopole", "hedgehog defect", "so(3) symmetry", "vector field"]
+    },
+    {
+      "id": "004",
+      "title": "Textures (Skyrmion Unwinding)",
+      "filename": "output/004_skyrmion_texture_unwinding_simulation.html",
+      "tags": ["texture", "skyrmion", "su(2) symmetry", "homotopy", "unwinding"]
+    },
+    {
+      "id": "005",
+      "title": "Hybrid Defects (Wall Bounded by String)",
+      "filename": "output/005_hybrid_defects_domain_walls_bounded_by_strings.html",
+      "tags": ["hybrid defect", "domain wall", "cosmic string", "kinematic", "collapse"]
+    },
+    {
+      "id": "006",
+      "title": "String Network Evolution",
+      "filename": "output/006_cosmic_string_network_evolution_and_scaling.html",
+      "tags": ["string network", "scaling solution", "intercommutation", "nambu-goto"]
+    },
+    {
+      "id": "007",
+      "title": "Defect Annihilation (Domain Wall Collapse)",
+      "filename": "output/007_topological_defect_annihilation_domain_wall_collapse.html",
+      "tags": ["annihilation", "domain wall", "collapse", "scalar field", "radiation"]
+    },
+    {
+      "id": "008",
+      "title": "CMB Signatures (Kaiser-Stebbins Effect)",
+      "filename": "output/008_cmb_anisotropy_kaiser_stebbins_effect_from_strings.html",
+      "tags": ["cmb", "anisotropy", "kaiser-stebbins", "cosmic string", "gravity"]
+    },
+    {
+      "id": "009",
+      "title": "Gravitational Lensing by a Cosmic String",
+      "filename": "output/009_gravitational_lensing_by_cosmic_string.html",
+      "tags": ["gravitational lensing", "cosmic string", "spacetime", "astronomy"]
+    },
+    {
+      "id": "010",
+      "title": "Electroweak Baryogenesis Schematic",
+      "filename": "output/010_electroweak_baryogenesis_schematic.html",
+      "tags": ["baryogenesis", "electroweak", "bubble wall", "particle physics", "cp violation"]
+    }
+  ]
+}

@@ -173,17 +173,16 @@
                 <h2>Overview for Lay Readers</h2>
                 <p>In the cosmic zoo of topological defects, the different species don't always live in isolation. Sometimes, one type of defect can end on another, creating a fascinating <strong>hybrid defect</strong>. This simulation shows one of the most famous examples: a sheet-like domain wall whose boundary is a closed loop of cosmic string. This can happen if the universe undergoes two consecutive phase transitions. Imagine first forming a network of cosmic strings. Then, in a second transition, the field *within* the string cores undergoes another symmetry breaking, creating domain walls that can only exist where the strings are. The result is that the string acts like the edge of the domain wall sheet, much like a zipper holds two pieces of fabric together. This simulation visualizes the dynamics of such an object, showing how the combined tension from the string and the wall causes the entire structure to collapse and decay.</p>
 
-                <!-- 5000+ words of structured text will go here -->
                 <div id="full-exposition-placeholder">
                     <section id="beginners-guide">
                         <h3>A Beginner's Guide to Cosmic Soap Films</h3>
                         <p>Imagine dipping a circular bubble wand into a soap solution. When you pull it out, you have a beautiful, flat, shimmering soap film (a 2D surface) that is held in place by the plastic loop of the wand (a 1D boundary). The soap film cannot exist on its own in the air; it needs the wand to define its edge. This is a perfect analogy for the most common type of <strong>hybrid topological defect</strong>: a domain wall bounded by a cosmic string.</p>
                         <p>In the universe, defects don't always form in isolation. It's possible for one type of defect to act as the boundary for another. This happens if the universe undergoes a series of phase transitions. First, a transition might create a network of cosmic strings (our bubble wands). Then, a second, later transition might occur, but only *within the cores of those strings*. This second transition creates domain walls (our soap films), but because it only happened where the strings were, these walls are "stuck" to the strings. A closed loop of string will be filled by a sheet of domain wall, just like the bubble wand is filled by the soap film.</p>
-                        <p>What happens to such an object? The string loop has tension, which tries to make it shrink. But the domain wall also has a surface tension, which pulls outwards on the string, trying to make it expand. This creates a fascinating dynamic interplay. However, the pull from the wall is relentless, and it ultimately causes the entire structure to become unstable and collapse, releasing its energy. This simulation provides a simplified, illustrative model of this process. You can control the relative strengths of the string and wall tensions to see how this cosmic soap bubble evolves and catastrophically pops.</p>
+                        <p>What happens to such an object? The string loop has tension, which tries to make it shrink. But the domain wall also has a surface tension, which pulls inwards on the string, trying to make it collapse. This creates a fascinating dynamic interplay. The pull from the wall is relentless, and it ultimately causes the entire structure to become unstable and collapse, releasing its energy. This simulation provides a simplified, illustrative model of this process. You can control the relative strengths of the string and wall tensions to see how this cosmic soap bubble evolves and catastrophically pops.</p>
                     </section>
 
                     <section id="core-theory">
-                        <h3>Core Theory: Sequential Symmetry Breaking</h3>
+                        <h3>Core Theory: Sequential Symmetry Breaking and Defect Dynamics</h3>
                         <h4>1. A Hierarchy of Transitions</h4>
                         <p>Hybrid defects are a natural consequence of theories with a rich structure, where the universe undergoes multiple, sequential phase transitions as it cools. Consider a theory with a large symmetry group G.
                         <ol>
@@ -195,17 +194,17 @@
                         <h4>2. Dynamics: String Tension vs. Wall Tension</h4>
                         <p>The evolution of this hybrid object is a battle between two forces.
                         <ul>
-                            <li><strong>String Tension (μ):</strong> The cosmic string itself has a mass per unit length, or tension (μ). Like a stretched rubber band, this tension creates a force that tries to shrink the loop and minimize its length. The total energy from the string is <code>E_string = μ * (2πR)</code> for a circular loop of radius R. The inward force due to tension is proportional to μ/R.</li>
-                            <li><strong>Wall Tension (σ):</strong> The domain wall has a mass per unit area, or surface tension (σ). The wall pulls "outward" on the string boundary. The total energy from the wall is <code>E_wall = σ * (πR²)</code>. This creates a constant outward-pulling force on the string loop.</li>
+                            <li><strong>String Tension (μ):</strong> The cosmic string itself has a mass per unit length, or tension (μ). Like a stretched rubber band, this tension creates a force that tries to shrink the loop and minimize its length. For a circular loop of radius R, the total energy from the string is <code>E_string = μ * (2πR)</code>. The inward force due to tension is proportional to μ/R.</li>
+                            <li><strong>Wall Tension (σ):</strong> The domain wall has a mass per unit area, or surface tension (σ). The wall pulls "inward" on the string boundary, accelerating its collapse. The total energy from the wall is <code>E_wall = σ * (πR²)</code>. This creates a constant inward-pulling force on the string loop proportional to σ.</li>
                         </ul>
-                        The total energy of the system is <code>E_total = 2πRμ + πR²σ</code>. The system will try to find a state of minimum energy. Crucially, the wall's energy (proportional to R²) dominates over the string's energy (proportional to R) for large R. This means a large loop will want to expand. However, the inward force from string tension (~1/R) decreases as R grows, while the outward pull from the wall is constant. This means the object is unstable and will rapidly collapse, driven by the wall tension.</p>
+                        The total energy of the system is <code>E_total = 2πRμ + πR²σ</code>. The system will try to find a state of minimum energy. The inward acceleration of a segment of the string loop is roughly given by <code>a ≈ (σ/μ) + (1/R)</code>. For large loops (large R), the acceleration is constant and dominated by the wall tension. As the loop shrinks, the string tension term becomes more important, accelerating the collapse even faster.</p>
 
                         <h4>3. Cosmological Relevance: Solving the Domain Wall Problem</h4>
-                        <p>This mechanism is extremely important in cosmology. As we saw in the first simulation, stable, universe-spanning domain walls are a cosmological disaster (the "domain wall problem"). However, if every domain wall is created attached to a string, they are no longer stable. The network of walls bounded by strings will efficiently collapse and annihilate, converting its energy into particles and radiation. This provides a natural and elegant mechanism to get rid of dangerous domain walls, allowing for theories that would otherwise be ruled out. The most famous example of this involves the axion, a hypothetical particle that could solve other problems in physics.</p>
+                        <p>This mechanism is extremely important in cosmology. As we saw in the first simulation, stable, universe-spanning domain walls are a cosmological disaster (the "domain wall problem"). They would contain so much energy that they would dominate the expansion of the universe, contradicting what we observe. However, if every domain wall is created attached to a string, they are no longer stable. The network of walls bounded by strings will efficiently collapse and annihilate, converting its energy into particles and radiation. This provides a natural and elegant mechanism to get rid of dangerous domain walls, allowing for theories that would otherwise be ruled out. The most famous example of this involves the axion, a hypothetical particle that could solve other problems in particle physics.</p>
                     </section>
 
                     <section id="q-and-a">
-                        <h3>Deep Q&A (20+ Questions)</h3>
+                        <h3>Deep Q&A (25+ Questions)</h3>
                         <ol>
                              <li><strong>What is a "hybrid" defect?</strong>
                                 <p>It's a composite object made of two or more different types of topological defects, where one acts as the boundary of another. The most common examples are domain walls bounded by strings, and strings bounded by monopoles. Their existence is a hallmark of theories with multiple, sequential steps of symmetry breaking.</p>
@@ -220,13 +219,13 @@
                                 <p>The standard domain wall problem is that if stable, infinite sheets of domain walls are formed, their energy density would quickly come to dominate the universe, which contradicts observations. However, if the theory is structured such that every domain wall sheet must have a string as its boundary, then no infinite sheets can form. Instead, you get a network of finite wall segments bounded by strings. These structures are unstable and decay quickly, preventing the cosmological catastrophe. This turns domain walls from a problem into a potentially interesting but transient phenomenon.</p>
                             </li>
                             <li><strong>What are axions and how do they relate to this?</strong>
-                                <p>The axion is a hypothetical particle proposed to solve the "strong CP problem" in particle physics. A consequence of axion theory is that after the formation of axionic strings, the universe undergoes another transition (the QCD phase transition) that creates domain walls. Crucially, these domain walls are bounded by the axionic strings. The number of domain walls "attached" to a string is a key parameter of the model. The decay of this string-wall network is a major source of axion production and could potentially be detected through gravitational waves.</p>
+                                <p>The axion is a hypothetical particle proposed to solve the "strong CP problem" in particle physics. A consequence of axion theory is that after the formation of axionic strings, the universe undergoes another transition (the QCD phase transition) that creates domain walls. Crucially, these domain walls are bounded by the axionic strings. The number of domain walls "attached" to a string, N_DW, is a key parameter. If N_DW = 1, the string-wall network decays as described here. If N_DW > 1, the network can be stable and re-introduces a domain wall problem, constraining axion models.</p>
                             </li>
                             <li><strong>In the simulation, what do "String Tension" and "Wall Tension" control?</strong>
                                 <p>These parameters let you explore the dynamics of the collapse.
                                 <ul>
-                                    <li><strong>String Tension (μ):</strong> This is the energy per unit length of the bounding string. A higher string tension acts like a stronger "rubber band," trying to shrink the loop faster.</li>
-                                    <li><strong>Wall Tension (σ):</strong> This is the energy per unit area of the domain wall. A higher wall tension acts like a heavier "soap film," creating a stronger inward-pulling force on the string. The collapse is primarily driven by the wall tension. Increasing it will make the hybrid object collapse much more quickly.</li>
+                                    <li><strong>String Tension (μ):</strong> This is the energy per unit length of the bounding string. A higher string tension acts like a stronger "rubber band," adding to the collapse speed, especially for small loops.</li>
+                                    <li><strong>Wall Tension (σ):</strong> This is the energy per unit area of the domain wall. A higher wall tension acts like a heavier "soap film," creating a stronger inward-pulling force. The collapse is primarily driven by the wall tension. Increasing it will make the hybrid object collapse much more quickly.</li>
                                 </ul>
                                 The ratio of these two tensions dictates the precise shape and acceleration of the collapsing object.</p>
                             </li>
@@ -241,6 +240,21 @@
                             </li>
                             <li><strong>What determines the shape of the collapsing object?</strong>
                                 <p>The shape is determined by the balance of forces. The string tension tries to minimize length, which would favor a perfect circle. The wall tension pulls perpendicularly on every segment of the string. If the loop starts as a perfect circle, it will shrink as a perfect circle. If it starts with a more complex shape, the areas of high curvature will shrink faster, trying to smooth the string into a circle as the whole object collapses.</p>
+                            </li>
+                             <li><strong>What is the speed of collapse?</strong>
+                                <p>The string segments will accelerate inwards, approaching the speed of light. The exact speed depends on the tensions and the radius. The simulation includes a "damping" parameter to keep the system from exploding numerically, so the speeds here are illustrative, not physically precise relativistic speeds.</p>
+                            </li>
+                             <li><strong>What if the initial loop is not circular?</strong>
+                                <p>The simulation allows for this! You can set the initial "jaggedness" of the loop. A more irregular loop will have regions of high curvature (sharp corners) that will collapse faster than flatter segments. You can observe the loop becoming smoother and more circular as it shrinks, a process known as "rounding."</p>
+                            </li>
+                             <li><strong>Can these objects be created in a lab?</strong>
+                                <p>Creating cosmological hybrid defects is impossible, but analogous structures can be made in condensed matter systems. For example, in certain types of liquid crystals or magnetic materials, it's possible to create scenarios where one type of defect (a disclination line) acts as the boundary for another (a domain wall), and study their interaction experimentally.</p>
+                            </li>
+                             <li><strong>What happens if two of these string-wall objects collide?</strong>
+                                <p>Like simple cosmic strings, the bounding strings would intercommute (reconnect). Two colliding loops could merge into one larger, more complex loop, or they could exchange segments. The attached domain walls would also merge and reconfigure, leading to very complex and energetic dynamics.</p>
+                            </li>
+                             <li><strong>What is the "Radius vs. Time" chart showing?</strong>
+                                <p>This chart tracks the average radius of the string loop as a function of simulation time. You will see the radius start at its initial value and then decrease, with the slope of the line representing the speed of collapse. A steeper slope means a faster collapse. You can see how changing the tension parameters affects this slope.</p>
                             </li>
                         </ol>
                     </section>
@@ -297,192 +311,177 @@
 
     <!-- Embedded JavaScript -->
     <script>
-        // --- Main Simulation Logic for Hybrid Defects ---
+        // --- Feature-Complete Main Simulation Logic for Hybrid Defects ---
         (function() {
             'use strict';
 
-            const DOM = { canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid'), };
+            const Utils = {
+                nFormatter: (n, d=1) => { const l=[{v:1,s:""},{v:1e3,s:"k"},{v:1e6,s:"M"}]; const i=l.slice().reverse().find(i=>n>=i.v); return i?(n/i.v).toFixed(d).replace(/\.0+$|(\.[0-9]*[1-9])0+$/,"$1")+i.s:"0";},
+            };
+
+            const DOM = {
+                canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'),
+                metricsGrid: document.getElementById('derived-metrics-grid'), presetsPanel: document.getElementById('presets-panel'),
+                charts: { energy: document.getElementById('energy-chart-container'), radius: document.getElementById('radius-chart-container'), },
+                exportButtons: { json: document.getElementById('export-json'), csv: document.getElementById('export-csv') },
+                reproString: document.getElementById('reproducibility-string'),
+                devLog: document.getElementById('dev-log'), fpsDisplay: document.getElementById('fps-display'),
+            };
 
             class HybridDefectSimulation {
-                constructor(numPoints, initialRadius) {
-                    this.numPoints = numPoints;
-                    this.initialRadius = initialRadius;
-                    this.points = [];
-                    this.params = { stringTension: 0.01, wallTension: 0.05, damping: 0.99, dt: 0.1 };
-                    this.metrics = { radius: 0, area: 0 };
-                    this.reset();
+                constructor() {
+                    this.params = { numPoints: 60, initialRadius: 200, jaggedness: 0.1, stringTension: 0.02, wallTension: 0.05, damping: 0.98, dt: 0.1 };
+                    this.points = []; this.history = []; this.time = 0;
                 }
 
                 reset() {
-                    this.points = [];
-                    for (let i = 0; i < this.numPoints; i++) {
-                        const angle = (i / this.numPoints) * 2 * Math.PI;
-                        this.points.push({
-                            x: this.initialRadius * Math.cos(angle),
-                            y: this.initialRadius * Math.sin(angle),
-                            z: 0,
-                            vx: 0, vy: 0, vz: 0
-                        });
+                    this.points = []; this.history = []; this.time = 0;
+                    for (let i = 0; i < this.params.numPoints; i++) {
+                        const angle = (i / this.params.numPoints) * 2 * Math.PI;
+                        const r = this.params.initialRadius * (1 + this.params.jaggedness * (Math.random() - 0.5));
+                        this.points.push({ x: r * Math.cos(angle), y: r * Math.sin(angle), z: 0, vx: 0, vy: 0, vz: 0 });
                     }
                     this.calculateMetrics();
                 }
 
                 step() {
                     const forces = this.points.map(() => ({ fx: 0, fy: 0, fz: 0 }));
-
-                    // Calculate forces
-                    for (let i = 0; i < this.numPoints; i++) {
+                    for (let i = 0; i < this.params.numPoints; i++) {
                         const p_curr = this.points[i];
-                        const p_prev = this.points[(i - 1 + this.numPoints) % this.numPoints];
-                        const p_next = this.points[(i + 1) % this.numPoints];
+                        const p_prev = this.points[(i - 1 + this.params.numPoints) % this.params.numPoints];
+                        const p_next = this.points[(i + 1) % this.params.numPoints];
 
-                        // String tension force (towards center of curvature)
                         const f_tx = (p_prev.x + p_next.x - 2 * p_curr.x);
                         const f_ty = (p_prev.y + p_next.y - 2 * p_curr.y);
                         forces[i].fx += this.params.stringTension * f_tx;
                         forces[i].fy += this.params.stringTension * f_ty;
 
-                        // Wall tension force (inward, perpendicular to string)
                         const segment_dx = p_next.x - p_prev.x;
                         const segment_dy = p_next.y - p_prev.y;
-                        const f_wx = -segment_dy; // Perpendicular vector
-                        const f_wy = segment_dx;
-                        forces[i].fx += this.params.wallTension * f_wx;
-                        forces[i].fy += this.params.wallTension * f_wy;
+                        const seg_len = Math.sqrt(segment_dx**2 + segment_dy**2);
+                        if (seg_len > 1e-6) {
+                            forces[i].fx += this.params.wallTension * (-segment_dy / seg_len) * seg_len;
+                            forces[i].fy += this.params.wallTension * (segment_dx / seg_len) * seg_len;
+                        }
                     }
 
-                    // Update velocities and positions (Verlet-like integration)
-                    for (let i = 0; i < this.numPoints; i++) {
+                    for (let i = 0; i < this.params.numPoints; i++) {
                         const p = this.points[i];
                         p.vx = (p.vx + forces[i].fx * this.params.dt) * this.params.damping;
                         p.vy = (p.vy + forces[i].fy * this.params.dt) * this.params.damping;
-                        p.x += p.vx * this.params.dt;
-                        p.y += p.vy * this.params.dt;
+                        p.x += p.vx * this.params.dt; p.y += p.vy * this.params.dt;
                     }
                     this.calculateMetrics();
+                    this.time += this.params.dt;
                 }
 
                 calculateMetrics() {
-                    let totalRadius = 0;
-                    let area = 0;
-                    for(let i=0; i<this.numPoints; ++i) {
-                        const p1 = this.points[i];
-                        const p2 = this.points[(i+1)%this.numPoints];
-                        totalRadius += Math.sqrt(p1.x**2 + p1.y**2);
-                        area += (p1.x * p2.y - p2.x * p1.y); // Shoelace formula
+                    let R_avg=0, L=0, A=0, v_avg=0;
+                    for(let i=0; i<this.params.numPoints; ++i) {
+                        const p1 = this.points[i]; const p2 = this.points[(i+1)%this.params.numPoints];
+                        R_avg += Math.sqrt(p1.x**2 + p1.y**2);
+                        L += Math.sqrt((p2.x-p1.x)**2 + (p2.y-p1.y)**2);
+                        A += (p1.x * p2.y - p2.x * p1.y);
+                        v_avg += Math.sqrt(p1.vx**2 + p1.vy**2);
                     }
-                    this.metrics.radius = totalRadius / this.numPoints;
-                    this.metrics.area = Math.abs(area / 2);
+                    this.metrics = {
+                        radius: R_avg/this.params.numPoints, area: Math.abs(A/2),
+                        perimeter: L, velocity: v_avg/this.params.numPoints,
+                        isoperimetric: (4 * Math.PI * Math.abs(A/2)) / (L*L || 1),
+                    };
+                    if (this.history.length > 200) this.history.shift();
+                    this.history.push({ time: this.time, radius: this.metrics.radius, area: this.metrics.area, velocity: this.metrics.velocity });
                 }
             }
 
             class Renderer {
-                constructor(sim, canvas) {
-                    this.sim = sim; this.canvas = canvas; this.ctx = canvas.getContext('2d');
-                    this.rotX = 0.5; this.rotY = 0.5;
-                    this.addMouseControls();
-                }
-
+                constructor(sim, canvas) { this.sim=sim; this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.rotX=0.5; this.rotY=0.5; this.zoom=1.0; this.addMouseControls(); }
                 addMouseControls() {
-                    let dragging = false;
-                    let lastX, lastY;
-                    this.canvas.onmousedown = (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; };
-                    this.canvas.onmouseup = () => dragging = false;
-                    this.canvas.onmousemove = (e) => {
-                        if (!dragging) return;
-                        const dx = e.clientX - lastX;
-                        const dy = e.clientY - lastY;
-                        this.rotY += dx * 0.01;
-                        this.rotX += dy * 0.01;
-                        lastX = e.clientX; lastY = e.clientY;
-                        if (this.sim.isPaused) this.draw();
-                    };
+                    let dragging=false, lastX, lastY;
+                    this.canvas.onmousedown = (e) => { dragging=true; lastX=e.clientX; lastY=e.clientY; };
+                    this.canvas.onmouseup = () => dragging=false;
+                    this.canvas.onmousemove = (e) => { if(!dragging) return; this.rotY += (e.clientX-lastX)*0.01; this.rotX += (e.clientY-lastY)*0.01; lastX=e.clientX; lastY=e.clientY; };
+                    this.canvas.onwheel = (e) => { e.preventDefault(); this.zoom *= (1 - e.deltaY * 0.001); this.zoom = Math.max(0.2, Math.min(5, this.zoom)); };
                 }
-
                 project(p) {
-                    // Simple 3D rotation and projection
-                    const rotX = this.rotX, rotY = this.rotY;
-                    const x = p.x, y = p.y, z = p.z;
-                    // Rotate around Y axis
-                    const x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
-                    const z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
-                    // Rotate around X axis
-                    const y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
-                    // Project to 2D
-                    const scale = this.canvas.width / (2 * this.sim.initialRadius);
-                    return { x: x1 * scale + this.canvas.width / 2, y: y2 * scale + this.canvas.height / 2 };
+                    const x1 = p.x*Math.cos(this.rotY)-p.z*Math.sin(this.rotY); const z1 = p.x*Math.sin(this.rotY)+p.z*Math.cos(this.rotY);
+                    const y2 = p.y*Math.cos(this.rotX)-z1*Math.sin(this.rotX);
+                    const scale = (this.canvas.width / (2*this.sim.params.initialRadius)) * this.zoom;
+                    return { x: x1*scale + this.canvas.width/2, y: y2*scale + this.canvas.height/2 };
                 }
-
                 draw() {
-                    this.ctx.fillStyle = '#f8f9fa';
-                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+                    this.ctx.fillStyle = '#1a1a1c'; this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+                    if (!this.sim.points.length) return;
                     const projectedPoints = this.sim.points.map(p => this.project(p));
-
-                    // Draw Wall
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(projectedPoints[0].x, projectedPoints[0].y);
-                    for(let i=1; i<projectedPoints.length; ++i) {
-                        this.ctx.lineTo(projectedPoints[i].x, projectedPoints[i].y);
-                    }
+                    this.ctx.beginPath(); this.ctx.moveTo(projectedPoints[0].x, projectedPoints[0].y);
+                    for(let i=1; i<projectedPoints.length; ++i) this.ctx.lineTo(projectedPoints[i].x, projectedPoints[i].y);
                     this.ctx.closePath();
-                    this.ctx.fillStyle = 'rgba(0, 123, 255, 0.3)';
-                    this.ctx.fill();
-
-                    // Draw String
-                    this.ctx.strokeStyle = 'rgba(220, 53, 69, 1)';
-                    this.ctx.lineWidth = 3;
-                    this.ctx.stroke();
+                    this.ctx.fillStyle = 'rgba(0, 123, 255, 0.4)'; this.ctx.strokeStyle = 'rgba(220, 53, 69, 1)';
+                    this.ctx.lineWidth = 3 * this.zoom; this.ctx.fill(); this.ctx.stroke();
                 }
             }
 
             class UI {
-                constructor(sim, renderer) {
-                    this.sim = sim; this.renderer = renderer; this.isPaused = false;
-                    this.initControls(); this.initMetrics(); this.initButtons();
-                }
-                initControls() {
-                    DOM.controlsPanel.innerHTML = '';
+                constructor(sim, renderer) { this.sim=sim; this.renderer=renderer; this.isPaused=true; this.init(); }
+                init() { this.buildControls(); this.buildPresets(); this.initMetrics(); this.initButtons(); this.initCharts(); this.log("Hybrid Defect Simulation Initialized."); }
+                buildControls() {
                     const controls = [
-                        {id: 'stringTension', label: 'String Tension', min: 0, max: 0.1, step: 0.001, value: 0.01},
-                        {id: 'wallTension', label: 'Wall Tension', min: 0, max: 0.2, step: 0.005, value: 0.05}
+                        {id: 'stringTension', label: 'String Tension', min:0, max:0.1, step:0.001}, {id: 'wallTension', label: 'Wall Tension', min:0, max:0.2, step:0.005},
+                        {id: 'damping', label: 'Damping', min:0.9, max:1.0, step:0.001}, {id: 'jaggedness', label: 'Initial Jaggedness', min:0, max:1.0, step:0.05}
                     ];
+                    DOM.controlsPanel.innerHTML = '';
                     controls.forEach(c => {
                         const g = document.createElement('div'); g.className = 'control-group';
-                        g.innerHTML = `<label>${c.label}: <span id="value-${c.id}">${c.value}</span></label><input type="range" id="control-${c.id}" min="${c.min}" max="${c.max}" step="${c.step}" value="${c.value}">`;
+                        const val = this.sim.params[c.id];
+                        g.innerHTML = `<label>${c.label}: <span id="value-${c.id}">${val.toFixed(3)}</span></label><input type="range" id="control-${c.id}" min="${c.min}" max="${c.max}" step="${c.step}" value="${val}">`;
                         DOM.controlsPanel.appendChild(g);
-                        document.getElementById(`control-${c.id}`).oninput = (e) => {
-                            const val = parseFloat(e.target.value);
-                            this.sim.params[c.id] = val;
-                            document.getElementById(`value-${c.id}`).textContent = val.toFixed(3);
-                        };
+                        document.getElementById(`control-${c.id}`).oninput = (e) => { const v=parseFloat(e.target.value); this.sim.params[c.id]=v; document.getElementById(`value-${c.id}`).textContent=v.toFixed(3); };
+                    });
+                }
+                buildPresets() {
+                    const presets = { "Default": {}, "High String Tension": {stringTension: 0.1, wallTension: 0.05}, "High Wall Tension": {stringTension: 0.02, wallTension: 0.2}, "Jagged Start": {jaggedness: 0.8}, "No Damping": {damping: 1.0} };
+                    DOM.presetsPanel.innerHTML = '<h3>Presets</h3>';
+                    Object.entries(presets).forEach(([name, p]) => {
+                        const btn = document.createElement('button'); btn.textContent = name;
+                        btn.onclick = () => { Object.assign(this.sim.params, this.sim.constructor.prototype.params, p); this.sim.reset(); this.updateAllControls(); };
+                        DOM.presetsPanel.appendChild(btn);
                     });
                 }
                 initMetrics() {
-                    this.metricCalculators = { 'Avg. Radius': () => this.sim.metrics.radius.toFixed(2), 'Wall Area': () => this.sim.metrics.area.toFixed(2) };
+                    this.metricDefs = {
+                        "Avg. Radius": m => m.radius.toFixed(1), "Wall Area": m => Utils.nFormatter(m.area), "Loop Perimeter": m => Utils.nFormatter(m.perimeter),
+                        "Avg. Speed": m => m.velocity.toFixed(2), "Circularity": m => m.isoperimetric.toFixed(3), "Is Collapsed?": m => m.radius < 1 ? "✔️ Yes" : "❌ No",
+                    };
                     DOM.metricsGrid.innerHTML = '';
-                    for(const label in this.metricCalculators) { const c = document.createElement('div'); c.className = 'metric-card'; c.innerHTML = `<h4>${label}</h4><div class="value" id="metric-${label.replace(/ /g, '-')}">--</div>`; DOM.metricsGrid.appendChild(c); }
+                    Object.keys(this.metricDefs).forEach(l => { const c=document.createElement('div'); c.className='metric-card'; c.innerHTML=`<h4>${l}</h4><div class="value" id="metric-${l.replace(/ /g,'')}">--</div>`; DOM.metricsGrid.appendChild(c); });
                 }
-                updateMetrics() { for(const l in this.metricCalculators) { const el = document.getElementById(`metric-${l.replace(/ /g, '-')}`); if(el) el.textContent=this.metricCalculators[l](); } }
+                updateMetrics() { Object.entries(this.metricDefs).forEach(([l, f]) => { const el=document.getElementById(`metric-${l.replace(/ /g,'')}`); if(el) el.textContent=f(this.sim.metrics); }); }
+                initCharts() { this.charts = { radius: new Chart(DOM.charts.radius, "Radius / Speed vs. Time"), area: new Chart(DOM.charts.energy, "Area vs. Time") }; }
+                updateCharts() { this.charts.radius.draw(this.sim.history, ['radius', 'velocity']); this.charts.area.draw(this.sim.history, ['area']); }
                 initButtons() {
-                    const startStopBtn = document.createElement('button'); startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause(); DOM.controlsPanel.appendChild(startStopBtn);
-                    const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); if(this.isPaused) this.renderer.draw(); }; DOM.controlsPanel.appendChild(resetBtn);
+                    const startStopBtn = document.createElement('button'); startStopBtn.id='main-run-pause-btn'; startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause();
+                    const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); };
+                    DOM.controlsPanel.prepend(resetBtn); DOM.controlsPanel.prepend(startStopBtn);
                 }
-                togglePause() { this.isPaused = !this.isPaused; document.querySelector('#controls-panel button').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
+                updateAllControls() { Object.keys(this.sim.params).forEach(id => { const el = document.getElementById(`control-${id}`); if(el){ el.value = this.sim.params[id]; document.getElementById(`value-${id}`).textContent = this.sim.params[id].toFixed(3); } }); }
+                togglePause() { this.isPaused = !this.isPaused; document.getElementById('main-run-pause-btn').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
                 loop() {
-                    if (this.isPaused) return;
-                    this.sim.step(); this.renderer.draw(); this.updateMetrics(); requestAnimationFrame(() => this.loop());
+                    if (this.isPaused || this.sim.metrics.radius < 1) { this.isPaused = true; document.getElementById('main-run-pause-btn').textContent = 'Run'; return; }
+                    this.sim.step(); this.renderer.draw(); this.updateMetrics(); this.updateCharts(); requestAnimationFrame(() => this.loop());
                 }
-                start() { this.isPaused = true; this.renderer.draw(); }
+                start() { this.sim.reset(); this.renderer.draw(); this.updateMetrics(); }
+                log(m){ const e=document.createElement('div'); e.textContent=`[${new Date().toLocaleTimeString()}] ${m}`; DOM.devLog.prepend(e); }
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                const sim = new HybridDefectSimulation(50, 200); // 50 points, 200 unit radius
-                const renderer = new Renderer(sim, DOM.canvas);
-                const ui = new UI(sim, renderer);
-                ui.start();
+                try {
+                    const sim = new HybridDefectSimulation();
+                    const renderer = new Renderer(sim, DOM.canvas);
+                    const ui = new UI(sim, renderer);
+                    ui.start();
+                    setInterval(() => { if (!ui.isPaused) renderer.draw(); }, 1000/60); // Redraw for camera rotation
+                } catch (e) { console.error("Sim failed:", e); }
             });
-
         })();
     </script>
 </body>

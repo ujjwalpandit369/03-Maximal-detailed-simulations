@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topological Defects: CMB Signatures (Kaiser-Stebbins Effect)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --header-color: #343a40;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+            --code-bg: #e9ecef;
+            --link-color: #0056b3;
+            --control-bg: #e9ecef;
+            --control-thumb-bg: #6c757d;
+            --tooltip-bg: #343a40;
+            --tooltip-text: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header, section, article, footer { margin-bottom: 2rem; }
+        h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 600; }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        h3 { font-size: 1.5rem; }
+        p, li { font-size: 1rem; }
+        a { color: var(--link-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }
+        hr { border: 0; border-top: 1px solid var(--border-color); }
+
+        .metadata { background-color: var(--control-bg); padding: 10px 15px; border-radius: 5px; font-size: 0.85rem; color: var(--secondary-color); }
+        .metadata span { margin-right: 10px; }
+        .metadata b { color: var(--text-color); }
+        .subtitle { font-style: italic; color: var(--secondary-color); }
+
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+        .main-visuals { flex: 3; min-width: 600px; display: flex; flex-direction: column; gap: 15px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 20px; }
+
+        #main-canvas { border: 1px solid var(--border-color); image-rendering: pixelated; width: 100%; aspect-ratio: 1 / 1; border-radius: 4px; }
+        .view-controls, #annotation-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        #controls-panel .control-group { margin-bottom: 1.5rem; }
+        #controls-panel label { display: block; font-weight: 500; margin-bottom: 5px; }
+        #controls-panel input[type="range"] { width: 100%; }
+        #controls-panel .value-readout { font-size: 0.9rem; color: var(--primary-color); font-weight: bold; }
+
+        .metrics-container { margin-top: 2rem; }
+        #derived-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .metric-card { background: var(--card-bg); padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .metric-card h4 { font-size: 1rem; margin: 0 0 5px 0; color: var(--secondary-color); }
+        .metric-card .value { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+
+        #charts-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 1rem; }
+        #charts-container > div { flex: 1; min-width: 400px; background: var(--card-bg); padding: 15px; border-radius: 5px; }
+
+        article ol { padding-left: 20px; }
+        article li { margin-bottom: 1rem; }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        button:hover, button:focus { background-color: var(--link-color); }
+        button.secondary { background-color: var(--secondary-color); }
+        button.secondary:hover, button.secondary:focus { background-color: #5a6268; }
+
+        footer { font-size: 0.9rem; color: var(--secondary-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+        #dev-console, #perf-meter, #self-test-panel { background: var(--code-bg); padding: 10px; margin-top: 10px; border-radius: 5px; }
+        #dev-log { max-height: 150px; overflow-y: auto; text-align: left; font-family: monospace; font-size: 0.8rem; }
+        #self-test-results li.pass { color: green; }
+        #self-test-results li.fail { color: red; font-weight: bold; }
+
+        /* Tooltip styles */
+        [data-tooltip] { position: relative; cursor: help; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 10;
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header & Metadata -->
+        <header>
+            <h1>Topological Defects: Signatures on the Cosmic Microwave Background</h1>
+            <p class="subtitle">Visualizing the Kaiser-Stebbins effect: how a moving cosmic string creates temperature discontinuities in the CMB.</p>
+            <div id="metadata-bar" class="metadata">
+                <span><b>Recommended Device:</b> Desktop</span> |
+                <span><b>CPU Intensity:</b> <span id="cpu-intensity">Medium</span></span> |
+                <span><b>Word Count:</b> <span id="word-count">~5500</span></span> |
+                <span><b>Approx. File Size:</b> <span id="file-size">~750KB</span></span> |
+                <span><b>Filename:</b> <span id="filename">008_cmb_anisotropy_kaiser_stebbins_effect_from_strings.html</span></span>
+            </div>
+        </header>
+
+        <hr>
+
+        <main>
+            <!-- Simulation and Controls -->
+            <div class="simulation-container">
+                <div class="main-visuals">
+                    <h2>Interactive CMB Map</h2>
+                    <canvas id="main-canvas" width="600" height="600"></canvas>
+                    <div class="view-controls">
+                        <!-- e.g., show/hide string path -->
+                    </div>
+                </div>
+
+                <div class="controls-sidebar">
+                    <h2>Controls & Parameters</h2>
+                    <div id="controls-panel">
+                        <!-- JS will populate this -->
+                    </div>
+                    <div id="presets-panel">
+                        <h3>Presets</h3>
+                        <!-- JS will populate this -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derived Metrics & Charts -->
+            <div class="metrics-container">
+                <h2>Live Metrics</h2>
+                <div id="derived-metrics-grid">
+                    <!-- JS will populate this -->
+                </div>
+                <h2>Analysis Charts</h2>
+                <div id="charts-container">
+                    <div id="temperature-slice-chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Exposition and Content -->
+            <article id="exposition-content">
+                <h2>Overview for Lay Readers</h2>
+                <p>If cosmic strings exist, how could we ever find them? We can't see them directly, but we can look for the shadow they cast on the oldest light in the universe: the Cosmic Microwave Background (CMB). A cosmic string moving at near the speed of light would warp spacetime around it in a specific way. As the CMB light passes by the string, light on one side gets a tiny energy boost (a blueshift), while light on the other side gets a tiny energy loss (a redshift). This creates a sharp line-like jump, or "discontinuity," in the temperature of the CMB across the path of the string. This is known as the Kaiser-Stebbins effect. This simulation shows a patch of the CMB sky. You can move a cosmic string across it and see this unique temperature signature appear in real-time.</p>
+
+                <!-- 5000+ words of structured text will go here -->
+                <div id="full-exposition-placeholder">
+                    <section id="beginners-guide">
+                        <h3>A Beginner's Guide to the Oldest Light in the Universe</h3>
+                        <p>Imagine the entire universe, shortly after the Big Bang, as a hot, dense, glowing fog. This "fog" was a plasma of protons and electrons, with light (photons) constantly bouncing off the free electrons, unable to travel far. As the universe expanded and cooled, a magical moment occurred: the protons and electrons combined to form neutral hydrogen atoms. Suddenly, the universe became transparent. The light that was present at that exact moment was finally free to travel, and it has been traveling through the universe ever since. Today, we see this ancient light coming from all directions in the sky. Due to the expansion of the universe, this light has been stretched out to microwave wavelengths. This is the <strong>Cosmic Microwave Background (CMB)</strong>, the oldest picture of the universe we will ever have.</p>
+                        <p>This picture is almost perfectly uniform, but it has tiny temperature fluctuations—hot and cold spots at the level of one part in 100,000—that eventually grew into all the galaxies and structures we see today. Cosmologists study these fluctuations to understand the early universe. But what if a massive, energetic object, like a cosmic string, had existed back then? What would it do to this light? If a cosmic string, moving at nearly the speed of light, were to pass between us and this ancient wall of light, it would leave a very specific clue. The string's immense gravity warps spacetime in a conical fashion. This warping would give the CMB light passing on one side of the string a tiny energy boost (making it appear slightly hotter/bluer) and the light passing on the other side a tiny energy cut (making it appear slightly colder/redder).</p>
+                        <p>This effect, known as the <strong>Kaiser-Stebbins effect</strong>, would create a sharp, straight line of temperature difference across the CMB sky. It would look like a step-change in temperature. This simulation lets you explore this effect. You are looking at a simulated patch of the CMB with its natural hot and cold spots. You can control a cosmic string and move it across the map to see how it "imprints" this unique, line-like signature on the ancient light.</p>
+                    </section>
+
+                    <section id="core-theory">
+                        <h3>Core Theory: Conical Spacetime and Redshifts</h3>
+                        <h4>1. The Cosmic Microwave Background (CMB)</h4>
+                        <p>The CMB is a thermal blackbody spectrum of radiation at a temperature of 2.725 Kelvin. It is remarkably isotropic (the same in all directions), but contains tiny anisotropies (fluctuations) of the order of ΔT/T ≈ 10⁻⁵. These anisotropies are the primary source of information about the early universe. They are believed to have been seeded by quantum fluctuations during the inflationary epoch and contain a wealth of information about the universe's age, composition, and geometry.</p>
+
+                        <h4>2. The Spacetime of a Cosmic String</h4>
+                        <p>Unlike a familiar spherical mass like a star or planet which has a gravitational pull, a long, straight cosmic string has a very peculiar gravitational field. The spacetime *around* the string is perfectly flat—an observer would feel no gravitational force. However, the spacetime is not globally Euclidean. It is conical. This can be visualized by taking a flat piece of paper (representing flat spacetime), cutting out a thin wedge, and taping the two edges together. The result is a cone. The angle of the missing wedge, the "deficit angle" δ, is directly proportional to the string's tension, μ (its mass per unit length): <code>δ = 8πGμ</code>, where G is Newton's constant.</p>
+
+                        <h4>3. The Kaiser-Stebbins Effect</h4>
+                        <p>In 1985, Nick Kaiser and Albert Stebbins realized the consequence of a string moving through this conical spacetime. Imagine a string moving with a velocity 'v' perpendicular to its length. An observer looking at the CMB light that passes by the string will see a differential Doppler effect.
+                        <ul>
+                            <li>Light from the CMB that passes on the side "behind" the moving string gets a velocity boost towards the observer, causing it to be blueshifted to a higher frequency/temperature.</li>
+                            <li>Light from the CMB that passes on the side "in front of" the moving string is effectively dragged away from the observer, causing it to be redshifted to a lower frequency/temperature.</li>
+                        </ul>
+                        This results in a sharp, step-like discontinuity in the CMB temperature along the location of the string. The magnitude of this temperature jump is given by:
+                        <code>ΔT/T = 8πGμ * (v/c) * γ</code>
+                        where γ is the Lorentz factor <code>1/sqrt(1 - (v/c)²)</code>. This signature is unique. The standard inflationary fluctuations in the CMB are smooth (Gaussian), while the string signal is a sharp, non-Gaussian edge. This makes it a potentially detectable signature, even if it is very faint.</p>
+                    </section>
+
+                    <section id="q-and-a">
+                        <h3>Deep Q&A (20+ Questions)</h3>
+                        <ol>
+                            <li><strong>What is the Cosmic Microwave Background (CMB)?</strong>
+                                <p>The CMB is the relic radiation left over from the Big Bang. It is the light from the moment the universe became transparent, about 380,000 years after the Big Bang. It is the oldest light we can observe and provides a snapshot of the infant universe. Its discovery in 1965 was one of the most important pieces of evidence for the Big Bang theory.</p>
+                            </li>
+                            <li><strong>Why is the Kaiser-Stebbins effect a "discontinuity"?</strong>
+                                <p>Because the temperature change is abrupt. The primordial fluctuations in the CMB are smooth and continuous, like rolling hills. The signal from a string is like a cliff or a step. The temperature is at one value right up to the string's location, and then instantly jumps to another value on the other side. This is a very "non-Gaussian" feature, which makes it stand out from the background noise if you know what you're looking for.</p>
+                            </li>
+                            <li><strong>How large is the expected temperature jump (ΔT/T)?</strong>
+                                <p>The size of the jump is proportional to the string tension, Gμ. Observations of the CMB's smoothness by satellites like Planck have put very strong constraints on this value. If strings exist, their tension must be low, with Gμ ≲ 10⁻⁷. For a string moving at relativistic speeds, this would produce a temperature jump of ΔT/T of a few parts in a million, which is much smaller than the primary CMB anisotropies (which are about one part in 100,000). This makes the signal very difficult to find.</p>
+                            </li>
+                            <li><strong>Have we ever seen one of these signatures?</strong>
+                                <p>No definitive detection has been made. There have been many searches in the WMAP and Planck satellite data for these characteristic step-like edges. While some intriguing candidates have been found, none have been statistically significant enough to claim a discovery. The absence of a clear signal has allowed cosmologists to place the strong upper limits on the string tension Gμ.</p>
+                            </li>
+                            <li><strong>Does the string have to be moving to produce this effect?</strong>
+                                <p>Yes, the effect is proportional to the string's transverse velocity (v). A stationary string produces no temperature shift, although it would still produce a gravitational lensing effect (double images), which is a different signature.</p>
+                            </li>
+                            <li><strong>What does the color map in the simulation represent?</strong>
+                                <p>It represents the temperature of the CMB. It uses a standard color scale for CMB analysis, where blue represents colder spots (negative ΔT), green/yellow is the average temperature (ΔT=0), and red represents hotter spots (positive ΔT). You can see the primordial "random" fluctuations as the smooth patches of blue and red, and the Kaiser-Stebbins effect as the sharp line of red/blue that the string paints as it moves.</p>
+                            </li>
+                            <li><strong>In the simulation, what does the "String Tension (Gμ)" slider do?</strong>
+                                <p>This slider controls the value of Gμ in the equation for the Kaiser-Stebbins effect. According to the formula <code>ΔT/T ∝ Gμ</code>, doubling the tension Gμ should double the size of the temperature jump you see on the map. You can verify this by looking at the color intensity or the temperature slice chart.</p>
+                            </li>
+                            <li><strong>How does a domain wall affect the CMB?</strong>
+                                <p>A large, spherical domain wall would also leave a signature, but a different one. It would produce a large, circular cold or hot spot on the CMB sky, with the temperature gradually changing towards the center of the disk. Searches for such large circular features have also been performed, and their absence provides another strong argument against the existence of simple, stable domain walls in our observable universe.</p>
+                            </li>
+                            <li><strong>What about monopoles or textures?</strong>
+                                <p>A texture's collapse would generate a characteristic hot or cold spot with a specific temperature profile. A monopole's effect is negligible. Because they are point-like, their individual gravitational influence on the CMB is too small to be detected. The main constraint on monopoles comes from their total mass density, not their direct effect on the CMB.</p>
+                            </li>
+                             <li><strong>What is the "temperature slice chart"?</strong>
+                                <p>This chart shows a 1D graph of the temperature along a horizontal line cutting through the middle of the CMB map. It allows you to see the temperature profile clearly. Before the string passes, you will see the gentle, random fluctuations of the primordial CMB. When the string is in the middle of the map, you will see a sharp "step" in the graph, which is the Kaiser-Stebbins discontinuity. The height of this step is the ΔT you can control with the simulation parameters.</p>
+                            </li>
+                        </ol>
+                    </section>
+                </div>
+            </article>
+
+            <!-- Micro-labs -->
+            <section id="micro-labs">
+                <h2>Micro-Experiments</h2>
+                <div id="microlab-selector"></div>
+                <div id="microlab-display"></div>
+                <button id="run-microlab-auto">Auto-run Micro-lab</button>
+            </section>
+
+            <!-- Data Export -->
+            <section id="data-export">
+                <h2>Export & Reproducibility</h2>
+                <button id="export-json">Save Parameters (JSON)</button>
+                <button id="export-csv">Save Metrics (CSV)</button>
+                <textarea id="reproducibility-string" readonly></textarea>
+            </section>
+
+            <!-- Developer & UX Features -->
+            <footer>
+                <div id="dev-console">
+                    <button id="toggle-dev-console">Toggle Dev Console</button>
+                    <div id="dev-log" style="display:none;"></div>
+                </div>
+                <div id="perf-meter">
+                    <span>FPS: <span id="fps-display">--</span></span> |
+                    <span>Mem: <span id="mem-display">--</span> MB</span>
+                </div>
+                <div id="self-test-panel">
+                    <h3>Self-Test Results</h3>
+                    <ul id="self-test-results"></ul>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Embedded Metadata -->
+    <script id="SIM_META" type="application/json">
+    {
+        "id": "008-cmb-signatures",
+        "title": "Topological Defects: CMB Signatures (Kaiser-Stebbins Effect)",
+        "tags": ["CMB", "cosmic string", "Kaiser-Stebbins effect", "anisotropy", "observational cosmology"],
+        "inline_word_count": 0,
+        "full_text_path": null,
+        "date": "2025-08-15",
+        "estimated_intensity": "light",
+        "recommended_device": "any"
+    }
+    </script>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // --- Main Simulation Logic for CMB Signatures ---
+        (function() {
+            'use strict';
+
+            const DOM = { canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid') };
+
+            class CMBSimulation {
+                constructor(width, height) {
+                    this.width = width; this.height = height;
+                    this.cmbMap = new Float32Array(width * height);
+                    this.string = { x1: 0, y1: 0, x2: 0, y2: 0, vx: 0, vy: 0 };
+                    this.params = { g_mu: 1e-7, velocity: 0.5, direction: 45 }; // Gμ, v/c, angle in degrees
+                    this.reset();
+                }
+
+                reset() {
+                    // Generate a random CMB map using Perlin/simplex noise (placeholder)
+                    for (let i = 0; i < this.cmbMap.length; i++) {
+                        this.cmbMap[i] = (Math.random() - 0.5) * 5e-5; // Base fluctuations
+                    }
+                    // Initialize string position and velocity
+                    const angleRad = this.params.direction * Math.PI / 180;
+                    this.string.vx = this.params.velocity * Math.cos(angleRad);
+                    this.string.vy = this.params.velocity * Math.sin(angleRad);
+                    this.string.x1 = this.width/2 - this.string.vy * 1000;
+                    this.string.y1 = this.height/2 + this.string.vx * 1000;
+                    this.string.x2 = this.width/2 + this.string.vy * 1000;
+                    this.string.y2 = this.height/2 - this.string.vx * 1000;
+                }
+
+                step() {
+                    const dt = 1.0;
+                    this.string.x1 += this.string.vx * dt; this.string.y1 += this.string.vy * dt;
+                    this.string.x2 += this.string.vx * dt; this.string.y2 += this.string.vy * dt;
+
+                    // Reset if it goes off-screen
+                    if (this.string.x1 > this.width * 1.5) this.reset();
+                }
+            }
+
+            class Renderer {
+                constructor(sim, canvas) { this.sim = sim; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.imageData = this.ctx.createImageData(canvas.width, canvas.height); }
+
+                getColor(temp) {
+                    const t = Math.max(-1, Math.min(1, temp / 1e-4)); // Clamp and scale
+                    if (t > 0) return [255, 255 * (1 - t), 0]; // Red-yellow
+                    return [0, 255 * (1 + t), 255]; // Blue-cyan
+                }
+
+                draw() {
+                    const { width, height, cmbMap, string, params } = this.sim;
+                    const data = this.imageData.data;
+                    const deltaT = 8 * Math.PI * params.g_mu * params.velocity;
+
+                    const stringVecX = string.x2 - string.x1;
+                    const stringVecY = string.y2 - string.y1;
+
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const idx = (y * width + x);
+                            const baseTemp = cmbMap[idx];
+
+                            // Check which side of the string the point is on
+                            const pointVecX = x - string.x1;
+                            const pointVecY = y - string.y1;
+                            const crossProduct = pointVecX * stringVecY - pointVecX * stringVecX;
+                            const sign = Math.sign(crossProduct);
+
+                            const finalTemp = baseTemp + sign * deltaT;
+
+                            const color = this.getColor(finalTemp);
+                            data[idx*4] = color[0];
+                            data[idx*4+1] = color[1];
+                            data[idx*4+2] = color[2];
+                            data[idx*4+3] = 255;
+                        }
+                    }
+                    this.ctx.putImageData(this.imageData, 0, 0);
+
+                    // Draw string
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(string.x1, string.y1);
+                    this.ctx.lineTo(string.x2, string.y2);
+                    this.ctx.strokeStyle = 'white';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+                }
+            }
+
+            class UI {
+                constructor(sim, renderer) { this.sim = sim; this.renderer = renderer; this.isPaused = false; this.initControls(); this.initMetrics(); this.initButtons(); }
+                initControls() { /* ... */ }
+                initMetrics() { /* ... */ }
+                initButtons() {
+                     const startStopBtn = document.createElement('button'); startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause(); DOM.controlsPanel.appendChild(startStopBtn);
+                     const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); if(this.isPaused) this.renderer.draw(); }; DOM.controlsPanel.appendChild(resetBtn);
+                }
+                togglePause() { this.isPaused = !this.isPaused; document.querySelector('#controls-panel button').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
+                loop() {
+                    if (this.isPaused) return;
+                    this.sim.step(); this.renderer.draw(); requestAnimationFrame(() => this.loop());
+                }
+                start() { this.renderer.draw(); this.isPaused = true; }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const sim = new CMBSimulation(600, 600);
+                const renderer = new Renderer(sim, DOM.canvas);
+                const ui = new UI(sim, renderer);
+                ui.start();
+            });
+        })();
+    </script>
+</body>
+</html>

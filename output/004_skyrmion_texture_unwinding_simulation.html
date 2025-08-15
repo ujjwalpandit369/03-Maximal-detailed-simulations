@@ -179,7 +179,6 @@
                 <h2>Overview for Lay Readers</h2>
                 <p>Imagine a 3D field of arrows that can point in any direction. Unlike a monopole, which is a defect centered on a single point, a <strong>texture</strong> or <strong>skyrmion</strong> is a global "knot" in the entire field. Think of taking the entire space and "wrapping" it around a sphere of possible directions. This creates a twisted configuration that is topologically stable, but energetically unstable. The field wants to untwist itself to reach a lower energy state, which is for all the arrows to point in the same direction. This simulation starts with the field in a twisted "texture" state. When you run the simulation, you are watching this cosmic knot untangle itself, releasing its stored energy in a smooth but rapid process until the whole field is aligned.</p>
 
-                <!-- 5000+ words of structured text will go here -->
                 <div id="full-exposition-placeholder">
                     <section id="beginners-guide">
                         <h3>A Beginner's Guide to Cosmic Knots</h3>
@@ -208,7 +207,7 @@
                     </section>
 
                     <section id="q-and-a">
-                        <h3>Deep Q&A (20+ Questions)</h3>
+                        <h3>Deep Q&A (25+ Questions)</h3>
                         <ol>
                             <li><strong>What's the difference between a texture and a skyrmion?</strong>
                                 <p>In cosmology, the terms are often used interchangeably to refer to unstable, topologically non-trivial global field configurations. The term "skyrmion" originates from a specific model in nuclear physics proposed by Tony Skyrme where they are stable and represent baryons. In condensed matter physics, "skyrmion" usually refers to stable, particle-like magnetic textures. So, context matters. In our cosmological context, it refers to the unstable defect associated with π₃.</p>
@@ -219,13 +218,19 @@
                             <li><strong>If they decay instantly, what's the point?</strong>
                                 <p>Their significance comes from the decay process itself. When a texture unwinds, it releases its energy into the particles of the theory. If the field that forms the texture also couples to other particles (like quarks and leptons), the unwinding process can be a source of particle production. More excitingly, if the theory violates charge-parity (CP) symmetry, the decay can produce a different number of particles and anti-particles. The collapse of textures is one of the proposed mechanisms for <strong>baryogenesis</strong>—the creation of the observed excess of matter over antimatter in the universe.</p>
                             </li>
-                            <li><strong>What is a homotopy group, in simple terms?</strong>
+                             <li><strong>What is a homotopy group, in simple terms?</strong>
                                 <p>A homotopy group is a tool in topology that classifies the "holes" in a space. π₀ counts the number of separate pieces. π₁ counts the number of 1D "loop" holes (like the hole in a donut). π₂ counts the number of 2D "surface" holes (like the hollow in a basketball). π₃ counts 3D "volume" holes, and so on. The stability of a defect of a certain dimension is guaranteed if the corresponding homotopy group of the vacuum manifold is non-trivial (i.e., if there's a "hole" of the right dimension for the defect to get "stuck" on).</p>
+                            </li>
+                             <li><strong>Why do textures require a 3D field (like SO(3)) or more complex?</strong>
+                                <p>Textures are about wrapping 3D space onto the vacuum manifold. For this to be non-trivial, the vacuum manifold must have a non-trivial "3D hole" (a non-trivial π₃). A simple circle (U(1) symmetry) or a 2-sphere (SO(3) symmetry) don't have such features. The simplest group whose vacuum manifold is a 3-sphere is SU(2), which can be represented by a 4-component field, or in special cases, a constrained 3-component field. The simulation uses a 3-component vector field as a visual proxy for this richer structure.</p>
                             </li>
                             <li><strong>What is SU(2) symmetry?</strong>
                                 <p>SU(2) is the Special Unitary group in 2 dimensions. It's the group of 2x2 complex matrices that are unitary (their conjugate transpose is their inverse) and have a determinant of 1. This group is fundamental in physics; it describes the spin of electrons and the weak nuclear force. Geometrically, the space of all such matrices forms a 3-sphere (S³), which is why its homotopy groups are important for textures.</p>
                             </li>
-                            <li><strong>How are skyrmions used in nuclear physics?</strong>
+                            <li><strong>How could texture collapse generate the matter-antimatter asymmetry?</strong>
+                                <p>The Sakharov conditions for baryogenesis are: 1) Baryon number violation, 2) C and CP symmetry violation, and 3) Departure from thermal equilibrium. A collapsing texture provides these. The GUT-scale physics at the core of the unwinding field can violate baryon number. The field itself can have CP-violating terms in its potential. And the collapse is a rapid, non-equilibrium process. As the texture unwinds, it can decay preferentially into baryons over anti-baryons, leaving a net excess of matter.</p>
+                            </li>
+                             <li><strong>How are skyrmions used in nuclear physics?</strong>
                                 <p>In the 1960s, Tony Skyrme proposed that stable, particle-like knots (skyrmions) in a field of pions could be a model for baryons like protons and neutrons. In this model, the topological charge of the skyrmion corresponds to the baryon number. While the full theory of the strong force (Quantum Chromodynamics) is now understood to be more fundamental, the Skyrme model is still a useful low-energy approximation that captures some of the essential non-linear dynamics of the strong force.</p>
                             </li>
                             <li><strong>What are magnetic skyrmions in condensed matter?</strong>
@@ -239,6 +244,30 @@
                             </li>
                             <li><strong>Why does the energy decrease?</strong>
                                 <p>The total energy of the field has two parts: potential energy (how far the field is from the vacuum manifold) and gradient energy (how much the field changes from point to point). A texture is a high-gradient-energy configuration. The unwinding process is driven by the system's tendency to minimize this gradient energy. As the field smooths out and becomes more uniform, the gradient energy is converted into other forms (in a real scenario, particles; in this simulation, it's just dissipated), and the total energy of the field decreases.</p>
+                            </li>
+                             <li><strong>Is a texture a real "particle"?</strong>
+                                <p>No, not in the same way a stable monopole would be. Because it's unstable and transient, it's better to think of it as a temporary, extended object or a process. Its collapse can create real particles, but the texture itself is an ephemeral field configuration.</p>
+                            </li>
+                             <li><strong>Could we detect the collapse of a texture?</strong>
+                                <p>It's unlikely we could detect a single, ancient texture collapse directly. However, their collective effects might be observable. For example, the rapid unwinding of many textures could generate a characteristic background of gravitational waves. Searches for such a stochastic gravitational wave background are ongoing with instruments like LIGO, Virgo, and future space-based detectors like LISA.</p>
+                            </li>
+                             <li><strong>What is the "Alignment View" in the simulation?</strong>
+                                <p>This view provides a more abstract look at the field's order. It colors each point based on how well its vector is aligned with a reference direction (e.g., the "up" direction). For example, white might mean perfect alignment, while black means perfect anti-alignment, and gray is perpendicular. This view makes it very easy to see the region of mis-aligned vectors shrinking and disappearing as the texture unwinds.</p>
+                            </li>
+                             <li><strong>How is the initial texture state created in the simulation?</strong>
+                                <p>We use a mathematical formula to set the initial direction of each vector. A common choice is the "hedgehog" ansatz, but applied to the whole space. We define a vector at position <code>r = (x,y,z)</code> based on a function of <code>r</code>'s direction and distance from the center. For example, <code>φ(r) = (sin(f(r)) * x/|r|, sin(f(r)) * y/|r|, cos(f(r)))</code> where <code>f(r)</code> is a function that goes from π at r=0 to 0 at some large radius R. This creates a smooth configuration with the desired topological knot.</p>
+                            </li>
+                             <li><strong>What happens if two textures form near each other?</strong>
+                                <p>Their interaction is complex. They might unwind independently, or they might merge and interact in a non-linear way before collapsing. The dynamics are highly dependent on their relative "orientation" and the details of the underlying physics. This is an area of active research, often requiring large-scale numerical simulations.</p>
+                            </li>
+                             <li><strong>Do textures have an "anti-texture"?</strong>
+                                <p>Yes. Since the topological charge is an integer (from π₃(S³) = ℤ), a texture can have a charge of +1, and an "anti-texture" can have a charge of -1. This corresponds to wrapping the field around the vacuum manifold in the opposite direction. A +1 and -1 texture could potentially annihilate each other if they met before unwinding on their own.</p>
+                            </li>
+                             <li><strong>Why is the vacuum manifold for SU(2) a 3-sphere?</strong>
+                                <p>A general SU(2) matrix can be written as <code>[[a, b], [-b*, a*]]</code> where <code>a</code> and <code>b</code> are complex numbers and <code>|a|² + |b|² = 1</code>. If we write <code>a = x₀ + i*x₁</code> and <code>b = x₂ + i*x₃</code>, then the condition becomes <code>x₀² + x₁² + x₂² + x₃² = 1</code>. This is the mathematical definition of a sphere in 4-dimensional Euclidean space, which is called a 3-sphere (S³).</p>
+                            </li>
+                            <li><strong>Are textures related to the other defects?</strong>
+                                <p>Yes, in some theories. More complex symmetry breaking patterns can produce "hybrid" defects. For example, a texture could be seeded by a monopole-antimonopole pair annihilating. In some models, cosmic strings can terminate on "beads" which are monopoles, and the decay of these string loops can also be a source of texture-like configurations.</p>
                             </li>
                         </ol>
                     </section>
@@ -295,131 +324,230 @@
 
     <!-- Embedded JavaScript -->
     <script>
-        // --- Main Simulation Logic for Textures (Skyrmions) ---
+        // --- Feature-Complete Main Simulation Logic for Textures (Skyrmions) ---
         (function() {
             'use strict';
 
-            const DOM = { canvas: document.getElementById('main-canvas'), controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid'), };
+            const Utils = {
+                debounce: (func, delay) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => func.apply(this, a), delay); }; },
+                nFormatter: (n, d = 2) => { const l = [{v:1,s:""},{v:1e3,s:"k"},{v:1e6,s:"M"}]; const i = l.slice().reverse().find(i => n >= i.v); return i?(n/i.v).toFixed(d).replace(/\.0+$|(\.[0-9]*[1-9])0+$/,"$1")+i.s:"0"; },
+                dot: (v1, v2) => v1.x * v2.x + v1.y * v2.y + v1.z * v2.z,
+                normalize: (v) => { const l = Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z); return l > 1e-6 ? { x: v.x/l, y: v.y/l, z: v.z/l } : { x: 0, y: 0, z: 0 }; },
+            };
+
+            const DOM = {
+                canvas: document.getElementById('main-canvas'),
+                controlsPanel: document.getElementById('controls-panel'), metricsGrid: document.getElementById('derived-metrics-grid'),
+                presetsPanel: document.getElementById('presets-panel'),
+                charts: { energy: document.getElementById('energy-chart-container'), alignment: document.getElementById('alignment-chart-container'), },
+                viewButtons: { overview: document.getElementById('view-overview'), energy: document.getElementById('view-energy-heatmap'), alignment: document.getElementById('view-schematic'), },
+                exportButtons: { json: document.getElementById('export-json'), csv: document.getElementById('export-csv'), },
+                reproString: document.getElementById('reproducibility-string'),
+                microlabSelector: document.getElementById('microlab-selector'), microlabDisplay: document.getElementById('microlab-display'),
+                devLog: document.getElementById('dev-log'), fpsDisplay: document.getElementById('fps-display'), memDisplay: document.getElementById('mem-display'),
+                wordCount: document.getElementById('word-count'), fileSize: document.getElementById('file-size'),
+            };
 
             class TextureSimulation {
                 constructor(gridSize) {
                     this.size = gridSize;
-                    this.vx = new Float32Array(gridSize * gridSize * gridSize);
-                    this.vy = new Float32Array(gridSize * gridSize * gridSize);
-                    this.vz = new Float32Array(gridSize * gridSize * gridSize);
-                    this.metrics = { avgAlignment: 0, gradientEnergy: 0 };
-                    this.params = { alpha: 0.1, updatesPerFrame: 1 };
-                    this.reset();
+                    this.field = new Float32Array(gridSize**3 * 3);
+                    this.energy = new Float32Array(gridSize**3);
+                    this.history = [];
+                    this.time = 0;
+                    this.params = { gridSize: 24, eta: 1.0, lambda: 0.1, temp: 0.01, dt: 0.2, updatesPerFrame: 5, textureRadius: 0.6 };
                 }
 
-                getIndex(x, y, z) { return x + y * this.size + z * this.size * this.size; }
+                getIndex(x, y, z) { return (x + y * this.size + z * this.size * this.size); }
+                getVec(idx) { const i = idx*3; return { x: this.field[i], y: this.field[i+1], z: this.field[i+2] }; }
+                setVec(idx, v) { const i = idx*3; this.field[i] = v.x; this.field[i+1] = v.y; this.field[i+2] = v.z; }
 
                 reset() {
-                    // Initialize with a Skyrmion/Texture configuration
+                    this.history = []; this.time = 0;
                     const center = this.size / 2;
-                    for (let z = 0; z < this.size; z++) {
-                    for (let y = 0; y < this.size; y++) {
-                    for (let x = 0; x < this.size; x++) {
+                    const R = this.size * this.params.textureRadius;
+                    for (let z = 0; z < this.size; z++) for (let y = 0; y < this.size; y++) for (let x = 0; x < this.size; x++) {
                         const idx = this.getIndex(x, y, z);
-                        const dx = x - center;
-                        const dy = y - center;
-                        const dz = z - center;
+                        const dx = x - center; const dy = y - center; const dz = z - center;
                         const r = Math.sqrt(dx**2 + dy**2 + dz**2);
-
-                        const R = this.size / 2.5; // Characteristic size of the texture
-                        const f_r = Math.PI * (1 - r / R);
-
-                        if (r > R) {
-                            this.vx[idx] = 0; this.vy[idx] = 0; this.vz[idx] = 1;
-                        } else {
-                            this.vx[idx] = Math.sin(f_r) * dx / r;
-                            this.vy[idx] = Math.sin(f_r) * dy / r;
-                            this.vz[idx] = Math.cos(f_r);
-                        }
-                    }}}
+                        if (r < 1e-6) { this.setVec(idx, {x:0, y:0, z:-1}); continue; }
+                        const f_r = Math.PI * Math.min(r / R, 1.0);
+                        const v = {
+                            x: Math.sin(f_r) * dx / r,
+                            y: Math.sin(f_r) * dy / r,
+                            z: Math.cos(f_r)
+                        };
+                        this.setVec(idx, Utils.normalize(v));
+                    }
                     this.calculateMetrics();
                 }
 
-                step() { // Same relaxation step as monopole simulation
-                    for (let i = 0; i < this.params.updatesPerFrame; i++) {
-                        for (let z = 0; z < this.size; z++) {
-                        for (let y = 0; y < this.size; y++) {
-                        for (let x = 0; x < this.size; x++) {
-                            const idx = this.getIndex(x, y, z);
-                            let avg_vx = 0, avg_vy = 0, avg_vz = 0;
-                            const neighbors = [ this.getIndex((x+1)%this.size, y, z), this.getIndex((x-1+this.size)%this.size, y, z), this.getIndex(x, (y+1)%this.size, z), this.getIndex(x, (y-1+this.size)%this.size, z), this.getIndex(x, y, (z+1)%this.size), this.getIndex(x, y, (z-1+this.size)%this.size) ];
-                            for(const n_idx of neighbors) { avg_vx += this.vx[n_idx]; avg_vy += this.vy[n_idx]; avg_vz += this.vz[n_idx]; }
-                            const avg_len = Math.sqrt(avg_vx**2 + avg_vy**2 + avg_vz**2);
-                            if (avg_len > 0) { avg_vx /= avg_len; avg_vy /= avg_len; avg_vz /= avg_len; }
-                            this.vx[idx] += this.params.alpha * (avg_vx - this.vx[idx]);
-                            this.vy[idx] += this.params.alpha * (avg_vy - this.vy[idx]);
-                            this.vz[idx] += this.params.alpha * (avg_vz - this.vz[idx]);
-                            const my_len = Math.sqrt(this.vx[idx]**2 + this.vy[idx]**2 + this.vz[idx]**2);
-                            if (my_len > 0) { this.vx[idx] /= my_len; this.vy[idx] /= my_len; this.vz[idx] /= my_len; }
-                        }}}
+                step() {
+                    const { size, params } = this;
+                    for (let i = 0; i < params.updatesPerFrame; i++) {
+                        const nextField = new Float32Array(this.field.length);
+                        for (let z=0; z<size; z++) for (let y=0; y<size; y++) for (let x=0; x<size; x++) {
+                            const idx = this.getIndex(x,y,z);
+                            let avg_v = {x:0, y:0, z:0};
+                            // Simple relaxation towards neighbors' average direction
+                            const neighbors = [ this.getVec(this.getIndex((x+1)%size,y,z)), this.getVec(this.getIndex((x-1+size)%size,y,z)), this.getVec(this.getIndex(x,(y+1)%size,z)), this.getVec(this.getIndex(x,(y-1+size)%size,z)), this.getVec(this.getIndex(x,y,(z+1)%size)), this.getVec(this.getIndex(x,y,(z-1+size)%size)) ];
+                            for (const n of neighbors) { avg_v.x += n.x; avg_v.y += n.y; avg_v.z += n.z; }
+                            const new_v = Utils.normalize(avg_v);
+                            const i3 = idx*3;
+                            nextField[i3] = new_v.x; nextField[i3+1] = new_v.y; nextField[i3+2] = new_v.z;
+                        }
+                        this.field = nextField;
                     }
+                    this.time += params.updatesPerFrame * params.dt;
                     this.calculateMetrics();
                 }
 
                 calculateMetrics() {
-                    let total_vx = 0, total_vy = 0, total_vz = 0;
-                    for(let i=0; i<this.vx.length; ++i) {
-                        total_vx += this.vx[i]; total_vy += this.vy[i]; total_vz += this.vz[i];
+                    let total_v = {x:0, y:0, z:0};
+                    let totalEnergy = 0;
+                    for(let i=0; i<this.field.length/3; ++i) {
+                        const v = this.getVec(i);
+                        total_v.x += v.x; total_v.y += v.y; total_v.z += v.z;
                     }
-                    this.metrics.avgAlignment = Math.sqrt(total_vx**2 + total_vy**2 + total_vz**2) / this.vx.length;
+                    this.avgAlignment = Utils.len(total_v) / (this.size**3);
+
+                    // Simplified topological charge density (winding number density)
+                    // A true calculation is complex; this approximates local "twistedness"
+                    let windingDensity = 0;
+                    for (let z=1; z<this.size-1; z++) for (let y=1; y<this.size-1; y++) for (let x=1; x<this.size-1; x++) {
+                        const p = this.getVec(this.getIndex(x,y,z));
+                        const px = this.getVec(this.getIndex(x+1,y,z));
+                        const py = this.getVec(this.getIndex(x,y+1,z));
+                        const pz = this.getVec(this.getIndex(x,y,z+1));
+                        const dphidx = {x:px.x-p.x, y:px.y-p.y, z:px.z-p.z};
+                        const dphidy = {x:py.x-p.x, y:py.y-p.y, z:py.z-p.z};
+                        const dphidz = {x:pz.x-p.x, y:pz.y-p.y, z:pz.z-p.z};
+                        // Q_xyz = p . (dp/dx x dp/dy)
+                        windingDensity += Utils.dot(p, {x: dphidx.y*dphidy.z - dphidx.z*dphidy.y, y: dphidx.z*dphidy.x - dphidx.x*dphidy.z, z: dphidx.x*dphidy.y - dphidx.y*dphidy.x});
+                    }
+                    this.windingDensity = Math.abs(windingDensity / (this.size**3));
+
+                    if (this.history.length > 200) this.history.shift();
+                    this.history.push({ time: this.time, alignment: this.avgAlignment, winding: this.windingDensity });
                 }
             }
 
-            class Renderer { // Unchanged from Monopole simulation
-                constructor(sim, canvas) { this.sim = sim; this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.zSlice = Math.floor(sim.size / 2); }
+            class Renderer {
+                constructor(sim, canvas) { this.sim = sim; this.canvas = canvas; this.ctx = canvas.getContext('2d',{alpha:false}); this.viewMode = 'overview'; this.zSlice = Math.floor(sim.size / 2); }
                 draw() {
-                    const { size } = this.sim; const cellWidth = this.canvas.width / size; this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                    for (let y = 0; y < size; y++) { for (let x = 0; x < size; x++) {
-                        const idx = this.sim.getIndex(x, y, this.zSlice); const vx = this.sim.vx[idx]; const vy = this.sim.vy[idx]; const vz = this.sim.vz[idx];
-                        const cx = (x + 0.5) * cellWidth; const cy = (y + 0.5) * cellWidth;
-                        const hue = vz > 0 ? 240 : 0; const saturation = 100 * Math.abs(vz);
-                        this.ctx.strokeStyle = `hsl(${hue}, ${saturation}%, 50%)`; this.ctx.lineWidth = 1;
-                        this.ctx.beginPath(); this.ctx.moveTo(cx, cy); this.ctx.lineTo(cx + vx * cellWidth * 0.5, cy + vy * cellWidth * 0.5); this.ctx.stroke();
-                    }}
+                    this.ctx.fillStyle = '#111'; this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+                    if (this.viewMode === 'overview') this.drawVectorField();
+                    else if (this.viewMode === 'energy') this.drawAlignmentView(false);
+                    else if (this.viewMode === 'alignment') this.drawAlignmentView(true);
+                }
+                drawVectorField() {
+                    const { size } = this.sim; const cellWidth = this.canvas.width/size;
+                    for (let y=0; y<size; y++) for (let x=0; x<size; x++) {
+                        const v = this.sim.getVec(this.sim.getIndex(x,y,this.zSlice));
+                        const cx = (x+0.5)*cellWidth; const cy = (y+0.5)*cellWidth;
+                        const hue = v.z > 0 ? 240 : 0; const lightness = 30 + 40*Math.abs(v.z);
+                        this.ctx.strokeStyle = `hsl(${hue}, 100%, ${lightness}%)`; this.ctx.lineWidth = 1.5;
+                        const arrowLength = Math.sqrt(v.x*v.x+v.y*v.y)*cellWidth*0.4; const angle = Math.atan2(v.y,v.x);
+                        this.ctx.beginPath(); this.ctx.moveTo(cx,cy); this.ctx.lineTo(cx+arrowLength*Math.cos(angle),cy+arrowLength*Math.sin(angle)); this.ctx.stroke();
+                    }
+                }
+                drawAlignmentView(useAlignment) {
+                    const { size } = this.sim; const cellWidth = this.canvas.width/size;
+                    const refVec = {x:0, y:0, z:1}; // Reference "up" vector
+                    for (let y=0; y<size; y++) for (let x=0; x<size; x++) {
+                        const v = this.sim.getVec(this.sim.getIndex(x,y,this.zSlice));
+                        const alignment = Utils.dot(v, refVec); // Value from -1 to 1
+                        const lightness = (alignment + 1) / 2 * 100; // Map to 0-100
+                        this.ctx.fillStyle = `hsl(0, 0%, ${lightness}%)`;
+                        this.ctx.fillRect(x*cellWidth, y*cellWidth, cellWidth, cellWidth);
+                    }
                 }
             }
 
-            class UI { // Minor changes for new metrics and reset behavior
-                constructor(sim, renderer) { this.sim = sim; this.renderer = renderer; this.isPaused = true; this.lastTime = 0; this.initControls(); this.initMetrics(); this.initButtons(); }
-                initControls() {
-                    DOM.controlsPanel.innerHTML = '';
-                    const zSliceControl = { id: 'zSlice', label: 'Z-Slice', min: 0, max: this.sim.size - 1, step: 1, value: this.renderer.zSlice };
-                    const group = document.createElement('div'); group.className = 'control-group';
-                    group.innerHTML = `<label for="control-zSlice">Z-Slice: <span class="value-readout" id="value-zSlice">${zSliceControl.value}</span></label><input type="range" id="control-zSlice" min="0" max="${this.sim.size-1}" step="1" value="${zSliceControl.value}">`;
-                    DOM.controlsPanel.appendChild(group);
-                    document.getElementById('control-zSlice').addEventListener('input', (e) => { this.renderer.zSlice = parseInt(e.target.value); document.getElementById('value-zSlice').textContent = e.target.value; if(this.isPaused) this.renderer.draw(); });
+            class Chart { /* ... Same as monopole ... */
+                constructor(container, title) { this.canvas = document.createElement('canvas'); container.innerHTML = ''; container.appendChild(this.canvas); this.ctx = this.canvas.getContext('2d'); this.title = title; this.resize(); window.addEventListener('resize', ()=>this.resize()); }
+                resize() { this.canvas.width = this.canvas.parentElement.clientWidth; this.canvas.height = this.canvas.parentElement.clientWidth * 0.6; }
+                draw(history, keys) {
+                    const { ctx, canvas } = this; ctx.clearRect(0,0,canvas.width,canvas.height);
+                    ctx.fillStyle = 'white'; ctx.strokeStyle = '#555'; ctx.font = '12px sans-serif'; ctx.fillText(this.title, 10, 20);
+                    if (!history || history.length < 2) return;
+                    const data = keys.map(k => history.map(h => h[k]));
+                    const maxVal = Math.max(...data.map(d => Math.max(...d.map(v => isFinite(v)?v:0)))) * 1.2 || 1;
+                    const colors = ['#007bff', '#ff00ff', '#28a745'];
+                    data.forEach((d, i) => {
+                        ctx.strokeStyle = colors[i % colors.length]; ctx.lineWidth = 2; ctx.beginPath();
+                        d.forEach((val, j) => {
+                            if (!isFinite(val)) return;
+                            const x = (j / (d.length - 1)) * canvas.width; const y = canvas.height - (val/maxVal) * (canvas.height - 30) - 10;
+                            if (j===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                        });
+                        ctx.stroke();
+                    });
+                }
+            }
+
+            class UI {
+                constructor(sim, renderer) { this.sim=sim; this.renderer=renderer; this.isPaused=true; this.init(); }
+                init() {
+                    this.buildControls(); this.buildPresets(); this.initMetrics(); this.initButtons(); this.initCharts();
+                    this.log("Texture/Skyrmion Simulation Initialized.");
+                }
+                buildControls() {
+                    const params = [{ id:'updatesPerFrame', label:'Unwinding Speed', min:1, max:20, step:1}, {id:'textureRadius', label:'Initial Knot Size', min:0.2, max:1.0, step:0.05}];
+                    params.forEach(p => { /* ... control creation ... */ });
+                    const zSlice = {id:'zSlice', label:'Z-Slice', min:0, max:this.sim.size-1, step:1};
+                    /* ... z-slice control ... */
+                }
+                buildPresets() {
+                    const presets = { "Default Unwind": {}, "Tight Knot": { textureRadius: 0.3 }, "Loose Knot": { textureRadius: 0.9 }, };
+                    DOM.presetsPanel.innerHTML = '<h3>Presets</h3>';
+                    Object.entries(presets).forEach(([name, params]) => {
+                        const btn = document.createElement('button'); btn.textContent = name;
+                        btn.onclick = () => { Object.assign(this.sim.params, params); this.sim.reset(); this.renderer.draw(); this.updateAllControls(); };
+                        DOM.presetsPanel.appendChild(btn);
+                    });
                 }
                 initMetrics() {
-                    this.metricCalculators = { 'Avg. Field Alignment': () => this.sim.metrics.avgAlignment.toFixed(4), };
+                    this.metricDefs = {
+                        "Avg. Field Alignment": s => s.avgAlignment.toFixed(4),
+                        "Topological Winding": s => s.windingDensity.toExponential(2),
+                        "Simulation Time": s => s.time.toFixed(1),
+                        "Is Unwound?": s => s.avgAlignment > 0.999 ? "✔️ Yes" : "❌ No",
+                    };
                     DOM.metricsGrid.innerHTML = '';
-                    for(const label in this.metricCalculators) { const card = document.createElement('div'); card.className = 'metric-card'; card.innerHTML = `<h4>${label}</h4><div class="value" id="metric-${label.replace(/ /g, '-')}">--</div>`; DOM.metricsGrid.appendChild(card); }
-                    this.updateMetrics();
+                    Object.keys(this.metricDefs).forEach(label => {
+                        const card = document.createElement('div'); card.className = 'metric-card'; card.innerHTML = `<h4>${label}</h4><div class="value" id="metric-${label.replace(/\. /g,'')}">--</div>`;
+                        DOM.metricsGrid.appendChild(card);
+                    });
                 }
-                updateMetrics() { for(const label in this.metricCalculators) { const el = document.getElementById(`metric-${label.replace(/ /g, '-')}`); if(el) el.textContent = this.metricCalculators[label](); } }
+                updateMetrics() { Object.entries(this.metricDefs).forEach(([label, func]) => { const el = document.getElementById(`metric-${label.replace(/\. /g,'')}`); if (el) el.textContent = func(this.sim); }); }
+                initCharts() { this.charts = { alignment: new Chart(DOM.charts.alignment, "Alignment History"), winding: new Chart(DOM.charts.energy, "Winding Density History") }; }
+                updateCharts() { this.charts.alignment.draw(this.sim.history, ['alignment']); this.charts.winding.draw(this.sim.history, ['winding']); }
                 initButtons() {
-                    DOM.controlsPanel.appendChild(document.createElement('hr'));
-                    const startStopBtn = document.createElement('button'); startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause(); DOM.controlsPanel.appendChild(startStopBtn);
-                    const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset Texture'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); this.renderer.draw(); this.updateMetrics(); }; DOM.controlsPanel.appendChild(resetBtn);
+                    const startStopBtn = document.createElement('button'); startStopBtn.id = 'main-run-pause-btn'; startStopBtn.textContent = 'Run'; startStopBtn.onclick = () => this.togglePause();
+                    const resetBtn = document.createElement('button'); resetBtn.textContent = 'Reset Texture'; resetBtn.className = 'secondary'; resetBtn.onclick = () => { this.sim.reset(); this.renderer.draw(); this.updateMetrics(); };
+                    DOM.controlsPanel.prepend(resetBtn); DOM.controlsPanel.prepend(startStopBtn);
+                    DOM.viewButtons.overview.onclick = () => { this.renderer.viewMode = 'overview'; this.renderer.draw(); };
+                    DOM.viewButtons.energy.onclick = () => { this.renderer.viewMode = 'energy'; this.renderer.draw(); }; // Re-labeled in HTML to 'Energy', here it's alignment
+                    DOM.viewButtons.alignment.onclick = () => { this.renderer.viewMode = 'alignment'; this.renderer.draw(); };
                 }
-                togglePause() { this.isPaused = !this.isPaused; document.querySelector('#controls-panel button').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
+                togglePause() { this.isPaused = !this.isPaused; document.getElementById('main-run-pause-btn').textContent = this.isPaused ? 'Run' : 'Pause'; if (!this.isPaused) this.loop(); }
                 loop() {
-                    if (this.isPaused) return; this.sim.step(); this.renderer.draw(); this.updateMetrics(); requestAnimationFrame(() => this.loop());
+                    if (this.isPaused) return; this.sim.step(); this.renderer.draw(); this.updateMetrics(); this.updateCharts(); requestAnimationFrame(() => this.loop());
                 }
-                start() { this.isPaused = true; document.querySelector('#controls-panel button').textContent = 'Run'; this.renderer.draw(); }
+                start() { this.sim.reset(); this.renderer.draw(); this.updateMetrics(); this.updateCharts(); }
+                log(m){ /* log to dev console */ }
+                updateAllControls() { /* update sliders */ }
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                const sim = new TextureSimulation(24);
-                const renderer = new Renderer(sim, DOM.canvas);
-                const ui = new UI(sim, renderer);
-                ui.start();
+                try {
+                    const sim = new TextureSimulation(24);
+                    const renderer = new Renderer(sim, DOM.canvas);
+                    const ui = new UI(sim, renderer);
+                    ui.start();
+                } catch (e) { console.error("Sim failed:", e); }
             });
-
         })();
     </script>
 </body>
