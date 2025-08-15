@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: The Self-Reproducing Universe</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #4361ee; --secondary-color: #7209b7; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #0d0d0d; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+        .metric-card { background: #3a3a3c; padding: 15px; border-radius: 5px; text-align: center; margin-top: 1rem;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Eternally Inflating Background</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">A universe that never ends, forever creating new bubble universes.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>A Patch of the Multiverse</h3>
+                    <canvas id="multiverse-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Readout</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: The Never-Ending Fire</h2>
+                    <p>Imagine a piece of paper that is on fire. The fire spreads, turning paper into ash. Normally, the fire would eventually consume the whole sheet. But now, imagine that the paper is magical: as it burns, the unburnt parts magically stretch and grow, faster than the fire can spread. The fire creates patches of ash, but the total amount of unburnt paper actually increases over time. The fire never goes out; it just creates isolated pockets of ash in a sea of ever-expanding paper.</p>
+                    <p>This is the core idea behind **eternal inflation**. The "paper" is the high-energy false vacuum, which drives the exponential expansion of space. The "fire" is the process of bubble nucleation, which converts false vacuum into true vacuum "ash." If the rate of expansion is faster than the rate at which bubbles form and grow, the universe as a whole will inflate forever. The false vacuum becomes a self-reproducing sea, constantly spawning new bubble universes that grow and evolve in isolation.</p>
+                    <p>In this scenario, our entire observable universe is just a tiny part of one such bubble. The multiverse would be a fractal-like structure of countless other bubbles, all causally disconnected from us. This simulation lets you explore the competition between these two rates. You can control the **Hubble rate (H)**, which sets the speed of expansion, and the **nucleation rate (Γ)**, which determines how often new bubbles appear. Watch what happens:
+                    <ul>
+                        <li>If `Γ` is high and `H` is low, the bubbles quickly merge and the whole space transitions to the true vacuum. This is a "graceful exit" from inflation.</li>
+                        <li>If `H` is high and `Γ` is low, the bubbles form but are rapidly pushed apart by the expansion. The false vacuum dominates, and inflation becomes eternal.</li>
+                    </ul>
+                    </p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Competition of Rates</h2>
+                    <p>Eternal inflation occurs when the exponential expansion of the false vacuum outpaces the decay of that vacuum into bubbles of the true vacuum. This depends on the relative values of two key parameters: the Hubble expansion rate `H` of the false vacuum, and the bubble nucleation rate per unit volume `Γ`.</p>
+
+                    <h4>Hubble Expansion in the False Vacuum</h4>
+                    <p>A region of false vacuum has a high, positive energy density, `V_fv`. This acts like a large cosmological constant, causing the spacetime to expand exponentially (a de Sitter space) with a Hubble rate given by:
+                    <br><code>H² ≈ (8πG/3) * V_fv</code>
+                    <br>The volume of any patch of false vacuum grows as `e^(3Ht)`. This expansion is incredibly rapid.</p>
+
+                    <h4>Bubble Nucleation Rate</h4>
+                    <p>As we saw in the previous simulation, the rate `Γ` at which bubbles of true vacuum nucleate is given by `Γ ≈ e^(-S_E)`, where `S_E` is the Euclidean action of the bounce solution. This rate is extremely sensitive to the details of the scalar field potential `V(φ)`.</p>
+
+                    <h4>The Condition for Eternal Inflation</h4>
+                    <p>Inflation becomes eternal if the rate of production of new false vacuum volume is greater than the rate of its conversion into true vacuum. A detailed calculation shows that this occurs if the dimensionless quantity `Γ/H⁴` is less than a number of order unity (specifically, `9/4π`).</p>
+                    <p><code>Γ / H⁴ < 1  (approximately)</code></p>
+                    <p>If this condition is met, even though bubbles are constantly forming, the total volume of the false vacuum continues to increase exponentially for all time. Our universe would be contained within one of these bubbles, which, after the bubble wall reheated it, would have undergone its own more conventional Big Bang evolution. The regions of false vacuum between the bubbles would continue expanding and spawning new bubble universes forever, leading to a multiverse structure.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Is eternal inflation a mainstream theory?</strong> It is a very common feature of most well-motivated models of cosmic inflation. While we don't have direct proof, many physicists consider it a likely consequence of combining inflation with quantum field theory.</li>
+                        <li><strong>What happens when bubbles collide?</strong> This is the subject of the next simulation. The collision of bubble universes is a violent event that could produce gravitational waves or other potentially observable signatures.</li>
+                        <li><strong>If the multiverse is real, can we travel to another bubble universe?</strong> No. The space between the bubbles is inflating exponentially. The bubbles are pushed apart from each other much faster than the speed of light. They are causally disconnected.</li>
+                        <li><strong>What is the "measure problem" in eternal inflation?</strong> It's a deep, unresolved problem. If the universe produces an infinite number of bubble universes, how can we calculate the probability of anything? For example, what is the probability of observing a certain value for a physical constant? If you have an infinite number of samples, calculating ratios becomes ambiguous. This is a major area of research in theoretical cosmology.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('multiverse-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class MultiverseManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.bubbles = [];
+                    this.animFrame = null;
+                    this.time = 0;
+                    this.params = { hubble: 0.01, nucleationRate: 0.001 };
+                }
+
+                start() {
+                    if (this.animFrame) return;
+                    this.animate();
+                }
+
+                stop() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.animFrame = null;
+                }
+
+                reset() {
+                    this.stop();
+                    this.bubbles = [];
+                    this.time = 0;
+                    this.ctx.fillStyle = '#0d0d0d';
+                    this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.updateInfo();
+                }
+
+                animate() {
+                    // 1. Expand existing bubbles
+                    this.bubbles.forEach(b => b.r += 2);
+
+                    // 2. Nucleate new bubbles
+                    const falseVacuumArea = 1 - this.bubbles.reduce((acc, b) => acc + Math.PI * b.r * b.r / (this.width * this.height), 0);
+                    if (Math.random() < this.params.nucleationRate * Math.max(0, falseVacuumArea) * 100) {
+                        this.bubbles.push({
+                            x: Math.random() * this.width,
+                            y: Math.random() * this.height,
+                            r: 1,
+                        });
+                    }
+
+                    // 3. Apply Hubble expansion (by shrinking everything)
+                    const scale = 1 - this.params.hubble;
+                    this.bubbles.forEach(b => {
+                        b.x = this.width/2 + (b.x - this.width/2) * scale;
+                        b.y = this.height/2 + (b.y - this.height/2) * scale;
+                        b.r *= scale;
+                    });
+
+                    this.time++;
+                    this.redraw();
+                    this.animFrame = requestAnimationFrame(() => this.animate());
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = 'rgba(13, 13, 13, 0.2)'; // False vacuum with trails
+                    this.ctx.fillRect(0, 0, this.width, this.height);
+
+                    this.bubbles.forEach(b => {
+                        this.ctx.fillStyle = '#4361ee';
+                        this.ctx.beginPath();
+                        this.ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
+                        this.ctx.fill();
+                    });
+                    this.updateInfo();
+                }
+
+                updateInfo() {
+                    const trueVacuumArea = this.bubbles.reduce((acc, b) => acc + Math.PI * b.r * b.r, 0);
+                    const percentCovered = 100 * trueVacuumArea / (this.width * this.height);
+                    DOM.infoPanel.innerHTML = `
+                        <div class="metric-card"><h4>Time</h4><p class="value">${this.time}</p></div>
+                        <div class="metric-card"><h4>Bubble Count</h4><p class="value">${this.bubbles.length}</p></div>
+                        <div class="metric-card"><h4>% True Vacuum</h4><p class="value">${percentCovered.toFixed(2)}%</p></div>
+                    `;
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new MultiverseManager(DOM.canvas); this.init(); }
+                init() {
+                    this.buildControls();
+                    this.manager.reset();
+                }
+                buildControls() {
+                    const controls = [
+                        {id:'hubble', label:'Hubble Rate (H)', min:0, max:0.02, step:0.0001, val:0.01},
+                        {id:'nucleationRate', label:'Nucleation Rate (Γ)', min:0, max:0.01, step:0.0001, val:0.001},
+                    ];
+                    controls.forEach(c => {
+                        DOM.controlsPanel.innerHTML += `<div class="control-group"><label for="${c.id}">${c.label}: <span id="${c.id}-val">${c.val.toFixed(4)}</span></label><input type="range" id="${c.id}" min="${c.min}" max="${c.max}" value="${c.val}" step="${c.step}"></div>`;
+                    });
+                     DOM.controlsPanel.innerHTML += `<div class="control-group"><button id="start">Start</button><button id="stop">Stop</button><button id="reset">Reset</button></div>`;
+
+                    controls.forEach(c => {
+                        document.getElementById(c.id).oninput = e => {
+                            const val = parseFloat(e.target.value);
+                            this.manager.params[c.id] = val;
+                            document.getElementById(`${c.id}-val`).textContent = val.toFixed(4);
+                        };
+                    });
+                    document.getElementById('start').onclick = () => this.manager.start();
+                    document.getElementById('stop').onclick = () => this.manager.stop();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

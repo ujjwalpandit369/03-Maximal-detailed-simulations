@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: CMB Signatures of Bubble Collisions</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #1d3557; --secondary-color: #f1faee; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 16 / 9; background-color: #000; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CMB Signatures of Bubble Collisions</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Searching for a "bruise" on the baby picture of our universe.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>The Last Scattering Surface</h3>
+                    <canvas id="cmb-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: A Cosmic Bruise</h2>
+                    <p>The **Cosmic Microwave Background (CMB)** is the "afterglow" of the Big Bang, a snapshot of the universe when it was only 380,000 years old. It's an incredibly uniform sea of microwave radiation coming from all directions. However, it's not perfectly uniform; it has tiny temperature fluctuations (one part in 100,000) that eventually grew into the galaxies and clusters we see today.</p>
+                    <p>If our bubble universe collided with another one in the distant past, this cataclysmic event could have left a lasting impression on the fabric of spacetime. The collision would have created a region of intense curvature and energy. As our "surface of last scattering" (the source of the CMB) expanded through this region, it would have been distorted. This distortion would appear to us today as a specific type of anomaly in the CMB: a **circular "bruise"**. </p>
+                    <p>This bruise wouldn't be just a random hot or cold spot. It would have a characteristic temperature profile, perhaps being slightly colder on one side and hotter on the other, with a sharp edge. This simulation visualizes what such a signature might look like. First, you see the standard, random CMB fluctuations. Then, you can trigger a "collision event" which superimposes the theoretical signature of a bubble collision onto the map—a circular feature that stands out from the random noise. Cosmologists are actively searching for such disks in the CMB data from satellites like Planck and WMAP.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Collision Signature</h2>
+                    <p>A collision between our bubble and another would break the statistical isotropy of the CMB. The universe would no longer look the same in all directions. The primary observable effect is a temperature anisotropy on the last scattering surface. The exact form of this signature is model-dependent, but it generally consists of a circular disk on the sky with a specific temperature profile.</p>
+                    <p>The profile arises from several physical effects. The collision warps the spacetime geometry inside the light cone of the collision event. This leads to a modification of the Sachs-Wolfe effect for photons coming from that direction. The temperature fluctuation `ΔT/T` can be calculated and is often found to have a dipolar or quadrupolar profile across the disk, with a sharp drop-off at the edge corresponding to the causal boundary of the collision event.</p>
+                    <p>One proposed template for the temperature profile across the center of the disk is given by:</p>
+                    <p><code>ΔT(θ) = T₀ * (1 - (θ/R)²) / (1 + (θ/R)²)²</code></p>
+                    <p>where `R` is the angular radius of the disk, `θ` is the angle from the disk's center, and `T₀` is the amplitude of the effect. This profile is characteristically different from the Gaussian random fluctuations predicted by standard single-field inflation.</p>
+                    <p>The search for these signatures involves sophisticated statistical techniques, such as using optimal filters, wavelet analysis, and machine learning algorithms to scan the CMB maps for circular features that match the predicted templates. While several "anomalies" and cold spots have been identified in the CMB data, none have been definitively confirmed as a bubble collision signature. A confirmed detection would provide revolutionary evidence for the multiverse hypothesis.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why is the signature a circle?</strong> Because it's the intersection of the "light cone" of the collision event (a sphere in 3D space) with our "surface of last scattering" (also a sphere). The intersection of two spheres is a circle.</li>
+                        <li><strong>How big would this circle be on the sky?</strong> It depends on when and where the collision happened. It could be anywhere from a few degrees to tens of degrees in angular size. Some of the most prominent anomalies that have been investigated, like the "CMB Cold Spot," are several degrees across.</li>
+                        <li><strong>Have we found one?</strong> Not conclusively. There are intriguing hints, like the aforementioned Cold Spot, but it's statistically possible for such a feature to arise from the random fluctuations of standard inflation. The statistical evidence is not yet strong enough to claim a discovery.</li>
+                        <li><strong>What would a confirmation mean for physics?</strong> It would be one of the most profound discoveries in the history of science. It would confirm that our universe is not unique, that eternal inflation is a real process, and that the "landscape" of string theory is a physical reality. It would open up an entirely new realm of "cosmic archaeology" to explore the properties of other universes.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('cmb-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class CMBManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.cmbData = null;
+                    this.params = { bruise_x: 0.7, bruise_y: 0.5, bruise_r: 0.15, bruise_amp: 100 };
+                    this.showBruise = false;
+                }
+
+                start() {
+                    this.generateCMB();
+                    this.draw();
+                }
+
+                generateCMB() {
+                    const imageData = this.ctx.createImageData(this.width, this.height);
+                    const data = imageData.data;
+                    for (let i = 0; i < data.length; i += 4) {
+                        const temp = 128 + (Math.random() - 0.5) * 40; // Base temperature fluctuation
+                        data[i] = temp - 40;     // R (cooler -> more blue)
+                        data[i + 1] = temp - 20; // G
+                        data[i + 2] = temp + 40; // B (hotter -> more red)
+                        data[i + 3] = 255;       // Alpha
+                    }
+                    this.cmbData = imageData;
+                }
+
+                draw() {
+                    if (!this.cmbData) this.generateCMB();
+
+                    const imageData = this.ctx.createImageData(this.width, this.height);
+                    imageData.data.set(this.cmbData.data);
+
+                    if (this.showBruise) {
+                        this.addBruise(imageData);
+                    }
+
+                    this.ctx.putImageData(imageData, 0, 0);
+                }
+
+                addBruise(imageData) {
+                    const data = imageData.data;
+                    const x0 = this.params.bruise_x * this.width;
+                    const y0 = this.params.bruise_y * this.height;
+                    const r_max = this.params.bruise_r * this.width;
+
+                    for (let y = 0; y < this.height; y++) {
+                        for (let x = 0; x < this.width; x++) {
+                            const dx = x - x0;
+                            const dy = y - y0;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+
+                            if (dist < r_max) {
+                                const r_norm = dist / r_max;
+                                // A simple dipolar profile: cooler on one side, hotter on the other
+                                const angle = Math.atan2(dy, dx);
+                                const temp_change = this.params.bruise_amp * Math.cos(angle) * (1 - r_norm);
+
+                                const i = (y * this.width + x) * 4;
+                                data[i] = Math.max(0, Math.min(255, data[i] - temp_change));
+                                data[i+1] = Math.max(0, Math.min(255, data[i+1]));
+                                data[i+2] = Math.max(0, Math.min(255, data[i+2] + temp_change));
+                            }
+                        }
+                    }
+                }
+
+                toggleBruise(show) {
+                    this.showBruise = show;
+                    this.draw();
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new CMBManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.start(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                             <label for="show-bruise">Show Collision Signature:</label>
+                             <input type="checkbox" id="show-bruise">
+                        </div>
+                        <div class="control-group">
+                            <button id="regen-cmb">Generate New CMB</button>
+                        </div>`;
+                    document.getElementById('show-bruise').onchange = (e) => {
+                        this.manager.toggleBruise(e.target.checked);
+                    };
+                    document.getElementById('regen-cmb').onclick = () => {
+                        this.manager.start();
+                        // uncheck the box
+                        document.getElementById('show-bruise').checked = false;
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: Single Bubble Expansion</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #b5179e; --secondary-color: #7209b7; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+        .metric-card { background: #3a3a3c; padding: 15px; border-radius: 5px; text-align: center; margin-top: 1rem;}
+        .metric-card h4 { font-size: 1rem; margin: 0 0 10px 0; color: #aaa; }
+        .metric-card .value { font-size: 2rem; font-weight: bold; color: var(--secondary-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Single Bubble Expansion</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">The birth and growth of a universe within a universe.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>2D Slice of an Expanding True Vacuum Bubble</h3>
+                    <canvas id="bubble-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Readout</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: The Universe is Boiling</h2>
+                    <p>After a tiny patch of the universe quantum tunnels out of a false vacuum, what happens next? The answer is dramatic and violent: it expands. A bubble of true, lower-energy vacuum is born, and its walls immediately rush outwards at the speed of light, converting the high-energy false vacuum into low-energy true vacuum as it goes.</p>
+                    <p>You can think of this process like a pot of water beginning to boil. The water is the false vacuum. A tiny bubble of steam (the true vacuum) suddenly appears. This bubble then rapidly expands, converting the surrounding water into more steam. The universe, in this scenario, is literally "boiling."</p>
+                    <p>This simulation shows a 2D slice of one such bubble. The dark outer region is the high-energy false vacuum. The bright inner region is the low-energy true vacuum. The shimmering ring between them is the **bubble wall**, a sphere of pure energy traveling outwards at the speed of light. All the energy difference between the false vacuum and the true vacuum is converted into the kinetic energy of this wall and any particles that are created in its wake. As the bubble grows, the amount of energy released increases with its volume. This process, repeated over and over, is the engine that drives eternal inflation.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Bubble Wall Dynamics</h2>
+                    <p>Once a bubble of true vacuum is nucleated with a critical radius `R₀`, its subsequent evolution is governed by classical physics. The bubble wall is a domain wall, a soliton solution of the scalar field equations, separating the two vacuum states.</p>
+
+                    <h4>Energy Conversion and Relativistic Expansion</h4>
+                    <p>The false vacuum state has an energy density `ρ_fv = V(φ_fv)`. The true vacuum has a lower energy density `ρ_tv = V(φ_tv)`. The difference, `ε = ρ_fv - ρ_tv`, is the vacuum energy that is liberated by the phase transition. This liberated energy must go somewhere. It is converted into the kinetic energy of the bubble wall and its surface tension `S₁`.</p>
+                    <p>An analysis of the stress-energy tensor shows that the pressure of the false vacuum `p_fv = -ρ_fv` is negative, creating a repulsive gravitational effect (this is the inflation). Inside the bubble, the pressure is also negative but smaller in magnitude. The pressure difference across the wall creates a net outward force, causing the wall to accelerate outwards. For a bubble nucleated from rest at its critical radius, the wall will rapidly approach the speed of light, `c`.</p>
+
+                    <h4>The Bubble Wall</h4>
+                    <p>The bubble wall is a physical object. It is a region of space where the scalar field `φ` is transitioning from its value in the false vacuum to its value in the true vacuum. The thickness of this wall is typically on the order of the Compton wavelength of the scalar particle. The energy stored in the wall itself, due to its surface tension and its motion, is immense. As the wall passes, it can interact with other quantum fields, and the energy can be dissipated by creating a hot plasma of elementary particles inside the new bubble. This is a key mechanism for **reheating** the universe after a period of inflation. Our own universe must have gone through such a reheating phase after its inflationary epoch.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why does the bubble expand at the speed of light?</strong> Because there is nothing to slow it down. The negative pressure of the false vacuum outside is stronger than the negative pressure of the true vacuum inside, creating a constant outward force. With no friction or external forces, the wall accelerates until its motion is limited only by the universal speed limit, `c`.</li>
+                        <li><strong>What is happening to spacetime as the bubble expands?</strong> This is a very important point. Inside the bubble, the cosmological constant is effectively smaller. If the false vacuum was driving rapid inflation (de Sitter-like expansion), the interior of the bubble might be a slowly expanding FLRW universe (like our own). The bubble wall is a boundary between two different spacetimes.</li>
+                        <li><strong>What would an observer see?</strong> An observer inside the bubble would see a wall of intense energy rushing away from them at the speed of light. An observer outside the bubble would see a wall of energy rushing towards them. If they were caught by the wall, they would be incinerated by the particle bath created during reheating, and find themselves in a new kind of universe (the true vacuum).</li>
+                        <li><strong>Is the energy inside the bubble wall conserved?</strong> The total energy of the system is conserved. As the bubble expands, the total energy stored in the wall (proportional to its surface area `4πR²`) increases, while the energy of the false vacuum it has "eaten" (proportional to its volume `(4/3)πR³`) has been converted. The balance works out perfectly.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('bubble-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class BubbleManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.radius = 0; this.maxRadius = this.width / 2;
+                    this.animFrame = null;
+                    this.params = { energyGap: 1.0 };
+                }
+
+                start() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.radius = 0;
+                    this.animate();
+                }
+
+                reset() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.animFrame = null;
+                    this.radius = 0;
+                    this.redraw();
+                }
+
+                animate() {
+                    this.radius += 2; // Expand at constant speed
+                    this.redraw();
+
+                    if (this.radius < this.maxRadius) {
+                        this.animFrame = requestAnimationFrame(() => this.animate());
+                    } else {
+                        this.animFrame = null;
+                    }
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#0d0d0d'; // False vacuum
+                    this.ctx.fillRect(0, 0, this.width, this.height);
+
+                    if (this.radius > 0) {
+                        const cx = this.width / 2;
+                        const cy = this.height / 2;
+
+                        // True vacuum
+                        this.ctx.fillStyle = '#141414';
+                        this.ctx.beginPath();
+                        this.ctx.arc(cx, cy, this.radius, 0, 2 * Math.PI);
+                        this.ctx.fill();
+
+                        // Bubble wall
+                        const gradient = this.ctx.createRadialGradient(cx, cy, this.radius - 10, cx, cy, this.radius);
+                        gradient.addColorStop(0, 'rgba(114, 9, 183, 0)');
+                        gradient.addColorStop(0.8, 'rgba(181, 23, 158, 0.8)');
+                        gradient.addColorStop(1, 'rgba(247, 37, 133, 1)');
+
+                        this.ctx.strokeStyle = gradient;
+                        this.ctx.lineWidth = 20;
+                        this.ctx.beginPath();
+                        this.ctx.arc(cx, cy, this.radius, 0, 2 * Math.PI);
+                        this.ctx.stroke();
+                    }
+                    this.updateInfo();
+                }
+
+                updateInfo() {
+                    const energyReleased = this.params.energyGap * Math.PI * this.radius * this.radius;
+                    DOM.infoPanel.innerHTML = `
+                        <div class="metric-card">
+                            <h4>Bubble Radius</h4>
+                            <p class="value">${this.radius.toFixed(0)}</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>Energy Released</h4>
+                            <p class="value">${energyReleased.toExponential(2)}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new BubbleManager(DOM.canvas); this.init(); }
+                init() {
+                    this.buildControls();
+                    this.manager.redraw();
+                }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `<div class="control-group"><button id="nucleate">Nucleate Bubble</button><button id="reset">Reset</button></div>`;
+                    document.getElementById('nucleate').onclick = () => this.manager.start();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

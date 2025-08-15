@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: Multi-Bubble Percolation</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #90be6d; --secondary-color: #f9c74f; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #0d0d0d; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+        .metric-card { background: #3a3a3c; padding: 15px; border-radius: 5px; text-align: center; margin-top: 1rem;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-Bubble Percolation</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">How isolated bubbles merge to complete the cosmic phase transition.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Percolation Simulation</h3>
+                    <canvas id="percolation-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: From Islands to Lakes</h2>
+                    <p>We've seen how a single bubble of true vacuum can form and expand. But in a real phase transition, countless bubbles would be nucleating all over the place. What does that look like on a grand scale? The process is called **percolation**. Imagine a vast, dry lakebed (the false vacuum). Suddenly, it starts to rain, and small puddles (true vacuum bubbles) begin to form everywhere.</p>
+                    <p>At first, the puddles are just isolated islands of water in a sea of dust. But as they grow and more puddles form, they start to touch and merge. Two puddles become one larger one. Then three, then four. Eventually, a critical point is reached: the water is no longer a collection of isolated puddles, but a single, connected lake that stretches from one side of the lakebed to the other. The dynamic has flipped. Now, it's the dry dust that has become the isolated islands in a sea of water. This moment, when the true vacuum becomes the connected, dominant phase, is called percolation.</p>
+                    <p>This simulation visualizes exactly this process. It starts with an empty false vacuum. Bubbles will continuously appear and expand. Watch as they grow and merge. The rendering is designed to show merged bubbles as a single, unified region. You can control the rate at which new bubbles appear and watch how the universe transitions from a collection of isolated "islands" of true vacuum to a single, connected "sea" that eventually consumes the entire space, completing the phase transition.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Graceful Exit Problem</h2>
+                    <p>For inflation to be a successful theory, it must have a way to end. This is known as the **"graceful exit" problem**. The universe must transition from the rapidly expanding false vacuum state to the more placid, radiation-dominated state of the hot Big Bang. Multi-bubble percolation is the standard mechanism by which this exit is achieved.</p>
+
+                    <h4>Percolation Threshold</h4>
+                    <p>The process is a competition between bubble expansion and bubble nucleation. If the nucleation rate `Γ` is sufficiently high compared to the expansion rate `H`, the bubbles will be able to grow and collide faster than the space between them can expand. As the bubbles merge, the fraction of the volume in the true vacuum, `f(t)`, increases. Percolation theory studies the point at which a connected path of true vacuum spans the entire volume. For a simple 2D simulation, this percolation threshold is reached when the true vacuum occupies roughly 59% of the total area.</p>
+
+                    <h4>Completing the Transition</h4>
+                    <p>Once the true vacuum percolates, the phase transition is effectively over for that region of the universe. The remaining pockets of false vacuum are now surrounded by an infinite sea of true vacuum. The walls of these pockets will continue to expand into them, but since the pockets are of finite size, they will be quickly consumed. The energy released from the bubble collisions and the final annihilation of the false vacuum pockets reheats the universe, filling the newly formed true vacuum with a hot soup of particles and radiation. This marks the beginning of the standard hot Big Bang era, and from this point on, cosmology proceeds as described by the FLRW models.</p>
+                    <p>If, however, `Γ/H⁴` is too small, eternal inflation occurs. In this case, percolation never completes on a global scale. While individual observers within a bubble would see their local phase transition complete, the total volume of false vacuum in the multiverse would continue to grow forever.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is percolation theory?</strong> It's a branch of mathematics that describes the behavior of connected clusters in a random graph. It has applications in a huge variety of fields, from materials science (how a liquid seeps through a porous material) to epidemiology (how a disease spreads through a population) and, in this case, cosmology.</li>
+                        <li><strong>How is the rendering of merged bubbles done?</strong> This simulation uses a clever graphics trick. Instead of drawing many overlapping circles, it draws the bubbles to an off-screen buffer. Then, it uses a "metaballs" algorithm. It iterates over every pixel on the main canvas, calculates the sum of influences from all nearby bubbles, and if the sum is above a certain threshold, it colors the pixel as "true vacuum." This creates a smooth, organic-looking union of all the bubble shapes.</li>
+                        <li><strong>Is the universe inside a percolated region homogeneous?</strong> Not initially. The process of bubble collisions is violent and chaotic, leaving behind a very inhomogeneous distribution of energy and particles. However, over time, this region would thermalize and smooth out, eventually becoming the highly homogeneous and isotropic universe we see today (on large scales).</li>
+                        <li><strong>Does the shape of the bubbles matter?</strong> In a real collision, the bubble walls would distort and are not perfect spheres after they collide. This simulation simplifies the process by keeping the bubbles as expanding circles and focusing on the percolation of their combined area, which is the most important large-scale feature.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('percolation-canvas'), controlsPanel: document.getElementById('controls-panel'), infoPanel: document.getElementById('info-panel') };
+
+            class PercolationManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.bubbles = []; this.animFrame = null; this.time = 0;
+                    this.params = { nucleationRate: 0.01, resolution: 4 }; // Lower resolution is faster
+                    this.imageData = this.ctx.createImageData(this.width, this.height);
+                }
+
+                start() { if (!this.animFrame) this.animate(); }
+                stop() { if (this.animFrame) { cancelAnimationFrame(this.animFrame); this.animFrame = null; } }
+                reset() { this.stop(); this.bubbles = []; this.time = 0; this.redraw(); }
+
+                animate() {
+                    if (Math.random() < this.params.nucleationRate) {
+                        this.bubbles.push({ x: Math.random() * this.width, y: Math.random() * this.height, r: 1 });
+                    }
+                    this.bubbles.forEach(b => b.r += 1);
+                    this.time++;
+                    this.redraw();
+                    this.animFrame = requestAnimationFrame(() => this.animate());
+                }
+
+                redraw() {
+                    const data = this.imageData.data;
+                    let trueVacuumPixels = 0;
+                    const res = this.params.resolution;
+
+                    for (let y = 0; y < this.height; y += res) {
+                        for (let x = 0; x < this.width; x += res) {
+                            let sum = 0;
+                            for (const bubble of this.bubbles) {
+                                const dx = x - bubble.x;
+                                const dy = y - bubble.y;
+                                const d2 = dx * dx + dy * dy;
+                                sum += (bubble.r * bubble.r) / d2;
+                            }
+
+                            const color = sum > 1 ? 255 : 0;
+                            if(color === 255) trueVacuumPixels += res*res;
+
+                            for(let ry=0; ry<res; ry++) {
+                                for(let rx=0; rx<res; rx++) {
+                                    const idx = ((y+ry) * this.width + (x+rx)) * 4;
+                                    if(idx >= data.length) continue;
+                                    data[idx] = color > 0 ? 144 : 13;
+                                    data[idx + 1] = color > 0 ? 190 : 13;
+                                    data[idx + 2] = color > 0 ? 109 : 13;
+                                    data[idx + 3] = 255;
+                                }
+                            }
+                        }
+                    }
+                    this.ctx.putImageData(this.imageData, 0, 0);
+                    this.updateInfo(trueVacuumPixels);
+                }
+
+                updateInfo(trueVacuumPixels) {
+                    const percentCovered = 100 * trueVacuumPixels / (this.width * this.height);
+                    DOM.infoPanel.innerHTML = `
+                        <div class="metric-card"><h4>Time</h4><p class="value">${this.time}</p></div>
+                        <div class="metric-card"><h4>Bubble Count</h4><p class="value">${this.bubbles.length}</p></div>
+                        <div class="metric-card"><h4>Percolation</h4><p class="value">${percentCovered.toFixed(1)}%</p></div>`;
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new PercolationManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                            <label for="rate-slider">Nucleation Rate (Γ): <span id="rate-val">0.010</span></label>
+                            <input type="range" id="rate-slider" min="0.001" max="0.1" value="0.01" step="0.001">
+                        </div>
+                        <div class="control-group">
+                            <button id="start">Start</button><button id="stop">Stop</button><button id="reset">Reset</button>
+                        </div>`;
+                    document.getElementById('start').onclick = () => this.manager.start();
+                    document.getElementById('stop').onclick = () => this.manager.stop();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                    document.getElementById('rate-slider').oninput = (e) => {
+                        const val = parseFloat(e.target.value);
+                        this.manager.params.nucleationRate = val;
+                        document.getElementById('rate-val').textContent = val.toFixed(3);
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

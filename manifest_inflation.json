@@ -1,0 +1,20 @@
+{
+    "project": "Eternal Inflation Simulations",
+    "id": "20250815-inflation",
+    "author": "Jules, AI Software Engineer",
+    "files": [
+        "index_inflation.html",
+        "report_inflation.md",
+        "output_inflation/001_false_vacuum.html",
+        "output_inflation/002_single_bubble_expansion.html",
+        "output_inflation/003_eternal_inflation.html",
+        "output_inflation/004_two_bubble_collision_head_on.html",
+        "output_inflation/005_two_bubble_collision_off_center.html",
+        "output_inflation/006_multi_bubble_percolation.html",
+        "output_inflation/007_gravitational_wave_production.html",
+        "output_inflation/008_particle_production.html",
+        "output_inflation/009_landscape_of_vacua.html",
+        "output_inflation/010_cmb_signatures.html"
+    ],
+    "summary": "A collection of 10 standalone, feature-rich HTML/JS simulations exploring the concepts of eternal inflation, bubble nucleation, vacuum decay, and bubble collisions."
+}

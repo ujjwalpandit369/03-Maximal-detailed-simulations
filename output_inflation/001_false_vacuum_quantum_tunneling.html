@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: The False Vacuum and Quantum Tunneling</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #4cc9f0; --secondary-color: #f72585; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 16 / 9; background-color: #000; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+        .metric-card { background: #3a3a3c; padding: 15px; border-radius: 5px; text-align: center; }
+        .metric-card h4 { font-size: 1rem; margin: 0 0 10px 0; color: #aaa; }
+        .metric-card .value { font-size: 2rem; font-weight: bold; color: var(--secondary-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The False Vacuum & Quantum Tunneling</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">How the universe can escape a trap, one bubble at a time.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Scalar Field Potential V(φ)</h3>
+                    <canvas id="potential-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls & Readout</h2>
+                    <div id="controls-panel"></div>
+                    <div id="info-panel" class="metric-card">
+                        <h4>Bubble Nucleation Rate (Γ)</h4>
+                        <p class="value" id="rate-value">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: Escaping the Valley</h2>
+                    <p>Imagine a ball sitting in the bottom of a valley. This is a stable position; if you nudge the ball, it will roll back down. This is called a **true vacuum**—the lowest possible energy state. Now, imagine there's another, even deeper valley nearby, separated by a tall hill. If our ball is in the higher valley, it's stable, but not *perfectly* stable. It's in a **false vacuum**. Classically, the ball is stuck. It doesn't have enough energy to roll over the hill into the true vacuum.</p>
+                    <p>Quantum mechanics, however, allows for a miraculous escape: **quantum tunneling**. There is a tiny, non-zero probability that the ball can spontaneously disappear from the false vacuum and reappear on the other side of the hill, in the true vacuum. It has "tunneled" through the barrier that was classically insurmountable.</p>
+                    <p>In cosmology, the "ball" is the value of a scalar field (like the Higgs field) that permeates all of space, and the "valleys and hills" are its potential energy `V(φ)`. If the universe gets stuck in a false vacuum after a phase transition, it can only escape by nucleating a "bubble" of true vacuum via quantum tunneling. This simulation lets you be the architect of this potential. You can change the height of the energy barrier and the depth of the false vacuum. The simulation then calculates the **bubble nucleation rate (Γ)**, which tells you how likely this tunneling event is. A high barrier and a shallow valley mean a very low probability (a long-lived, stable false vacuum). A low barrier and a deep valley mean a high probability, and the false vacuum will quickly decay by filling up with bubbles of the true vacuum.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Coleman-De Luccia Instanton</h2>
+                    <p>The decay of a false vacuum is a non-perturbative quantum process described by the formation of an **instanton**, a solution to the Euclidean equations of motion. This concept was pioneered by Sidney Coleman and Frank De Luccia.</p>
+
+                    <h4>The Scalar Field Potential</h4>
+                    <p>We consider a scalar field `φ` with a potential `V(φ)` that has at least two local minima, with one having a lower energy density than the other. A common toy model for this potential is a polynomial, for example:
+                    <br><code>V(φ) = Aφ⁴ - Bφ³ + Cφ²</code>
+                    <br>By adjusting the parameters A, B, and C, we can create a potential with a local minimum (the false vacuum at `φ_fv`) and a global minimum (the true vacuum at `φ_tv`).</p>
+
+                    <h4>The "Bounce" Solution</h4>
+                    <p>The tunneling process is dominated by the formation of a bubble of true vacuum. The solution describing this bubble is called the "bounce." It is a solution to the Euclidean (imaginary time) field equations that starts at the false vacuum `φ_fv` at infinity, "rolls" up the potential to some point, "tunnels" through the barrier, and then emerges on the other side and rolls down to the true vacuum `φ_tv`. This solution has O(4) symmetry and describes the nucleation of a spherical bubble.</p>
+                    <p>The probability of this event happening per unit volume per unit time, the nucleation rate `Γ`, is given by:
+                    <br><code>Γ ≈ A * e^(-S_E)</code>
+                    <br>where `S_E` is the Euclidean action of the bounce solution. A larger action means a more suppressed, less likely tunneling event.</p>
+
+                    <h4>The Thin-Wall Approximation</h4>
+                    <p>Calculating the bounce action `S_E` for a general potential is difficult. However, in the case where the energy difference between the two vacua `ε` is small and the barrier is high (the "thin-wall" approximation), the action can be calculated analytically. The bubble consists of a large volume of true vacuum with energy density `-ε` and a surface (the wall) with a surface tension `S₁`. The action is a trade-off between the energy gained from the volume and the energy cost of the wall. The final result for the bounce action in this limit is:</p>
+                    <p><code>S_E = (27 * π² * S₁⁴) / (2 * ε³)</code></p>
+                    <p>where `S₁` is the surface tension of the bubble wall, which is the integral of `sqrt(2V(φ))` across the wall profile. This simulation uses this approximation to calculate the nucleation rate. From this formula, we can see that the rate is extremely sensitive to the parameters:
+                    <ul>
+                        <li>A high surface tension `S₁` (a high or wide barrier) dramatically increases the action and suppresses the decay rate.</li>
+                        <li>A small energy difference `ε` between vacua also dramatically increases the action and makes the false vacuum very long-lived.</li>
+                    </ul>
+                    </p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is a scalar field?</strong> It's a field that has a single value (a scalar) at every point in spacetime. Temperature is a good analogy for a classical scalar field. The Higgs field is the most famous example of a fundamental quantum scalar field in particle physics.</li>
+                        <li><strong>What is a "false vacuum"?</strong> It's a metastable state. It's a local minimum of the energy density, so it's stable to small perturbations, but it's not the true, global minimum. A supercooled liquid is a good condensed matter analogy.</li>
+                        <li><strong>What is an instanton?</strong> In quantum field theory, it's a solution to the equations of motion in imaginary time. It describes a tunneling event between two different vacuum states. The "bounce" solution used here is a specific type of instanton.</li>
+                        <li><strong>Why is the decay rate an exponential?</strong> This is characteristic of quantum tunneling processes. The probability of tunneling through a barrier is exponentially sensitive to the properties of the barrier (its height and width), which are captured in the action `S_E`. This is why small changes in the potential can lead to enormous changes in the lifetime of the false vacuum.</li>
+                        <li><strong>Is our universe in a false vacuum?</strong> It is a possibility. The Higgs field potential is of central importance. Current measurements of the Higgs boson mass and top quark mass suggest that our vacuum might be metastable, with a true, lower-energy vacuum existing at some extremely high field value. However, the calculated lifetime for our vacuum is immense, many, many orders of magnitude longer than the current age of the universe, so it is effectively stable.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('potential-canvas'), controlsPanel: document.getElementById('controls-panel'), rateValue: document.getElementById('rate-value') };
+
+            class PotentialManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.params = { barrierHeight: 0.1, energyGap: 0.1, falseVacuumPos: 0.25 };
+                    this.potential = (phi) => {
+                        // A quartic potential of the form (phi^2 - a^2)^2 + b*(phi-a)
+                        const a = this.params.falseVacuumPos;
+                        const b = this.params.energyGap / a;
+                        const potential_base = (phi*phi - a*a)*(phi*phi - a*a);
+                        const potential_tilt = b * (phi - a);
+                        const barrier = this.params.barrierHeight * Math.exp(-20 * (phi*phi));
+                        return potential_base + potential_tilt + barrier;
+                    };
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.width, this.height);
+                    this.drawAxes();
+                    this.drawPotential();
+                    this.drawVacuumStates();
+                }
+
+                drawAxes() {
+                    this.ctx.strokeStyle = '#444'; this.ctx.lineWidth = 1;
+                    this.ctx.beginPath(); this.ctx.moveTo(0, this.height - 20); this.ctx.lineTo(this.width, this.height - 20);
+                    this.ctx.moveTo(this.width/2, 0); this.ctx.lineTo(this.width/2, this.height); this.ctx.stroke();
+                    this.ctx.fillStyle = '#aaa'; this.ctx.font = '14px sans-serif';
+                    this.ctx.fillText("φ (Field Value)", this.width - 120, this.height - 5);
+                    this.ctx.fillText("V(φ) (Potential Energy)", this.width/2 + 5, 15);
+                }
+
+                drawPotential() {
+                    this.ctx.strokeStyle = '#4cc9f0'; this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    for (let i = 0; i < this.width; i++) {
+                        const phi = (i - this.width / 2) / (this.width / 2); // phi from -1 to 1
+                        const V = this.potential(phi);
+                        const y = this.height - 20 - V * 2000;
+                        if (i === 0) this.ctx.moveTo(i, y); else this.ctx.lineTo(i, y);
+                    }
+                    this.ctx.stroke();
+                }
+
+                drawVacuumStates() {
+                    const phi_fv = this.params.falseVacuumPos;
+                    const V_fv = this.potential(phi_fv);
+                    const x_fv = (phi_fv * this.width/2) + this.width/2;
+                    const y_fv = this.height - 20 - V_fv * 2000;
+
+                    this.ctx.fillStyle = '#f72585';
+                    this.ctx.beginPath(); this.ctx.arc(x_fv, y_fv, 8, 0, 2 * Math.PI); this.ctx.fill();
+
+                    this.ctx.font = '12px sans-serif';
+                    this.ctx.fillText("False Vacuum", x_fv + 10, y_fv - 10);
+                }
+
+                calculateDecayRate() {
+                    // Using the thin-wall approximation: Gamma ~ exp(-S_E)
+                    // S_E = 27*pi^2*S1^4 / (2*epsilon^3)
+                    const phi_start = this.params.falseVacuumPos;
+                    const V_fv = this.potential(phi_start);
+
+                    // Find true vacuum minimum
+                    let phi_tv = -this.params.falseVacuumPos;
+                    let V_tv = this.potential(phi_tv);
+                    for(let p = -1; p < 0; p+=0.01) {
+                        if(this.potential(p) < V_tv) { V_tv = this.potential(p); phi_tv = p; }
+                    }
+
+                    const epsilon = V_fv - V_tv;
+                    if (epsilon <= 0) return 0; // No decay
+
+                    // Calculate surface tension S1 = integral sqrt(2V) d_phi
+                    let S1 = 0;
+                    const phi_end = phi_start;
+                    let phi_tunnel_start = 0;
+                    for(let p=phi_start; p>phi_tv; p-=0.01) { if(this.potential(p) > V_fv) phi_tunnel_start = p; }
+                    for(let p = phi_tunnel_start; p < phi_end; p += 0.01) {
+                         const V_barrier = this.potential(p) - V_fv;
+                         if (V_barrier > 0) S1 += Math.sqrt(2 * V_barrier) * 0.01;
+                    }
+                    if (S1 < 1e-3) return Infinity; // No real barrier
+
+                    const S_E = (27 * Math.PI * Math.PI * Math.pow(S1, 4)) / (2 * Math.pow(epsilon, 3));
+                    return `~ exp(-${S_E.toExponential(2)})`;
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new PotentialManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.update(); }
+                buildControls() {
+                    const controls = [
+                        {id:'barrierHeight', label:'Barrier Height', min:0.0, max:0.2, step:0.001, val:0.1},
+                        {id:'energyGap', label:'Energy Gap (ε)', min:0.01, max:0.2, step:0.001, val:0.1},
+                        {id:'falseVacuumPos', label:'False Vacuum Position', min:0.2, max:0.5, step:0.01, val:0.25},
+                    ];
+                    controls.forEach(c => {
+                        DOM.controlsPanel.innerHTML += `<div class="control-group"><label for="${c.id}">${c.label}: <span id="${c.id}-val">${c.val.toFixed(3)}</span></label><input type="range" id="${c.id}" min="${c.min}" max="${c.max}" value="${c.val}" step="${c.step}"></div>`;
+                    });
+                    controls.forEach(c => {
+                        document.getElementById(c.id).oninput = e => {
+                            const val = parseFloat(e.target.value);
+                            this.manager.params[c.id] = val;
+                            document.getElementById(`${c.id}-val`).textContent = val.toFixed(3);
+                            this.update();
+                        };
+                    });
+                }
+                update() {
+                    this.manager.redraw();
+                    const rate = this.manager.calculateDecayRate();
+                    DOM.rateValue.textContent = rate;
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

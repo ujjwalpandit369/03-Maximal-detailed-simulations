@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: Head-on Bubble Collision</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #f94144; --secondary-color: #f8961e; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #0d0d0d; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Head-on Bubble Collision</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Visualizing the energetic clash of two nascent universes.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Collision Simulation</h3>
+                    <canvas id="collision-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: When Universes Collide</h2>
+                    <p>If eternal inflation creates an endless sea of bubble universes, it's inevitable that some of these bubbles, born close to each other, will collide. What happens when two universes crash into each other? This simulation explores the simplest possible scenario: a direct, head-on collision.</p>
+                    <p>We start with two bubbles of true vacuum nucleating in a sea of false vacuum. They both expand at the speed of light, their walls rushing towards each other. The region of high-energy false vacuum trapped between them gets smaller and smaller. Then, the walls meet. In the simplest models, the bubble walls are predicted to pass right through each other, like ghosts. The moment they cross, the last pocket of false vacuum between them is eliminated. All of its stored energy is liberated in a single, violent event, creating a shower of high-energy particles and radiation along the collision plane.</p>
+                    <p>This simulation visualizes this process. You can watch the two bubbles expand and collide. The collision itself is marked by a bright flash, representing the immense energy release. From this plane, you can see waves of energy propagating outwards. These collisions are among the most energetic events possible in the multiverse, and if one happened in our cosmic past, it might have left a detectable signature for us to find today.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Collision Dynamics and Energy Release</h2>
+                    <p>The collision of two vacuum bubbles is a complex relativistic event. The simplest case to analyze is the head-on collision of two identical bubbles nucleated simultaneously.</p>
+
+                    <h4>The Causal Diamond</h4>
+                    <p>Consider two bubbles nucleated at a distance `d` apart at `t=0`. Since their walls expand at the speed of light `c`, they will collide at a time `t = d / 2c`. The collision occurs along a plane of symmetry exactly halfway between the initial nucleation sites. From the point of view of an observer at the collision center, the collision event is not instantaneous. They first see the collision occur at the point closest to them, and then see the collision point spread outwards from them at the speed of light. The set of all collision points forms a hyperboloid in spacetime. The region of false vacuum trapped between the bubbles, which is annihilated during the collision, forms a diamond-shaped region in a spacetime diagram.</p>
+
+                    <h4>Energy Release and Particle Production</h4>
+                    <p>The primary result of the collision is the liberation of the false vacuum energy `ε` in the region between the bubbles. In the thin-wall limit, the bubble walls themselves can be thought of as particles (domain walls) that pass through each other. The collision of the scalar fields of the two walls is highly non-linear and acts as a source for other quantum fields. This can produce a massive burst of particle creation, reheating this region of space to an extremely high temperature. The energy released is proportional to the volume of the annihilated false vacuum region.</p>
+                    <p>In more complex models, the bubble walls might not pass through each other but could annihilate or create new types of defects at the collision site. The exact outcome depends on the details of the underlying particle physics model and the symmetries of the scalar field potential.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Do the bubble walls really pass through each other?</strong> In the simplest models involving a single scalar field, yes. The field configuration of the walls can superimpose and then separate. In more realistic models with multiple fields, the interaction can be much more complex, potentially leading to the destruction of the walls themselves.</li>
+                        <li><strong>What are the "shockwaves" seen after the collision?</strong> They represent the shells of high-energy particles and radiation produced by the collision, propagating outwards at the speed of light. An observer inside one of the bubbles would eventually be hit by this shell of energy from the collision.</li>
+                        <li><strong>Could such a collision destroy our universe?</strong> If our universe (our bubble) collided with another, it would be an incredibly energetic event. An observer far from the collision plane would see a growing "disk" of annihilation in the sky. If the collision happened nearby, the energy released would be catastrophic. However, given the vastness of the multiverse predicted by eternal inflation, the probability of such a collision happening within our observable horizon is extremely low.</li>
+                        <li><strong>How could we detect a past collision?</strong> A collision in our cosmic past might have left a subtle imprint on the Cosmic Microwave Background (CMB). It could appear as a circular "bruise"—a disk-shaped region of slightly higher or lower temperature, or with a specific polarization pattern. There have been several searches for such a signature in the Planck satellite data, with some tentative candidates but no definitive detection.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('collision-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class CollisionManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.bubbles = []; this.shockwave = null;
+                    this.animFrame = null;
+                    this.params = { separation: 300 };
+                }
+
+                start() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.bubbles = [
+                        { x: this.width/2 - this.params.separation/2, y: this.height/2, r: 1 },
+                        { x: this.width/2 + this.params.separation/2, y: this.height/2, r: 1 }
+                    ];
+                    this.shockwave = null;
+                    this.animate();
+                }
+
+                reset() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.animFrame = null;
+                    this.bubbles = [];
+                    this.shockwave = null;
+                    this.redraw();
+                }
+
+                animate() {
+                    if (this.shockwave) {
+                        this.shockwave.r += 3;
+                        if (this.shockwave.alpha > 0) this.shockwave.alpha -= 0.01;
+                    } else {
+                        this.bubbles.forEach(b => b.r += 2);
+                        const dist = Math.abs(this.bubbles[0].x - this.bubbles[1].x);
+                        if (this.bubbles[0].r + this.bubbles[1].r >= dist) {
+                            this.shockwave = { x: this.width/2, y: this.height/2, r: this.bubbles[0].r, alpha: 1.0 };
+                        }
+                    }
+
+                    this.redraw();
+
+                    if (!this.shockwave || this.shockwave.alpha > 0) {
+                        this.animFrame = requestAnimationFrame(() => this.animate());
+                    } else {
+                        this.animFrame = null;
+                    }
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#0d0d0d'; this.ctx.fillRect(0, 0, this.width, this.height);
+
+                    this.bubbles.forEach(b => {
+                        this.ctx.fillStyle = '#4361ee';
+                        this.ctx.beginPath();
+                        this.ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
+                        this.ctx.fill();
+                    });
+
+                    if (this.shockwave) {
+                        this.ctx.strokeStyle = `rgba(248, 150, 30, ${this.shockwave.alpha})`;
+                        this.ctx.lineWidth = 5;
+                        this.ctx.beginPath();
+                        this.ctx.arc(this.shockwave.x, this.shockwave.y, this.shockwave.r, 0, 2 * Math.PI);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new CollisionManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                            <label for="sep-slider">Initial Separation: <span id="sep-val">300</span></label>
+                            <input type="range" id="sep-slider" min="50" max="500" value="300" step="10">
+                        </div>
+                        <div class="control-group">
+                            <button id="start">Start Collision</button>
+                            <button id="reset">Reset</button>
+                        </div>`;
+                    document.getElementById('start').onclick = () => this.manager.start();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                    document.getElementById('sep-slider').oninput = (e) => {
+                        const val = parseInt(e.target.value);
+                        this.manager.params.separation = val;
+                        document.getElementById('sep-val').textContent = val;
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

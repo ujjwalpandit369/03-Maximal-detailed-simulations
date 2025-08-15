@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: Off-Center Bubble Collision</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #f3722c; --secondary-color: #f9c74f; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #0d0d0d; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Off-Center Bubble Collision</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Exploring the asymmetric energy release from a glancing blow.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Collision Simulation</h3>
+                    <canvas id="collision-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: A Glancing Blow</h2>
+                    <p>In the vastness of the inflating multiverse, a perfect head-on collision between two bubble universes would be incredibly rare. It's far more likely that they would strike each other a glancing blow, or that one bubble would have nucleated slightly before the other. This simulation explores this more generic, **off-center collision** scenario.</p>
+                    <p>When the collision is not perfectly symmetric, the outcome changes in a crucial way. The pocket of false vacuum trapped between the bubbles is no longer a simple lens shape. The collision doesn't happen all at once along a flat plane. Instead, the first point of contact occurs, and the "line" of collision then spreads outwards along a curved path—a hyperbola. The energy release is no longer uniform. It is focused in a particular direction, creating an **anisotropic** (non-uniform) burst of particles and radiation.</p>
+                    <p>This asymmetry is the single most important ingredient for producing **gravitational waves**. Any process that is perfectly spherically symmetric, like the expansion of a single bubble, cannot produce gravitational waves. To create ripples in spacetime, you need a distribution of energy that changes in a non-symmetric way. An off-center bubble collision provides exactly this kind of lopsided, rapidly changing energy distribution. This simulation allows you to control the vertical offset of the bubble nucleation points to see how the collision becomes more and more asymmetric, setting the stage for understanding how these events could be the universe's most powerful gravitational wave sirens.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: Anisotropy and the Collision Hyperboloid</h2>
+                    <p>When two bubbles nucleate at different times or at positions not aligned for a head-on collision, the symmetry of the event is broken. This has profound consequences for the dynamics and the resulting observational signatures.</p>
+
+                    <h4>The Collision Surface</h4>
+                    <p>Let's say bubble A nucleates at `(t, x) = (0, -d/2)` and bubble B nucleates at `(t, y) = (t_offset, d/2)`. Since the walls expand at the speed of light, the set of points `(t_c, x_c, y_c)` where the walls meet is defined by the condition that the spacetime interval from each nucleation point to the collision point is null (light-like).</p>
+                    <p>The surface of collision points is a **hyperboloid of two sheets** in spacetime. In our 2D simulation, this is a hyperbola. The false vacuum trapped between the bubbles is consumed along this curved surface. Unlike the head-on case where the energy is released in a plane, here it is released along a curve, leading to a complex, non-uniform pattern of energy and momentum flow.</p>
+
+                    <h4>Source of Gravitational Waves</h4>
+                    <p>Gravitational waves are produced by a changing quadrupole moment of a system's mass-energy distribution. A perfectly symmetric system (like an expanding sphere or a head-on collision) has no changing quadrupole moment and therefore emits no gravitational waves.
+                    <br><br>
+                    An off-center collision, however, is fundamentally anisotropic. The energy of the false vacuum is converted into a shell of relativistic particles and fields whose center of mass is accelerating and whose shape is non-spherical. This rapidly changing, lopsided distribution of energy acts as a powerful source for gravitational waves. The amplitude and frequency spectrum of these waves carry information about the energy scale of inflation (`ε`) and the parameters of the collision. Detecting a stochastic background of such waves would be a smoking-gun signature of a pre-Big Bang inflationary multiverse.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>Why is asymmetry so important for gravitational waves?</strong> Think of ringing a bell. If you could somehow squeeze a bell perfectly uniformly from all sides, it would just get smaller and wouldn't make a sound. To make it ring, you have to strike it on one side, breaking the symmetry. This creates a non-uniform vibration (a changing quadrupole moment) that produces sound waves. Similarly, spacetime needs to be "struck" asymmetrically to produce gravitational waves.</li>
+                        <li><strong>What determines the shape of the collision shockwave?</strong> It's determined by the geometry of the collision. In a head-on collision, the shockwave is spherical. In an off-center collision, the energy is focused more in the direction perpendicular to the line connecting the bubble centers. The shockwave will be elliptical or even more complex in shape.</li>
+                        <li><strong>Can we distinguish between a head-on and an off-center collision from its CMB signature?</strong> Potentially, yes. A perfectly head-on collision would produce a perfectly circular "bruise" on the CMB. An off-center collision would produce a signature with a preferred direction or a more complex morphology. Searching for such non-Gaussian, non-circular features in the CMB is an active area of research.</li>
+                        <li><strong>What is the "thin-wall" approximation in this context?</strong> It's the assumption that the thickness of the bubble wall is very small compared to the radius of the bubble at the time of collision. This allows us to treat the walls as infinitesimally thin shells of energy, which greatly simplifies the calculation of the collision dynamics and the resulting gravitational wave signal.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('collision-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class CollisionManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.bubbles = []; this.shockwave = null;
+                    this.animFrame = null;
+                    this.params = { separationX: 300, separationY: 100 };
+                }
+
+                start() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.bubbles = [
+                        { x: this.width/2 - this.params.separationX/2, y: this.height/2 - this.params.separationY/2, r: 1 },
+                        { x: this.width/2 + this.params.separationX/2, y: this.height/2 + this.params.separationY/2, r: 1 }
+                    ];
+                    this.shockwave = null;
+                    this.animate();
+                }
+
+                reset() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.animFrame = null;
+                    this.bubbles = [];
+                    this.shockwave = null;
+                    this.redraw();
+                }
+
+                animate() {
+                    let should_stop = false;
+                    if (this.shockwave) {
+                        this.shockwave.r += 3;
+                        if (this.shockwave.alpha > 0) this.shockwave.alpha -= 0.01;
+                        else should_stop = true;
+                    } else {
+                        this.bubbles.forEach(b => b.r += 2);
+                        const dx = this.bubbles[0].x - this.bubbles[1].x;
+                        const dy = this.bubbles[0].y - this.bubbles[1].y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (this.bubbles[0].r + this.bubbles[1].r >= dist) {
+                            const collisionX = (this.bubbles[0].x + this.bubbles[1].x) / 2;
+                            const collisionY = (this.bubbles[0].y + this.bubbles[1].y) / 2;
+                            this.shockwave = { x: collisionX, y: collisionY, r: (this.bubbles[0].r + this.bubbles[1].r)/2, alpha: 1.0 };
+                        }
+                    }
+
+                    this.redraw();
+
+                    if (!should_stop) {
+                        this.animFrame = requestAnimationFrame(() => this.animate());
+                    } else {
+                        this.animFrame = null;
+                    }
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#0d0d0d'; this.ctx.fillRect(0, 0, this.width, this.height);
+
+                    this.bubbles.forEach(b => {
+                        this.ctx.fillStyle = '#4361ee';
+                        this.ctx.beginPath();
+                        this.ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
+                        this.ctx.fill();
+                    });
+
+                    if (this.shockwave) {
+                        this.ctx.strokeStyle = `rgba(248, 150, 30, ${this.shockwave.alpha})`;
+                        this.ctx.lineWidth = 5;
+                        this.ctx.beginPath();
+                        // Draw an ellipse to show asymmetry
+                        this.ctx.ellipse(this.shockwave.x, this.shockwave.y, this.shockwave.r, this.shockwave.r * 0.7, Math.PI/4, 0, 2*Math.PI);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new CollisionManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                            <label for="sepX-slider">Horizontal Separation: <span id="sepX-val">300</span></label>
+                            <input type="range" id="sepX-slider" min="50" max="500" value="300" step="10">
+                        </div>
+                        <div class="control-group">
+                            <label for="sepY-slider">Vertical Separation: <span id="sepY-val">100</span></label>
+                            <input type="range" id="sepY-slider" min="0" max="300" value="100" step="10">
+                        </div>
+                        <div class="control-group">
+                            <button id="start">Start Collision</button>
+                            <button id="reset">Reset</button>
+                        </div>`;
+                    document.getElementById('start').onclick = () => this.manager.start();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                    document.getElementById('sepX-slider').oninput = (e) => {
+                        const val = parseInt(e.target.value);
+                        this.manager.params.separationX = val;
+                        document.getElementById('sepX-val').textContent = val;
+                    };
+                     document.getElementById('sepY-slider').oninput = (e) => {
+                        const val = parseInt(e.target.value);
+                        this.manager.params.separationY = val;
+                        document.getElementById('sepY-val').textContent = val;
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>

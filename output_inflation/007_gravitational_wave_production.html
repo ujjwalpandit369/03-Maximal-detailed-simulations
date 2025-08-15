@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Inflation: Gravitational Waves from Bubble Collisions</title>
+    <style>
+        :root { --bg-color: #1a1a1c; --text-color: #e0e0e0; --header-color: #ffffff; --primary-color: #e63946; --secondary-color: #f1faee; --border-color: #444; --card-bg: #2c2c2e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 2.5rem; text-align: center; color: var(--primary-color); }
+        h2 { font-size: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        .simulation-container { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+        .visual-panel { flex: 2; min-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        .controls-sidebar { flex: 1; min-width: 300px; background: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
+        canvas { border: 1px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; background-color: #000; }
+        article { background-color: var(--card-bg); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gravitational Waves from Bubble Collisions</h1>
+            <p style="text-align:center; font-style:italic; color: var(--secondary-color);">Visualizing the ripples in spacetime from a cosmic cataclysm.</p>
+        </header>
+
+        <main>
+            <div class="simulation-container">
+                <div class="visual-panel">
+                    <h3>Schematic Gravitational Wave Production</h3>
+                    <canvas id="gw-canvas"></canvas>
+                </div>
+                <div class="controls-sidebar">
+                    <h2>Controls</h2>
+                    <div id="controls-panel"></div>
+                </div>
+            </div>
+
+            <article id="exposition-content">
+                <section id="beginners-guide">
+                    <h2>A Beginner's Guide: Ringing the Bell of Spacetime</h2>
+                    <p>When two massive objects like black holes collide, they create ripples in the fabric of spacetime itself. These are **gravitational waves**. But it's not just black holes that can do this. The violent collision of two bubble universes in the early cosmos would be one of the most energetic events imaginable, and a powerful source of gravitational waves.</p>
+                    <p>The key to producing gravitational waves is **asymmetry**. Imagine trying to make a bell ring by squeezing it perfectly evenly from all sides. It would just compress silently. To make it ring, you have to strike it on one side, breaking the symmetry and causing it to vibrate in a lopsided way. Spacetime is similar. A perfectly spherical explosion or a perfectly head-on collision doesn't produce gravitational waves. But an off-center, glancing blow, like the one we saw in the previous simulation, is perfectly asymmetric.</p>
+                    <p>This simulation shows what happens right after such a collision. The energy is released in a non-uniform way, creating a rapidly changing distribution of mass and energy. This "rings the bell" of spacetime, sending gravitational waves propagating outwards. The crucial feature is that these waves are not uniform spheres. They have a **quadrupolar** pattern, like a four-leaf clover. They are strongest in some directions and non-existent in others. This simulation visualizes this characteristic pattern, showing the waves propagating outwards from the collision site. Searching for this background "hum" of gravitational waves from countless ancient bubble collisions is a key goal of modern astronomy.</p>
+                </section>
+
+                <section id="core-theory">
+                    <h2>Core Theory: The Quadrupole Formula</h2>
+                    <p>In general relativity, the emission of gravitational waves is governed, in the weak-field limit, by the **quadrupole formula**. It states that the amplitude of the gravitational waves, `h`, is proportional to the second time derivative of the quadrupole moment, `Q`, of the source's mass-energy distribution.</p>
+                    <p><code>h ~ (G/c⁴r) * d²Q/dt²</code></p>
+                    <p>The quadrupole moment is a measure of the "lumpiness" or non-sphericity of an object. A perfectly spherical, pulsating object has a changing monopole moment but no quadrupole moment, so it does not radiate gravitational waves. A system must have a changing, non-spherical shape to produce these ripples in spacetime.</p>
+
+                    <h4>Bubble Collisions as Sources</h4>
+                    <p>An off-center collision of two bubbles is an ideal source. The energy released in the collision is initially concentrated in a complex, asymmetric shape. As this shell of energy and particles expands and interacts, its quadrupole moment changes very rapidly, leading to a powerful burst of gravitational waves. The key features of the signal depend on the parameters of the inflationary model:
+                    <ul>
+                        <li>The **amplitude** of the waves depends on the energy scale of inflation (the energy density of the false vacuum, `ε`).</li>
+                        <li>The **peak frequency** of the waves depends on the characteristic size of the bubbles at collision, which is related to the bubble nucleation rate `Γ` and the Hubble rate `H`.</li>
+                    </ul>
+                    Because bubbles would have collided throughout the inflationary epoch, this would not produce a single event but a **stochastic gravitational wave background**—a persistent, direction-dependent hum of gravitational waves from all over the sky. Different inflationary models predict different spectra for this background, so detecting it would provide an unprecedented window into the physics of the very early universe.</p>
+                </section>
+
+                <section id="q-and-a">
+                    <h3>Deep Q&A</h3>
+                    <ol>
+                        <li><strong>What is a quadrupole moment?</strong> It's a measure of how a distribution of mass or energy deviates from spherical symmetry. A sphere has zero quadrupole moment. A dumbbell or an ellipse has a non-zero quadrupole moment. If this lumpy shape changes (e.g., the dumbbell spins), it produces gravitational waves.</li>
+                        <li><strong>Why is the wave pattern a "four-leaf clover"?</strong> This is the characteristic pattern of quadrupolar radiation. If you imagine a spinning dumbbell, it squashes spacetime in one direction while stretching it in the perpendicular direction. As it rotates, this pattern of stretching and squashing rotates with it, creating a wave with two peaks and two troughs per cycle—a quadrupolar pattern.</li>
+                        <li><strong>How do detectors like LIGO detect these waves?</strong> LIGO is a giant L-shaped interferometer. A gravitational wave passing through will stretch one arm of the L while compressing the other. A laser beam is split and sent down both arms. The interference pattern of the returning light is incredibly sensitive to the tiny changes in arm length caused by the gravitational wave.</li>
+                        <li><strong>Could we detect the signal from a single bubble collision?</strong> It's unlikely. The signal from a single collision would be a short burst that is likely too weak to be picked out from the noise. It is the combined background from billions of such collisions that experiments like LISA (Laser Interferometer Space Antenna) hope to detect.</li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </div>
+    <script>
+        (function() {
+            'use strict';
+            const DOM = { canvas: document.getElementById('gw-canvas'), controlsPanel: document.getElementById('controls-panel') };
+
+            class GWManager {
+                constructor(canvas) {
+                    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                    this.width = canvas.width; this.height = canvas.height;
+                    this.waves = []; this.animFrame = null;
+                    this.params = { energy: 1.0 };
+                    this.collisionState = { active: false, time: 0, duration: 30 };
+                }
+
+                start() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.waves = [];
+                    this.collisionState = { active: true, time: 0, duration: 30 };
+                    this.animate();
+                }
+
+                reset() {
+                    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+                    this.animFrame = null;
+                    this.waves = [];
+                    this.collisionState.active = false;
+                    this.redraw();
+                }
+
+                animate() {
+                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                    this.ctx.fillRect(0, 0, this.width, this.height);
+
+                    if (this.collisionState.active) {
+                        this.drawCollision();
+                        this.collisionState.time++;
+                        if (this.collisionState.time > this.collisionState.duration) {
+                            this.collisionState.active = false;
+                            this.waves.push({ r: 50, alpha: 1.0 });
+                        }
+                    } else {
+                        if (Math.random() < 0.1 && this.waves.length < 10) {
+                             this.waves.push({ r: 50, alpha: 1.0 });
+                        }
+                        this.waves.forEach(w => {
+                            w.r += 3;
+                            w.alpha -= 0.005;
+                        });
+                        this.waves = this.waves.filter(w => w.alpha > 0);
+                        this.drawWaves();
+                    }
+
+                    this.animFrame = requestAnimationFrame(() => this.animate());
+                }
+
+                drawCollision() {
+                    const t = this.collisionState.time / this.collisionState.duration;
+                    const r = t * 100;
+                    this.ctx.fillStyle = `rgba(249, 65, 68, ${1-t})`;
+                    this.ctx.beginPath(); this.ctx.arc(this.width/2 - 80, this.height/2, r, 0, 2*Math.PI); this.ctx.fill();
+                    this.ctx.beginPath(); this.ctx.arc(this.width/2 + 80, this.height/2, r, 0, 2*Math.PI); this.ctx.fill();
+                }
+
+                drawWaves() {
+                    this.waves.forEach(w => {
+                        this.ctx.strokeStyle = `rgba(241, 250, 238, ${w.alpha})`;
+                        this.ctx.lineWidth = 3;
+                        this.ctx.beginPath();
+                        for (let i = 0; i <= 2 * Math.PI; i += 0.05) {
+                            const amplitude = w.r + this.params.energy * 20 * Math.sin(2 * i) * Math.sin(2 * i);
+                            const x = this.width / 2 + amplitude * Math.cos(i);
+                            const y = this.height / 2 + amplitude * Math.sin(i);
+                            if (i === 0) this.ctx.moveTo(x, y); else this.ctx.lineTo(x, y);
+                        }
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                    });
+                }
+
+                redraw() {
+                    this.ctx.fillStyle = '#000'; this.ctx.fillRect(0,0,this.width, this.height);
+                    this.drawWaves();
+                }
+            }
+
+            class UI {
+                constructor() { this.manager = new GWManager(DOM.canvas); this.init(); }
+                init() { this.buildControls(); this.manager.redraw(); }
+                buildControls() {
+                    DOM.controlsPanel.innerHTML = `
+                        <div class="control-group">
+                            <label for="energy-slider">Collision Energy: <span id="energy-val">1.0</span></label>
+                            <input type="range" id="energy-slider" min="0.1" max="2.0" value="1.0" step="0.1">
+                        </div>
+                        <div class="control-group">
+                            <button id="start">Trigger Collision</button>
+                            <button id="reset">Reset</button>
+                        </div>`;
+                    document.getElementById('start').onclick = () => this.manager.start();
+                    document.getElementById('reset').onclick = () => this.manager.reset();
+                    document.getElementById('energy-slider').oninput = (e) => {
+                        const val = parseFloat(e.target.value);
+                        this.manager.params.energy = val;
+                        document.getElementById('energy-val').textContent = val.toFixed(1);
+                    };
+                }
+            }
+            document.addEventListener('DOMContentLoaded', () => new UI());
+        })();
+    </script>
+</body>
+</html>
